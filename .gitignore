@@ -1,0 +1,57 @@
+# Datasets, weights, and models
+/inputs/*
+!/inputs/README.md
+/models/
+
+# Private/reference material
+/ans_gemm_private.tar.gz
+*.tar.gz
+
+# Build products
+/build-*/
+**/bin/
+*.o
+*.a
+*.so
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# Generated experiment output
+/results/logs/
+/results/run-*/
+/results/run-float-*/
+**/results/*.out
+**/results/*.err
+**/results/ktrace/
+
+# Raw and private-derived reports retained only on the cluster
+/experiments.md
+/results/*.md
+/harness/REPORT.md
+/sepbase/REPORT.md
+
+# Historical exploratory scripts retained locally
+/scripts/job_build_ext.sh
+/scripts/job_build_ext2.sh
+/scripts/job_run_float.sh
+/scripts/float-ext/
+
+# Old job-numbered CSV files; curated copies live in results/published/
+/harness/results/*.csv
+/sepbase/results/*.csv
+
+# Local backups, agent state, credentials, and temporary files
+/.local-backup/
+.agents/
+.codex/
+.ssh/
+.env
+.env.*
+tmp/
+__pycache__/
+*.py[cod]
+.venv/
+*.swp
+*.swo
+*~
