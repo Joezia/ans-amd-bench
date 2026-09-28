@@ -32,9 +32,13 @@
 namespace {
 
 constexpr uint64_t kDefaultBlockSize = 8192;
-constexpr uint64_t kStackBytes = 2ULL * 1024 * 1024 * 1024;
+constexpr uint64_t kStackBytes = 4ULL * 1024 * 1024 * 1024;
+#ifndef HIPANS_GPU_ARCH
+#define HIPANS_GPU_ARCH "unknown"
+#endif
+constexpr const char* kCompiledGpuArch = HIPANS_GPU_ARCH;
 constexpr const char* kBuildFlags =
-    "-std=c++17 -O3 -DNDEBUG --offload-arch=gfx90a -pthread";
+    "-std=c++17 -O3 -DNDEBUG --offload-arch=" HIPANS_GPU_ARCH " -pthread";
 #ifndef HIPANS_SOURCE_DIR
 #define HIPANS_SOURCE_DIR "unknown"
 #endif
@@ -922,10 +926,21 @@ int run(int argc, char** argv, ScopedStderrCapture* stderr_capture) {
                 "hipGetDeviceProperties")) {
     return 3;
   }
+  std::string runtime_arch = properties.gcnArchName;
+  const auto feature_separator = runtime_arch.find(':');
+  if (feature_separator != std::string::npos) {
+    runtime_arch.resize(feature_separator);
+  }
+  if (runtime_arch != kCompiledGpuArch) {
+    std::cerr << "ERROR: binary was compiled for " << kCompiledGpuArch
+              << " but the allocated GPU is " << properties.gcnArchName
+              << "\n";
+    return 3;
+  }
 
   const std::string host = hostname();
   const std::string rocm_version =
-      commandValue("cat /opt/rocm/.info/version", "unknown");
+      commandValue("hipconfig --version", "unknown");
   const std::string hipans_commit =
       commandValue(std::string("git -C ") + kRepo + " rev-parse HEAD",
                    "unknown");
@@ -948,6 +963,7 @@ int run(int argc, char** argv, ScopedStderrCapture* stderr_capture) {
   std::cout << "logical_gpu_index: 0\n";
   std::cout << "gpu_name: " << properties.name << "\n";
   std::cout << "gpu_arch: " << properties.gcnArchName << "\n";
+  std::cout << "compiled_gpu_arch: " << kCompiledGpuArch << "\n";
   std::cout << "rocm_version: " << rocm_version << "\n";
   std::cout << "hipans_commit: " << hipans_commit << "\n";
   std::cout << "harness_commit: " << harness_commit << "\n";
@@ -1158,20 +1174,9 @@ int run(int argc, char** argv, ScopedStderrCapture* stderr_capture) {
     std::string perf_note;
 
     if (return_code == 0) {
-      const std::string perf_command =
-          "rocm-smi -d " + std::to_string(options.gpu_index) +
-          " --setperflevel high";
-      const CommandResult perf_result = runCommand(perf_command);
       std::cout << "----- performance level request -----\n";
-      std::cout << "$ " << perf_command << "\n" << perf_result.output;
-      perf_high = perf_result.exit_code == 0;
-      if (perf_high) {
-        perf_note = "setperflevel_high_succeeded";
-        std::cout << "frequency_lock: requested performance level high\n";
-      } else {
-        perf_note = "setperflevel_high_failed";
-        std::cout << "frequency_lock: 未锁频\n";
-      }
+      perf_note = "perf_level_unchanged_no_privilege";
+      std::cout << "frequency_lock: not requested (no privileged operations)\n";
 
       std::cout << "----- warmup (discarded) -----\n";
       for (int iteration = 0; iteration < options.warmup_iters; ++iteration) {

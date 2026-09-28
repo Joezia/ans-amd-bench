@@ -6,27 +6,34 @@ tree.
 
 ## Build
 
-From `hacchead`, run:
+From the login node, provide the target GPU architecture and either one build
+partition or a comma-separated list of eligible build partitions:
 
 ```bash
+GPU_ARCH=gfx942 \
+BUILD_PARTITIONS=devel \
+HIPANS_BUILD_DIR="$PWD/build-hipans-mi300" \
 ./harness/build.sh
 ```
 
-The script obtains a Slurm allocation on `mi210_u280_u55c`, prints the complete
-compiler command, and builds `bin/hipans_raw_decode_bench`. The compiler command
-explicitly contains `-DNDEBUG` and `--offload-arch=gfx90a`. It links only the
-three requested project archives: `libgpu_ans.a`, `libhipans_utils.a`, and
-`libglog.a` (`-pthread` is a compiler/linker threading option, not another
-project library). The `-x none` argument after the `.cpp` source resets
-Clang's input-language override so the following `.a` files are treated as
-archives rather than HIP source text.
+The script selects an immediately available partition when possible, obtains a
+single-task Slurm allocation, prints the complete compiler command, and builds
+`bin/hipans_raw_decode_bench`. The compiler command explicitly contains
+`-DNDEBUG` and `--offload-arch=${GPU_ARCH}`. It links only the three requested
+project archives: `libgpu_ans.a`, `libhipans_utils.a`, and `libglog.a`.
+
+The executable rejects a runtime GPU whose base GFX architecture differs from
+the architecture recorded at compile time. Rebuild after moving between, for
+example, MI210 (`gfx90a`) and MI300X (`gfx942`).
 
 Optional build environment variables:
 
-- `BUILD_PARTITION`: ROCm-enabled Slurm partition; default
-  `mi210_u280_u55c`.
+- `GPU_ARCH`: required target passed to `--offload-arch`.
+- `BUILD_PARTITION`: one explicit ROCm-enabled Slurm partition.
+- `BUILD_PARTITIONS`: eligible partition list used only when
+  `BUILD_PARTITION` is unset.
 - `BUILD_TIME`: allocation time limit; default `00:15:00`.
-- `HIPCC_BIN`: hipcc path; default `/usr/bin/hipcc`.
+- `HIPCC_BIN`: hipcc path; otherwise discovered from `PATH` in the allocation.
 - `HIPANS_REPO`: hipANS source tree; default `../hipANS` relative to this
   repository.
 - `HIPANS_BUILD_DIR`: prebuilt hipANS directory; default
@@ -39,6 +46,10 @@ From `hacchead`, run:
 ```bash
 FILE_INPUT="$PWD/inputs/qwen_bf16_256MiB.bin" ./harness/run_all.sh
 ```
+
+Also provide either `GPU_PARTITION` or `GPU_PARTITIONS`. Candidate partitions
+must have compatible allocation semantics. Do not mix single-GPU and exclusive
+whole-node partitions merely because they contain the same GPU model.
 
 The script uses one `srun` allocation and pins the process to one physical card
 with `HIP_VISIBLE_DEVICES`. It runs the full Cartesian product of:
@@ -53,7 +64,11 @@ and at least 50 measured decodes. Do not lower those iteration counts.
 
 Optional run environment variables:
 
-- `GPU_PARTITION`: Slurm partition; default `mi210_u280_u55c`.
+- `GPU_PARTITION`: one explicit Slurm partition.
+- `GPU_PARTITIONS`: comma-separated eligible partitions. The selector ranks
+  them using current node state and free GPU TRES, without pinning a node.
+- `GPU_COUNT`: requested GPU count; default `1`.
+- `GPU_REQUEST_MODE`: `gres`, `gpus`, or `none`; default `gres`.
 - `GPU_INDEX`: physical GPU index passed to `HIP_VISIBLE_DEVICES`; default `0`.
 - `RUN_TIME`: Slurm time limit; default `12:00:00`.
 - `FILE_INPUT`: DF binary source. It is repeated or truncated deterministically
@@ -65,27 +80,25 @@ Optional run environment variables:
 - `RESULTS_DIR`: output directory under the harness; default `harness/results`.
 - `CSV_PATH`: output CSV path; defaults to a Job-ID-named file in results.
 
-The job writes stdout/stderr to the terminal and Job-ID-named log files.
+The job writes stdout/stderr to the terminal and Job-ID-named log files. Use
+the non-interactive launchers rather than holding an interactive GPU shell.
 
-## Run one case inside an allocated compute-node terminal
+## Peak launcher
 
-First pin the physical GPU before starting the executable:
+The focused launcher runs one smoke case followed by the large-workload search:
 
 ```bash
-export HIP_VISIBLE_DEVICES=0
-./bin/hipans_raw_decode_bench \
-  --dataset d1 \
-  --size-bytes 67108864 \
-  --probbits 10 \
-  --num-in-batch 1 \
-  --seed 20260920 \
-  --lambda 100 \
-  --warmup 10 \
-  --measure 50 \
-  --gpu-index 0 \
-  --csv results/manual.csv \
-  --case-label S4
+GPU_PARTITIONS=mi3001x \
+GPU_COUNT=1 \
+GPU_REQUEST_MODE=gres \
+RUN_MODE=search \
+FILE_INPUT="$PWD/inputs/expo20_u8_64MiB+1234.bin" \
+./harness/run_mi300_peak.sh
 ```
+
+An explicit `GPU_PARTITION` bypasses state-based partition selection. The
+selected partition is passed into the allocation, but no node is pinned; Slurm
+retains final placement control.
 
 Command-line parameters:
 
@@ -123,8 +136,9 @@ are printed at measurement begin, midpoint, and end. Since the requested CSV
 schema has no MCLK or midpoint-temperature columns, those values are preserved
 in `notes`.
 
-`rocm-smi --setperflevel high` is attempted before warmup. Failure is printed as
-`未锁频`. A successful request is restored to `auto` before process exit.
+The benchmark does not request privileged clock or performance-level changes.
+It records read-only clock, utilization, and temperature samples around the
+measurement instead.
 
 ## Checksum configuration
 

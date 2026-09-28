@@ -5,7 +5,9 @@ harness_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 bench_dir="$(cd -- "${harness_dir}/.." && pwd)"
 binary="${harness_dir}/bin/hipans_raw_decode_bench"
 results_dir="${RESULTS_DIR:-${harness_dir}/results}"
-partition="${GPU_PARTITION:-mi210_u280_u55c}"
+partition="${GPU_PARTITION:-}"
+gpu_count="${GPU_COUNT:-1}"
+gpu_request_mode="${GPU_REQUEST_MODE:-gres}"
 gpu_index="${GPU_INDEX:-0}"
 run_time="${RUN_TIME:-12:00:00}"
 seed="${SEED:-20260920}"
@@ -16,14 +18,30 @@ file_input="${FILE_INPUT:-${bench_dir}/inputs/expo20_u8_64MiB+1234.bin}"
 
 if [[ "${1:-}" != "--inside-allocation" ]]; then
   mkdir -p "${results_dir}"
+  if [[ -z "${partition}" ]]; then
+    gpu_partitions="${GPU_PARTITIONS:?set GPU_PARTITION or GPU_PARTITIONS}"
+    partition="$("${bench_dir}/scripts/select_slurm_partition.sh" "${gpu_partitions}" "${gpu_count}")"
+  fi
+  case "${gpu_request_mode}" in
+    gres) gpu_request=("--gres=gpu:${gpu_count}") ;;
+    gpus) gpu_request=("--gpus=${gpu_count}") ;;
+    none) gpu_request=() ;;
+    *) echo "ERROR: GPU_REQUEST_MODE must be gres, gpus, or none" >&2; exit 2 ;;
+  esac
+  echo "selected GPU partition: ${partition}"
   exec srun \
     --job-name=hipans-raw-decode-matrix \
     --partition="${partition}" \
+    "${gpu_request[@]}" \
+    --nodes=1 \
+    --ntasks=1 \
     --cpus-per-task=2 \
     --time="${run_time}" \
-    env HIP_VISIBLE_DEVICES="${gpu_index}" \
+    env GPU_PARTITION="${partition}" HIP_VISIBLE_DEVICES="${gpu_index}" \
     "${BASH_SOURCE[0]}" --inside-allocation
 fi
+
+partition="${GPU_PARTITION:?GPU_PARTITION missing inside allocation}"
 
 if [[ -z "${SLURM_JOB_ID:-}" ]]; then
   echo "ERROR: refusing to run outside a Slurm allocation" >&2
