@@ -1,0 +1,74 @@
+[
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/qwen-1.5b.bin",
+    "matrix": [
+      8960,
+      1536
+    ],
+    "model": "Qwen-1.5B",
+    "paper_final_speedup": 4.41,
+    "paper_tile_aligned_speedup": 3.66,
+    "slug": "qwen-1.5b",
+    "status": "MISSING_INPUT"
+  },
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/mistral-7b.bin",
+    "matrix": [
+      14336,
+      4096
+    ],
+    "model": "Mistral-7B",
+    "paper_final_speedup": 4.02,
+    "paper_tile_aligned_speedup": 3.3,
+    "slug": "mistral-7b",
+    "status": "MISSING_INPUT"
+  },
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/qwen-14b.bin",
+    "matrix": [
+      13824,
+      5120
+    ],
+    "model": "Qwen-14B",
+    "paper_final_speedup": 5.08,
+    "paper_tile_aligned_speedup": 4.19,
+    "slug": "qwen-14b",
+    "status": "MISSING_INPUT"
+  },
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/deepseek-67b.bin",
+    "matrix": [
+      8192,
+      8192
+    ],
+    "model": "DeepSeek-67B",
+    "paper_final_speedup": 6.71,
+    "paper_tile_aligned_speedup": 5.57,
+    "slug": "deepseek-67b",
+    "status": "MISSING_INPUT"
+  },
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/mixtral-176b.bin",
+    "matrix": [
+      6144,
+      6144
+    ],
+    "model": "Mixtral-176B",
+    "paper_final_speedup": 7.57,
+    "paper_tile_aligned_speedup": 6.03,
+    "slug": "mixtral-176b",
+    "status": "MISSING_INPUT"
+  },
+  {
+    "input": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/paper/llama-405b.bin",
+    "matrix": [
+      16384,
+      16384
+    ],
+    "model": "Llama-405B",
+    "paper_final_speedup": 10.06,
+    "paper_tile_aligned_speedup": 8.2,
+    "slug": "llama-405b",
+    "status": "MISSING_INPUT"
+  }
+]

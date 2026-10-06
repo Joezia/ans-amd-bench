@@ -1,0 +1,8 @@
+[
+  {"model": "Qwen-1.5B", "slug": "qwen-1.5b", "matrix": [8960, 1536], "paper_tile_aligned_speedup": 3.66, "paper_final_speedup": 4.41},
+  {"model": "Mistral-7B", "slug": "mistral-7b", "matrix": [14336, 4096], "paper_tile_aligned_speedup": 3.30, "paper_final_speedup": 4.02},
+  {"model": "Qwen-14B", "slug": "qwen-14b", "matrix": [13824, 5120], "paper_tile_aligned_speedup": 4.19, "paper_final_speedup": 5.08},
+  {"model": "DeepSeek-67B", "slug": "deepseek-67b", "matrix": [8192, 8192], "paper_tile_aligned_speedup": 5.57, "paper_final_speedup": 6.71},
+  {"model": "Mixtral-176B", "slug": "mixtral-176b", "matrix": [6144, 6144], "paper_tile_aligned_speedup": 6.03, "paper_final_speedup": 7.57},
+  {"model": "Llama-405B", "slug": "llama-405b", "matrix": [16384, 16384], "paper_tile_aligned_speedup": 8.20, "paper_final_speedup": 10.06}
+]
