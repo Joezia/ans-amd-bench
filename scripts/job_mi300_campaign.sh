@@ -1,8 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-bench_dir="$(cd -- "${script_dir}/.." && pwd)"
+# sbatch executes a private copy of this script from Slurm's spool directory,
+# while the submitted working directory remains available on every node.
+if [[ -n "${ANS_BENCH_ROOT:-}" ]]; then
+  bench_dir="$(cd -- "${ANS_BENCH_ROOT}" && pwd)"
+elif [[ -n "${SLURM_SUBMIT_DIR:-}" && \
+        -f "${SLURM_SUBMIT_DIR}/scripts/run_peak_bw.sh" ]]; then
+  bench_dir="$(cd -- "${SLURM_SUBMIT_DIR}" && pwd)"
+else
+  script_dir_from_source="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  bench_dir="$(cd -- "${script_dir_from_source}/.." && pwd)"
+fi
+script_dir="${bench_dir}/scripts"
 partition="${GPU_PARTITION:-mi3001x}"
 input="${CAMPAIGN_INPUT:-${bench_dir}/inputs/expo20_u8_64MiB+1234.bin}"
 meta="${CAMPAIGN_META:-${bench_dir}/configs/smoke_meta.json}"
