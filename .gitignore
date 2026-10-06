@@ -21,6 +21,7 @@ cmake_install.cmake
 /results/logs/
 /results/run-*/
 /results/run-float-*/
+/results/profiling/
 **/results/*.out
 **/results/*.err
 **/results/ktrace/
