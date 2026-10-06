@@ -14,6 +14,11 @@ standardized MI300X (`gfx942`) measurement/profiling workflow for hipANS:
 The repository intentionally does not contain model weights, generated binary
 inputs, build products, raw logs, or private reference implementations.
 
+## Project tracking
+
+- [战略计划](docs/project/PLAN.md)：记录长期目标、阶段关系和成功标准。
+- [执行状态](docs/project/STATUS.md)：记录当前进展、证据、阻塞和近期动作。
+
 ## Dependencies
 
 - HACC@NUS with Slurm and an MI210 or MI300X partition.
