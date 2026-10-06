@@ -1,9 +1,13 @@
 # hipANS AMD GPU benchmarks
 
-This repository contains reproducible MI210 (`gfx90a`) baselines for hipANS:
+This repository contains reproducible MI210 (`gfx90a`) baselines and a
+standardized MI300X (`gfx942`) measurement/profiling workflow for hipANS:
 
+- `ans_bench`: stable single-case JSON CLI with byte-exact verification.
+- `bench/`: implementation of the standardized CLI.
 - `harness/`: bit-exact validation and raw ANS decode throughput.
 - `sepbase/`: separated hipANS decode followed by vendor bf16 GEMM.
+- `profiling/`: rocprofv3/rocprof-compute runners and diagnostic sweeps.
 - `scripts/`: Slurm launchers, hipANS build helpers, and input generators.
 - `results/published/`: curated CSV results with machine-local paths removed.
 
@@ -12,15 +16,15 @@ inputs, build products, raw logs, or private reference implementations.
 
 ## Dependencies
 
-- HACC@NUS with Slurm and an MI210 partition.
+- HACC@NUS with Slurm and an MI210 or MI300X partition.
 - ROCm/HIP for `gfx90a`.
 - A separate checkout of [hipANS](https://github.com/Joezia/hipANS), at the
   commit recorded in each result row.
 - hipBLASLt and rocBLAS for `sepbase`.
 
-By default, scripts expect the hipANS checkout at `../hipANS`. Override this
-with `HIPANS_REPO=/path/to/hipANS`. All compute-heavy builds and benchmarks are
-submitted through Slurm; the launchers refuse to run directly on `hacchead`.
+By default, new scripts expect the read-only hipANS checkout at `../hipANS`.
+Override it with `HIPANS_ROOT=/path/to/hipANS`. Legacy harness scripts retain
+the `HIPANS_REPO` spelling. All build products stay under this repository.
 
 ## Quick start
 
@@ -40,9 +44,27 @@ FILE_INPUT="$PWD/inputs/qwen_bf16_256MiB.bin" ./harness/run_all.sh
 WEIGHT_FILE="$PWD/inputs/qwen_bf16_256MiB.bin" ./sepbase/run_all.sh
 ```
 
-The build commands explicitly target `--offload-arch=gfx90a`. See the README
-inside each benchmark directory for its complete configuration and output
-schema.
+For the standardized MI300X path, reuse the out-of-tree library build and run:
+
+```bash
+GPU_ARCH=gfx942 HIPANS_BUILD_DIR="$PWD/build-hipans-mi300" \
+  ./scripts/build_ans_bench.sh
+
+./ans_bench --input inputs/expo20_u8_64MiB+1234.bin \
+  --meta configs/smoke_meta.json --warmup 10 --iters 50 \
+  --peak-GBps "$(.venv/bin/python -c \
+    'import json; print(json.load(open("results/peak_bw.json"))["selected_peak_GBps"])')"
+```
+
+See `docs/CLI.md` for the machine-readable schema, `docs/METRICS.md` for byte
+and utilization definitions, and `docs/PROFILING_REPORT.md` for the bottleneck
+attribution. Build and measure the achievable HBM reference with
+`scripts/run_peak_bw.sh`; run the profiler suite with
+`profiling/run_all.sh INPUT META`.
+
+The legacy harness build commands explicitly target `gfx90a`; the standardized
+path takes `GPU_ARCH` and defaults to MI300X `gfx942`. See the README inside
+each benchmark directory for its complete configuration and output schema.
 
 ## Inputs and results
 
