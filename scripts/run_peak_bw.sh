@@ -39,9 +39,11 @@ mkdir -p "$(dirname -- "${output}")"
 if [[ ! -x "${bench_dir}/.venv/bin/python" ]]; then
   python3 -m venv --system-site-packages "${bench_dir}/.venv"
 fi
-gpu_name="$(rocminfo | awk -F: '/Marketing Name:/{sub(/^[[:space:]]+/, "", $2); print $2; exit}')"
-gpu_arch_runtime="$(rocminfo | awk -F: '/^[[:space:]]*Name:[[:space:]]*gfx/{sub(/^[[:space:]]+/, "", $2); print $2; exit}')"
-rocm_version="$(rocprofv3 --version 2>&1 | awk -F: '/rocm_version/{gsub(/[[:space:]]/, "", $2); print $2; exit}')"
+# Consume complete producer output under `set -o pipefail`; early awk exits can
+# otherwise make rocminfo report SIGPIPE (141) after a successful measurement.
+gpu_name="$(rocminfo | awk -F: '!found && /Marketing Name:/{sub(/^[[:space:]]+/, "", $2); print $2; found=1}')"
+gpu_arch_runtime="$(rocminfo | awk -F: '!found && /^[[:space:]]*Name:[[:space:]]*gfx/{sub(/^[[:space:]]+/, "", $2); print $2; found=1}')"
+rocm_version="$(rocprofv3 --version 2>&1 | awk -F: '!found && /rocm_version/{gsub(/[[:space:]]/, "", $2); print $2; found=1}')"
 command_text="$(printf '%q ' "${command[@]}")"
 "${bench_dir}/.venv/bin/python" "${script_dir}/parse_babelstream.py" \
   --csv "${raw_csv}" --output "${output}" --commit "${commit}" \
