@@ -1,6 +1,6 @@
 # 项目执行状态
 
-最后更新：2026-10-06 20:45 CST
+最后更新：2026-10-06 23:40 CST
 
 战略目标和成功标准见 [PLAN.md](PLAN.md)。本文使用相同的 P0–P5 编号记录实际
 进展、证据、阻塞和近期动作。
@@ -9,12 +9,14 @@
 
 项目处于“标准化基线基本建成，等待 MI300X 完成正式测量与 profiling”的阶段。
 测量接口、指标定义、profiling 工作流和论文对照框架均已落地；当前主阻塞是
-MI300X 资源排队。Slurm job `107361` 状态为 `PENDING (Resources)`，调度器当前
-给出的预计开始时间为 `2026-10-07 08:49:54`。
+MI300X 资源排队。修复 batch 共享路径解析后，Slurm job `107394` 状态为
+`PENDING (Resources)`，调度器尚未给出预计开始时间。
 
 第一次 MI300X campaign 已完成 BabelStream 原始测量，Triad 约为
 `4045.59 GB/s`，随后在采集环境信息时因 shell 管道的 `SIGPIPE` 退出。该问题已经
-修复；在完整 campaign 成功前，这个原始数值不作为最终发布的峰值记录。
+修复。后续 job `107361` 获得资源后，因 `sbatch` 临时脚本路径被误认为仓库路径而
+以 exit code `127` 退出；共享文件系统路径解析也已修复。在完整 campaign 成功前，
+原始数值不作为最终发布的峰值记录。
 
 ## 任务状态
 
@@ -37,13 +39,15 @@ MI300X 资源排队。Slurm job `107361` 状态为 `PENDING (Resources)`，调�
   sweep 工作流已完成；提交 `c870059`。
 - P4：论文六个模型的对照脚本和显式 `MISSING_INPUT` 表已完成；提交 `ba5c590`。
 - BabelStream provenance 的 `SIGPIPE` 问题已修复；提交 `fd44111`。
+- `sbatch` 任务现通过提交目录访问共享仓库，不再从 Slurm spool 查找依赖脚本；
+  提交 `f5e5a67`。
 - 上游 hipANS checkout 保持只读且未被修改；所有已提交改动均位于本仓库，未 push。
 
 ## 当前活动与阻塞
 
 ### 活动任务
 
-- Slurm job：`107361`，名称 `ans-mi300-campaign`。
+- Slurm job：`107394`，名称 `ans-mi300-campaign`。
 - 状态：`PENDING (Resources)`。
 - 请求时限：90 分钟。
 - 计划产物：正式峰值带宽、标准解码结果、timeline、硬件计数器和诊断 sweeps。
@@ -70,3 +74,5 @@ MI300X 资源排队。Slurm job `107361` 状态为 `PENDING (Resources)`，调�
 
 - 2026-10-06：建立战略计划与战术状态双文档；当前阶段定位为 P1/P2 进行中，
   P3 等待实测证据，P4 因模型输入缺失受阻。
+- 2026-10-06：job `107361` 暴露 batch 临时脚本路径问题；修复后以 job `107394`
+  重新提交，等待 MI300X 资源。
