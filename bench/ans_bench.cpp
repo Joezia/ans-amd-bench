@@ -398,7 +398,15 @@ std::string jsonEscape(const std::string& value) {
 }
 
 std::string rocmVersion() {
-  for (const char* path : {"/opt/rocm/.info/version", "/opt/rocm/.info/version-dev"}) {
+  std::vector<std::string> paths;
+  const CommandResult hip_path = command("hipconfig --path");
+  if (hip_path.exit_code == 0 && !hip_path.output.empty()) {
+    paths.push_back(hip_path.output + "/.info/version");
+    paths.push_back(hip_path.output + "/.info/version-dev");
+  }
+  paths.push_back("/opt/rocm/.info/version");
+  paths.push_back("/opt/rocm/.info/version-dev");
+  for (const std::string& path : paths) {
     std::ifstream input(path);
     std::string version;
     if (input && std::getline(input, version) && !version.empty()) return version;
