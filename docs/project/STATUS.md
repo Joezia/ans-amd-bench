@@ -24,7 +24,7 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 | 编号 | 状态 | 当前结论 | 下一验收点 |
 |---|---|---|---|
 | P0 | 已完成 | 仓库、历史结果、指标口径和上游接口已经盘点 | 仅在事实基础变化时更新 |
-| P1 | 已完成 | 标准 CLI、正确性校验、指标定义和 MI300X/BabelStream 基线均已取得 | GPU smoke-test ROCm 版本 provenance 修复 |
+| P1 | 已完成 | 标准 CLI、正确性校验、指标定义和 MI300X/BabelStream 基线均已取得 | 等待 job `107500` smoke-test provenance 修复 |
 | P2 | 已完成 | timeline、完整 counter 和所有必需诊断维度已有证据；不可用工具已显式记录 | 复测一个异常 sweep 点，并可选补齐两个 launch 组合 |
 | P3 | 已完成 | 已形成瓶颈排序、headroom 边界及非根本上限结论 | 下一阶段用受控 A/B 区分 barrier 与数据依赖占比 |
 | P4 | 受阻 | 对照框架和论文报告值已记录；六个评估模型输入均缺失 | 获得合法模型输入，或保留明确的缺失状态 |
@@ -56,6 +56,12 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 - 时间：2026-10-06 23:46:40–23:48:10 CST。
 - stdout/stderr：`results/slurm-mi300-campaign-107394.out` 和 `.err`。
 
+### 活动任务
+
+- Slurm job `107500`：短 GPU provenance smoke test，已用 `sbatch` 提交。
+- 共享工作目录：本仓库路径；没有复制到计算节点本地目录。
+- 返回文件：`results/slurm-provenance-smoke-107500.out` 和 `.err`。
+
 ### 阻塞与风险
 
 - 论文评估模型权重未提供，因此 P4 不能生成真实 AMD 模型行；不会用合成数据替代。
@@ -67,12 +73,12 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 - CLI 原先把 HIP runtime 整数 `71526333` 写成 ROCm 版本；代码已经改为从
   `hipconfig --path` 下的 `.info/version` 获取发行版版本，正式 JSON 已根据同节点
   记录校正为 `10.0.0`。CLI 已重建；interactive smoke job `107492` 因预计等待约
-  12 小时而主动取消，GPU 运行验证尚待批处理完成。
+  12 小时而主动取消，GPU 运行验证改由 batch job `107500` 排队完成。
 
 ## 紧接着的工作
 
-1. 用小输入在 GPU 上验证已重建的 `ans_bench` provenance 修复，不重新执行完整
-   campaign。
+1. 检查 job `107500` 的状态和 stdout JSON，确认已重建的 `ans_bench` 输出
+   `ROCm_version: 10.0.0`，不重新执行完整 campaign。
 2. 对异常的 192 MiB/64 KiB tile 点做独立复测；若稳定再追加针对性 counter。
 3. 可选构建 64-thread/grid-2 与 grid-8 变体，补齐 launch 全因子表；现有结果已经覆盖
    workgroup size 与 grid multiplier 的主效应。
