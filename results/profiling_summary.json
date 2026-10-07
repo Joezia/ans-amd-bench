@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "campaign": {
+    "slurm_job_id": "107394",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "node": "tn1-003-002.hpcfund-tw.internal",
+    "started_at": "2026-10-06T23:46:40+08:00",
+    "ended_at": "2026-10-06T23:48:10+08:00"
+  },
+  "artifacts": {
+    "peak": "results/peak_bw.json",
+    "standard_benchmark": "results/standard_mi300.json",
+    "timeline": "results/profiling/profile-107394-20261006T154646Z/timeline",
+    "counters": "results/profiling/profile-107394-20261006T154646Z/counters",
+    "deployment_sweeps": "results/profiling/sweeps-107394-20261006T154753Z",
+    "launch_sweep": "results/profiling/launch-107394-20261006T154807Z"
+  },
+  "baseline": {
+    "raw_bytes": 67110098,
+    "compressed_bytes": 45737632,
+    "decode_median_ms": 0.1052589975,
+    "decoded_output_GBps": 637.57113,
+    "compressed_input_GBps": 434.5246779,
+    "babelstream_triad_GBps": 4102.71,
+    "decoded_output_utilization": 0.1554024364
+  },
+  "selected_kernel": {
+    "name": "ansDecodeKernel<BatchProviderPointer, BatchProviderPointer, 128, 10, 8192>",
+    "rocprof_compute_dispatch_ids": [16, 21, 26, 31],
+    "timeline_calls": 4,
+    "timeline_mean_us": 73.611,
+    "resource_use": {
+      "vgpr_per_thread": 28,
+      "agpr_per_thread": 4,
+      "sgpr_per_wave": 32,
+      "lds_bytes_per_workgroup": 4096,
+      "scratch_bytes": 0
+    },
+    "system_sol": {
+      "active_cus_percent": 82.5658,
+      "cu_utilization_percent": 80.1179,
+      "wavefront_occupancy_percent": 59.9635,
+      "ipc": 0.9367,
+      "ipc_percent_of_peak": 18.7337,
+      "salu_utilization_percent": 13.6319,
+      "valu_utilization_percent": 40.2886,
+      "valu_active_threads_percent": 74.6112,
+      "vmem_utilization_percent": 4.6342,
+      "branch_utilization_percent": 9.2358
+    },
+    "wave_cycles_per_kernel": {
+      "total": 909296490,
+      "dependency_wait": 726687440,
+      "issue_wait": 51090307,
+      "active": 136326870
+    },
+    "memory": {
+      "vl1d_hit_percent": 80.4801,
+      "vl1d_coalescing_percent": 84.9715,
+      "vl1d_stalled_on_l2_data_median_percent": 70.8524,
+      "l2_hit_percent": 45.3334,
+      "l2_bandwidth_GBps": 3616.1124,
+      "l2_fabric_read_GBps": 1085.1195,
+      "l2_fabric_write_GBps": 891.3349,
+      "l2_fabric_read_latency_cycles": 484.1792,
+      "l2_fabric_write_latency_cycles": 246.186,
+      "remote_read_traffic_percent": 0.0104,
+      "remote_write_traffic_percent": 0.0,
+      "write_credit_starvation_percent": 0.0
+    },
+    "lds": {
+      "utilization_percent": 25.4221,
+      "theoretical_bandwidth_utilization_percent": 14.8496,
+      "bank_conflict_rate_percent": 2.2244
+    }
+  },
+  "timeline": {
+    "decode_table_calls": 4,
+    "decode_table_mean_us": 16.1845,
+    "decode_kernel_calls": 4,
+    "decode_kernel_mean_us": 73.611,
+    "table_to_decode_gap_ns": [0, 0, -131, 452],
+    "kernel_copy_overlap_ns": 0,
+    "note": "The -131 ns value is trace timestamp resolution/ordering noise. H2D and D2H copies are outside the standardized timed decode region."
+  },
+  "sweeps": {
+    "decoded_output_GBps_by_size_MiB_and_tile_bytes": {
+      "64": {"8192": 149.6642798, "65536": 663.4424769, "1048576": 715.2823645},
+      "192": {"8192": 142.033652, "65536": 429.6832742, "1048576": 764.6934939},
+      "384": {"8192": 145.3507266, "65536": 673.3984025, "1048576": 724.7457992}
+    },
+    "launch_decoded_output_GBps": {
+      "threads64_grid4": 632.8753057,
+      "threads128_grid2": 640.1314295,
+      "threads128_grid4": 615.3248538,
+      "threads128_grid8": 636.6034472
+    },
+    "concurrent_process_queue_sum_decoded_output_GBps": {
+      "1": 666.877,
+      "2": 1320.093,
+      "4": 1790.67,
+      "8": 2861.724
+    },
+    "concurrency_interpretation": "Per-process HIP-event intervals overlap approximately but are not globally synchronized; sums are deployment diagnostics, not the standardized single-stream metric."
+  },
+  "availability": {
+    "rocprofv3": "available",
+    "rocprof_compute": "available",
+    "rocprof_sys": "unavailable: neither rocprof-sys nor omnitrace is installed",
+    "direct_mall_hit_rate": "not exposed by the selected gfx942 analysis blocks; L2 hit and fabric locality counters are reported instead"
+  }
+}

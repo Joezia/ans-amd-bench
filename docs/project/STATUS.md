@@ -1,74 +1,84 @@
 # 项目执行状态
 
-最后更新：2026-10-06 23:40 CST
+最后更新：2026-10-07 CST
 
 战略目标和成功标准见 [PLAN.md](PLAN.md)。本文使用相同的 P0–P5 编号记录实际
 进展、证据、阻塞和近期动作。
 
 ## 当前摘要
 
-项目处于“标准化基线基本建成，等待 MI300X 完成正式测量与 profiling”的阶段。
-测量接口、指标定义、profiling 工作流和论文对照框架均已落地；当前主阻塞是
-MI300X 资源排队。修复 batch 共享路径解析后，Slurm job `107394` 状态为
-`PENDING (Resources)`，调度器尚未给出预计开始时间。
+MI300X 标准基线和完整 profiling campaign 已完成，项目从“等待资源”进入“结论
+复核与后续实验收口”阶段。Slurm job `107394` 在节点 `tn1-003-002` 上以
+`COMPLETED (0:0)` 返回；BabelStream、标准 benchmark、rocprofv3、
+rocprof-compute、规模/tile/并发 sweep 和 launch sweep 均成功。rocprof-sys 未安装，
+已按设计记录为 unavailable，而没有使 campaign 失败。
 
-第一次 MI300X campaign 已完成 BabelStream 原始测量，Triad 约为
-`4045.59 GB/s`，随后在采集环境信息时因 shell 管道的 `SIGPIPE` 退出。该问题已经
-修复。后续 job `107361` 获得资源后，因 `sbatch` 临时脚本路径被误认为仓库路径而
-以 exit code `127` 退出；共享文件系统路径解析也已修复。在完整 campaign 成功前，
-原始数值不作为最终发布的峰值记录。
+标准结果为 637.57 GB/s decoded-output throughput，对同机 BabelStream Triad
+4,102.71 GB/s 的利用率为 15.54%。主要证据是约 79.9% wave cycle 处于 dependency
+wait、vL1D 等待 L2 data 的中位比例为 70.85%、IPC 仅为峰值的 18.73%，而远端
+XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的依赖隐藏、同步、tile
+调度和内存行为，而不是 ANS 解码的根本上限，也不是单纯的 HBM 饱和。
 
 ## 任务状态
 
 | 编号 | 状态 | 当前结论 | 下一验收点 |
 |---|---|---|---|
 | P0 | 已完成 | 仓库、历史结果、指标口径和上游接口已经盘点 | 仅在事实基础变化时更新 |
-| P1 | 进行中 | 标准化接口与指标定义完成；正式 MI300X 基线仍在排队 | 生成并验证峰值带宽及标准解码结果 |
-| P2 | 进行中 | profiling 与诊断 sweep 能力已准备；尚无完整 MI300X counter 数据 | campaign 完成并确认可用计数器范围 |
-| P3 | 未开始 | 缺少 P2 的实测证据，暂不进行最终归因 | 完成证据表和 headroom 估算 |
+| P1 | 已完成 | 标准 CLI、正确性校验、指标定义和 MI300X/BabelStream 基线均已取得 | GPU smoke-test ROCm 版本 provenance 修复 |
+| P2 | 已完成 | timeline、完整 counter 和所有必需诊断维度已有证据；不可用工具已显式记录 | 复测一个异常 sweep 点，并可选补齐两个 launch 组合 |
+| P3 | 已完成 | 已形成瓶颈排序、headroom 边界及非根本上限结论 | 下一阶段用受控 A/B 区分 barrier 与数据依赖占比 |
 | P4 | 受阻 | 对照框架和论文报告值已记录；六个评估模型输入均缺失 | 获得合法模型输入，或保留明确的缺失状态 |
-| P5 | 未开始 | 必须等待 P3 和 P4 的结论 | 形成按证据与收益排序的后续路线 |
+| P5 | 进行中 | 已按证据提出下一月方向；最终模型级优先级仍依赖 P4 | 将建议转成独立的优化实验计划 |
 
 ## 已完成和可验证证据
 
 - P0：`docs/INVENTORY.md` 已记录初始仓库能力、历史结果和 hipANS 解码行为；提交
   `372484e`。
 - P1：标准化 JSON benchmark、正确性校验、指标定义和 provenance 已完成；提交
-  `36278d4`。
-- P2：timeline、hardware counter、输入规模、tile、并发和 launch deployment
-  sweep 工作流已完成；提交 `c870059`。
+  `36278d4`。正式结果见 `results/standard_mi300.json` 和
+  `results/peak_bw.json`。
+- P2：profiling/sweep 工作流提交为 `c870059`；job `107394` 已取得 SOL、HBM/L2、
+  occupancy、wave wait、VALU、LDS、remote traffic 和 timeline 数据。
+- P3：`docs/PROFILING_REPORT.md` 给出归因表；可机器读取的精选计数器与 sweep 结果
+  保存在 `results/profiling_summary.json`。
 - P4：论文六个模型的对照脚本和显式 `MISSING_INPUT` 表已完成；提交 `ba5c590`。
-- BabelStream provenance 的 `SIGPIPE` 问题已修复；提交 `fd44111`。
-- `sbatch` 任务现通过提交目录访问共享仓库，不再从 Slurm spool 查找依赖脚本；
-  提交 `f5e5a67`。
+  当前输出见 `results/paper_reproduction.md`。
+- campaign 可靠性修复包括 BabelStream pipefail/SIGPIPE（`fd44111`）以及共享路径下
+  的 sbatch 工作目录解析（`f5e5a67`）。
 - 上游 hipANS checkout 保持只读且未被修改；所有已提交改动均位于本仓库，未 push。
 
 ## 当前活动与阻塞
 
-### 活动任务
+### 最近完成的任务
 
 - Slurm job：`107394`，名称 `ans-mi300-campaign`。
-- 状态：`PENDING (Resources)`。
-- 请求时限：90 分钟。
-- 计划产物：正式峰值带宽、标准解码结果、timeline、硬件计数器和诊断 sweeps。
+- 状态：`COMPLETED`，exit code `0:0`，用时 1 分 30 秒。
+- 时间：2026-10-06 23:46:40–23:48:10 CST。
+- stdout/stderr：`results/slurm-mi300-campaign-107394.out` 和 `.err`。
 
 ### 阻塞与风险
 
-- MI300X 节点当前无可用资源；这是 P1、P2 和 P3 的直接阻塞。
-- 论文评估模型权重未提供，因此 P4 只能保留框架和论文侧数据，不能生成真实 AMD
-  对照结果。
-- 部分硬件计数器可能受系统权限限制；只有实际运行后才能确认，工具会记录不可用项
-  并继续收集其余证据。
-- 工作区存在未跟踪的 `results/peak_bw.csv`，它来自第一次 campaign。该文件在完整
-  结果验证前不提交为正式结果。
+- 论文评估模型权重未提供，因此 P4 不能生成真实 AMD 模型行；不会用合成数据替代。
+- 192 MiB、64 KiB tile 的 429.68 GB/s 明显偏离相邻结果，需要复测后才能解释。
+- 并发结果来自多个独立 process/queue 的 HIP-event 区间求和，时间窗未做全局同步；
+  它只证明延迟隐藏潜力，不替代标准单流指标。
+- gfx942 分析块没有给出独立的 256 MiB MALL hit-rate 字段；当前以 L2 hit、fabric
+  traffic、remote traffic 和跨 256 MiB 的规模 sweep 作为证据边界。
+- CLI 原先把 HIP runtime 整数 `71526333` 写成 ROCm 版本；代码已经改为从
+  `hipconfig --path` 下的 `.info/version` 获取发行版版本，正式 JSON 已根据同节点
+  记录校正为 `10.0.0`。CLI 已重建；interactive smoke job `107492` 因预计等待约
+  12 小时而主动取消，GPU 运行验证尚待批处理完成。
 
 ## 紧接着的工作
 
-1. 等待并检查 job `107361`，确认完整 campaign 是否成功。
-2. 验证正确性、内存临时分配、结果格式、环境来源和 profiler 可用性。
-3. 汇总基线、counter、timeline 和 sweep 证据，完成 P2。
-4. 基于证据形成瓶颈归因报告，推进 P3。
-5. 将经过验证的结果和状态更新作为独立的小提交保存。
+1. 用小输入在 GPU 上验证已重建的 `ans_bench` provenance 修复，不重新执行完整
+   campaign。
+2. 对异常的 192 MiB/64 KiB tile 点做独立复测；若稳定再追加针对性 counter。
+3. 可选构建 64-thread/grid-2 与 grid-8 变体，补齐 launch 全因子表；现有结果已经覆盖
+   workgroup size 与 grid multiplier 的主效应。
+4. 将当前报告作为 P5 输入，另行拆分 barrier、tile/work-queue、cache traffic 和
+   decode-to-GEMM overlap 的下一阶段实验。
+5. 获得合法模型输入后重新运行 `scripts/run_paper_reproduction.sh`，完成 P4 AMD 列。
 
 ## 阶段变更日志
 
@@ -76,3 +86,5 @@ MI300X 资源排队。修复 batch 共享路径解析后，Slurm job `107394` �
   P3 等待实测证据，P4 因模型输入缺失受阻。
 - 2026-10-06：job `107361` 暴露 batch 临时脚本路径问题；修复后以 job `107394`
   重新提交，等待 MI300X 资源。
+- 2026-10-07：job `107394` 完整成功；P1、P2、P3 达到验收标准，形成 MI300X
+  基线、counter 汇总和瓶颈归因。P4 继续受输入缺失阻塞，P5 开始。
