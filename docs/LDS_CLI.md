@@ -121,7 +121,8 @@ Key JSON metrics (decimal GB/s):
 
 Weights are produced once per launch; no GEMM reuse is modeled. The current
 8 MiB workload repeatedly executes without cache flush and is explicitly
-cache-resident/warm, not a >256 MiB inference-streaming test. Its GB/s must not
+cache-fitting with a warmup policy, not guaranteed cache residency or a
+>256 MiB inference-streaming test. Its GB/s must not
 be labeled HBM or LDS peak utilization. Scale bytes are saved/accounted for but
 are not fetched or interpreted by the timed kernel. FP8 codes remain native
 checkpoint bits; MI300X FP8 GEMM FNUZ compatibility is a later-stage question.

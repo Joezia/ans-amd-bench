@@ -1,0 +1,2130 @@
+{
+  "schema": "lds-baseline-summary-v1",
+  "job_id": "109484",
+  "artifact": {
+    "schema": "lds-artifact-v1",
+    "cpu_roundtrip": true,
+    "rows": 2048,
+    "cols": 4096,
+    "raw_bytes": 8388608,
+    "padded_decoded_bytes": 8388608,
+    "tiles": 1024,
+    "tile_rows": 64,
+    "tile_cols": 128,
+    "lanes": 64,
+    "precision": 12,
+    "payload_bytes": 6884189,
+    "metadata_bytes": 1049664,
+    "artifact_bytes": 7933853,
+    "source": {
+      "schema": "lds-weight-source-v1",
+      "model_id": "dsv4-flash-base",
+      "hf_repo": "deepseek-ai/DeepSeek-V4-Flash-Base",
+      "revision": "8855555deef230a27a21a8d6f294b7b7497759b6",
+      "tensor_name": "layers.0.ffn.experts.10.w1.weight",
+      "shard": "model-00002-of-00046.safetensors",
+      "source": "native",
+      "conversion": "none",
+      "encoding": "F8_E4M3",
+      "shape": [
+        2048,
+        4096
+      ],
+      "scale_consumed_by_baseline": false,
+      "checkpoint_header_sha256": "d99234b8c4a0836445d8e2b1fd3120c8082b0541b5b6cf645e4390c3bb4ba3f9",
+      "index_sha256": "788f9273a5cee65e3770fdf6b78574c30ff5de9b57f7a3282e61551179db186c",
+      "tensors": {
+        "layers.0.ffn.experts.10.w1.weight": {
+          "dtype": "F8_E4M3",
+          "shape": [
+            2048,
+            4096
+          ],
+          "data_offsets": [
+            170359768,
+            178748376
+          ],
+          "file": "weights.bin",
+          "bytes": 8388608,
+          "sha256": "3438d6447dae9efc3bfa48d1c9a8aa54b8060883f0ab8e0d9219360d809cb94c"
+        },
+        "layers.0.ffn.experts.10.w1.scale": {
+          "dtype": "F32",
+          "shape": [
+            16,
+            32
+          ],
+          "data_offsets": [
+            6244096,
+            6246144
+          ],
+          "file": "scales.bin",
+          "bytes": 2048,
+          "sha256": "1cdb077e4b969b0b0d482a52a2ede4832fad7a450c33a04e6ed6e536ad9f3df5"
+        }
+      }
+    },
+    "artifact_file": "weights.ans",
+    "artifact_sha256": "22587dbb1b3ba718983ddf9ea65521f84207ae41717a4c725fc8301b5d1d9881",
+    "source_manifest_sha256": "a9cf74129c77a108dad1fb739d332920452b4afb0a5062be1b2fe84b28f5800b",
+    "scale_bytes": 2048,
+    "scales_compressed": false,
+    "ratio_total_with_scales": 1.0573035122287942,
+    "layout": "row-major 64x128 tiles, row-major tile traversal, zero edge padding",
+    "stream_mapping": "64 lanes; lane l writes tile indices l + 64*i, i=0..127",
+    "codec": "local byte-rANS v1; 32-bit state; Lower=2^23; 12-bit probabilities",
+    "codebook_scope": "one matrix; padding included; not an entire transformer layer",
+    "producer_git_commit": "9abac842bf925d5f98c9d4ee13c63463cfe0d36d",
+    "implementation_sha256": {
+      "lds_pack.cpp": "9e3b1fbee1d3b20f11a83332bec13b932953b3b31c423b3ba75e034728c625a8",
+      "lds_format.h": "c6cabf12c55a47ac2e0084a44e970523ecaf62e48511f27009df4b18830fb74c"
+    }
+  },
+  "measurements": {
+    "decode-lds": {
+      "schema": "lds-bench-v1",
+      "mode": "decode",
+      "table_mode": "lds",
+      "verified_actual_LDS": true,
+      "raw_bytes": 8388608,
+      "padded_decoded_bytes": 8388608,
+      "unique_weights": 8388608,
+      "weights_produced_per_launch": 8388608,
+      "padding_bytes": 0,
+      "compressed_payload_bytes": 6884189,
+      "artifact_metadata_bytes": 1049664,
+      "artifact_bytes": 7933853,
+      "ratio_codes": 1.057318304,
+      "decode_ms": {
+        "median": 0.08965499699,
+        "p10": 0.08941489905,
+        "p90": 0.08993499726
+      },
+      "decoded_LDS_GBps": 93.56542615,
+      "valid_weight_GBps": 93.56542615,
+      "weights_per_second": 93565426150.0,
+      "compressed_payload_GBps": 76.78533524,
+      "warmup": 10,
+      "iters": 50,
+      "cache_policy": "warm repeated tensor; no cache flush",
+      "sink": "volatile inline-assembly ds_write_b8; final wait/barrier; no checksum",
+      "provenance": {
+        "gpu_name": "AMD Instinct MI300X",
+        "gpu_arch": "gfx942:sramecc+:xnack-",
+        "ROCm_version": "10.0.0",
+        "hip_runtime_version": 71526333,
+        "hipANS_git_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+        "hipANS_dirty": false,
+        "codec": "local scalar byte-rANS baseline; not hipANS archive",
+        "build_flags": "-std=c++17 -O3 --offload-arch=gfx942",
+        "benchmark_git_commit": "3b52df336bb1c8e919cd5fa6d9832306f379767a",
+        "benchmark_dirty": false,
+        "binary_sha256": "442e685ef268f3818b52cb1e2ec066832b38c89e0d9612be30b8a33a3d1e06d0",
+        "implementation_sha256": {
+          "lds_bench.cpp": "c8c3d4ccbebc30a0da4a7547fc459bb31a0fa966c9d53ccd8df19ba7c1a63444",
+          "lds_format.h": "c6cabf12c55a47ac2e0084a44e970523ecaf62e48511f27009df4b18830fb74c"
+        }
+      },
+      "launch": {
+        "grid": [
+          1024,
+          1,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ],
+        "streams_per_workgroup": 64,
+        "tile_rows": 64,
+        "tile_cols": 128,
+        "LDS_bytes": 24576
+      },
+      "workload": {
+        "model_id": "dsv4-flash-base",
+        "hf_repo": "deepseek-ai/DeepSeek-V4-Flash-Base",
+        "revision": "8855555deef230a27a21a8d6f294b7b7497759b6",
+        "tensor_name": "layers.0.ffn.experts.10.w1.weight",
+        "source": "native",
+        "encoding": "F8_E4M3",
+        "shape": [
+          2048,
+          4096
+        ],
+        "conversion": "none"
+      },
+      "artifact_sha256": "22587dbb1b3ba718983ddf9ea65521f84207ae41717a4c725fc8301b5d1d9881",
+      "scale_bytes": 2048,
+      "ratio_total_with_scales": 1.0573035122287942,
+      "scale_consumed": false
+    },
+    "decode-global": {
+      "schema": "lds-bench-v1",
+      "mode": "decode",
+      "table_mode": "global",
+      "verified_actual_LDS": true,
+      "raw_bytes": 8388608,
+      "padded_decoded_bytes": 8388608,
+      "unique_weights": 8388608,
+      "weights_produced_per_launch": 8388608,
+      "padding_bytes": 0,
+      "compressed_payload_bytes": 6884189,
+      "artifact_metadata_bytes": 1049664,
+      "artifact_bytes": 7933853,
+      "ratio_codes": 1.057318304,
+      "decode_ms": {
+        "median": 0.06770200282,
+        "p10": 0.06746199727,
+        "p90": 0.06847099811
+      },
+      "decoded_LDS_GBps": 123.9048721,
+      "valid_weight_GBps": 123.9048721,
+      "weights_per_second": 123904872100.0,
+      "compressed_payload_GBps": 101.6836831,
+      "warmup": 10,
+      "iters": 50,
+      "cache_policy": "warm repeated tensor; no cache flush",
+      "sink": "volatile inline-assembly ds_write_b8; final wait/barrier; no checksum",
+      "provenance": {
+        "gpu_name": "AMD Instinct MI300X",
+        "gpu_arch": "gfx942:sramecc+:xnack-",
+        "ROCm_version": "10.0.0",
+        "hip_runtime_version": 71526333,
+        "hipANS_git_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+        "hipANS_dirty": false,
+        "codec": "local scalar byte-rANS baseline; not hipANS archive",
+        "build_flags": "-std=c++17 -O3 --offload-arch=gfx942",
+        "benchmark_git_commit": "3b52df336bb1c8e919cd5fa6d9832306f379767a",
+        "benchmark_dirty": false,
+        "binary_sha256": "442e685ef268f3818b52cb1e2ec066832b38c89e0d9612be30b8a33a3d1e06d0",
+        "implementation_sha256": {
+          "lds_bench.cpp": "c8c3d4ccbebc30a0da4a7547fc459bb31a0fa966c9d53ccd8df19ba7c1a63444",
+          "lds_format.h": "c6cabf12c55a47ac2e0084a44e970523ecaf62e48511f27009df4b18830fb74c"
+        }
+      },
+      "launch": {
+        "grid": [
+          1024,
+          1,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ],
+        "streams_per_workgroup": 64,
+        "tile_rows": 64,
+        "tile_cols": 128,
+        "LDS_bytes": 8192
+      },
+      "workload": {
+        "model_id": "dsv4-flash-base",
+        "hf_repo": "deepseek-ai/DeepSeek-V4-Flash-Base",
+        "revision": "8855555deef230a27a21a8d6f294b7b7497759b6",
+        "tensor_name": "layers.0.ffn.experts.10.w1.weight",
+        "source": "native",
+        "encoding": "F8_E4M3",
+        "shape": [
+          2048,
+          4096
+        ],
+        "conversion": "none"
+      },
+      "artifact_sha256": "22587dbb1b3ba718983ddf9ea65521f84207ae41717a4c725fc8301b5d1d9881",
+      "scale_bytes": 2048,
+      "ratio_total_with_scales": 1.0573035122287942,
+      "scale_consumed": false
+    },
+    "raw": {
+      "schema": "lds-bench-v1",
+      "mode": "raw",
+      "table_mode": "lds",
+      "verified_actual_LDS": true,
+      "raw_bytes": 8388608,
+      "padded_decoded_bytes": 8388608,
+      "unique_weights": 8388608,
+      "weights_produced_per_launch": 8388608,
+      "padding_bytes": 0,
+      "compressed_payload_bytes": 6884189,
+      "artifact_metadata_bytes": 1049664,
+      "artifact_bytes": 7933853,
+      "ratio_codes": 1.057318304,
+      "decode_ms": {
+        "median": 0.01426099986,
+        "p10": 0.01409699963,
+        "p90": 0.01450200006
+      },
+      "decoded_LDS_GBps": 588.2201868,
+      "valid_weight_GBps": 588.2201868,
+      "weights_per_second": 588220186800.0,
+      "compressed_payload_GBps": 0,
+      "warmup": 10,
+      "iters": 50,
+      "cache_policy": "warm repeated tensor; no cache flush",
+      "sink": "volatile inline-assembly ds_write_b8; final wait/barrier; no checksum",
+      "provenance": {
+        "gpu_name": "AMD Instinct MI300X",
+        "gpu_arch": "gfx942:sramecc+:xnack-",
+        "ROCm_version": "10.0.0",
+        "hip_runtime_version": 71526333,
+        "hipANS_git_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+        "hipANS_dirty": false,
+        "codec": "local scalar byte-rANS baseline; not hipANS archive",
+        "build_flags": "-std=c++17 -O3 --offload-arch=gfx942",
+        "benchmark_git_commit": "3b52df336bb1c8e919cd5fa6d9832306f379767a",
+        "benchmark_dirty": false,
+        "binary_sha256": "442e685ef268f3818b52cb1e2ec066832b38c89e0d9612be30b8a33a3d1e06d0",
+        "implementation_sha256": {
+          "lds_bench.cpp": "c8c3d4ccbebc30a0da4a7547fc459bb31a0fa966c9d53ccd8df19ba7c1a63444",
+          "lds_format.h": "c6cabf12c55a47ac2e0084a44e970523ecaf62e48511f27009df4b18830fb74c"
+        }
+      },
+      "launch": {
+        "grid": [
+          1024,
+          1,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ],
+        "streams_per_workgroup": 64,
+        "tile_rows": 64,
+        "tile_cols": 128,
+        "LDS_bytes": 8192
+      },
+      "workload": {
+        "model_id": "dsv4-flash-base",
+        "hf_repo": "deepseek-ai/DeepSeek-V4-Flash-Base",
+        "revision": "8855555deef230a27a21a8d6f294b7b7497759b6",
+        "tensor_name": "layers.0.ffn.experts.10.w1.weight",
+        "source": "native",
+        "encoding": "F8_E4M3",
+        "shape": [
+          2048,
+          4096
+        ],
+        "conversion": "none"
+      },
+      "artifact_sha256": "22587dbb1b3ba718983ddf9ea65521f84207ae41717a4c725fc8301b5d1d9881",
+      "scale_bytes": 2048,
+      "ratio_total_with_scales": 1.0573035122287942,
+      "scale_consumed": false
+    },
+    "lds-control": {
+      "schema": "lds-bench-v1",
+      "mode": "lds-control",
+      "table_mode": "lds",
+      "verified_actual_LDS": false,
+      "raw_bytes": 8388608,
+      "padded_decoded_bytes": 8388608,
+      "unique_weights": 8388608,
+      "weights_produced_per_launch": 0,
+      "padding_bytes": 0,
+      "compressed_payload_bytes": 6884189,
+      "artifact_metadata_bytes": 1049664,
+      "artifact_bytes": 7933853,
+      "ratio_codes": 1.057318304,
+      "decode_ms": {
+        "median": 0.00592900021,
+        "p10": 0.005848900042,
+        "p90": 0.006093899813
+      },
+      "decoded_LDS_GBps": 1414.8436,
+      "valid_weight_GBps": 0,
+      "weights_per_second": 0,
+      "compressed_payload_GBps": 0,
+      "warmup": 10,
+      "iters": 50,
+      "cache_policy": "warm repeated tensor; no cache flush",
+      "sink": "volatile inline-assembly ds_write_b8; final wait/barrier; no checksum",
+      "provenance": {
+        "gpu_name": "AMD Instinct MI300X",
+        "gpu_arch": "gfx942:sramecc+:xnack-",
+        "ROCm_version": "10.0.0",
+        "hip_runtime_version": 71526333,
+        "hipANS_git_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+        "hipANS_dirty": false,
+        "codec": "local scalar byte-rANS baseline; not hipANS archive",
+        "build_flags": "-std=c++17 -O3 --offload-arch=gfx942",
+        "benchmark_git_commit": "3b52df336bb1c8e919cd5fa6d9832306f379767a",
+        "benchmark_dirty": false,
+        "binary_sha256": "442e685ef268f3818b52cb1e2ec066832b38c89e0d9612be30b8a33a3d1e06d0",
+        "implementation_sha256": {
+          "lds_bench.cpp": "c8c3d4ccbebc30a0da4a7547fc459bb31a0fa966c9d53ccd8df19ba7c1a63444",
+          "lds_format.h": "c6cabf12c55a47ac2e0084a44e970523ecaf62e48511f27009df4b18830fb74c"
+        }
+      },
+      "launch": {
+        "grid": [
+          1024,
+          1,
+          1
+        ],
+        "block": [
+          64,
+          1,
+          1
+        ],
+        "streams_per_workgroup": 64,
+        "tile_rows": 64,
+        "tile_cols": 128,
+        "LDS_bytes": 8192
+      },
+      "workload": {
+        "model_id": "dsv4-flash-base",
+        "hf_repo": "deepseek-ai/DeepSeek-V4-Flash-Base",
+        "revision": "8855555deef230a27a21a8d6f294b7b7497759b6",
+        "tensor_name": "layers.0.ffn.experts.10.w1.weight",
+        "source": "native",
+        "encoding": "F8_E4M3",
+        "shape": [
+          2048,
+          4096
+        ],
+        "conversion": "none"
+      },
+      "artifact_sha256": "22587dbb1b3ba718983ddf9ea65521f84207ae41717a4c725fc8301b5d1d9881",
+      "scale_bytes": 2048,
+      "ratio_total_with_scales": 1.0573035122287942,
+      "scale_consumed": false
+    }
+  },
+  "gpu_validation": [
+    {
+      "case": "constant",
+      "mode": "decode",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "constant",
+      "mode": "decode",
+      "table": "global",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "constant",
+      "mode": "raw",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "alphabet",
+      "mode": "decode",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "alphabet",
+      "mode": "decode",
+      "table": "global",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "alphabet",
+      "mode": "raw",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "tail",
+      "mode": "decode",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "tail",
+      "mode": "decode",
+      "table": "global",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "tail",
+      "mode": "raw",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "one",
+      "mode": "decode",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "one",
+      "mode": "decode",
+      "table": "global",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "one",
+      "mode": "raw",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "skew",
+      "mode": "decode",
+      "table": "lds",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "skew",
+      "mode": "decode",
+      "table": "global",
+      "verified_actual_LDS": true
+    },
+    {
+      "case": "skew",
+      "mode": "raw",
+      "table": "lds",
+      "verified_actual_LDS": true
+    }
+  ],
+  "isa": {
+    "isa_sha256": "8dc55f12d6d770c1740c8d43eb73ef17d6c951515b5d59b0ccc91e2e9cbbeb8d",
+    "discard_store_retention_pass": true,
+    "kernels": [
+      {
+        "function": "_Z11ldsBaselineILb0ELb1ELi0EEvPKhPKN6ldsans6StreamEPKjS1_PhPj",
+        "ds_write_instruction_sites": 12,
+        "decoded_ds_write_b8_sites": 2,
+        "flat_store_sites": 0,
+        "ds_read_instruction_sites": 2
+      },
+      {
+        "function": "_Z11ldsBaselineILb0ELb0ELi0EEvPKhPKN6ldsans6StreamEPKjS1_PhPj",
+        "ds_write_instruction_sites": 2,
+        "decoded_ds_write_b8_sites": 2,
+        "flat_store_sites": 0,
+        "ds_read_instruction_sites": 0
+      },
+      {
+        "function": "_Z11ldsBaselineILb0ELb0ELi1EEvPKhPKN6ldsans6StreamEPKjS1_PhPj",
+        "ds_write_instruction_sites": 8,
+        "decoded_ds_write_b8_sites": 8,
+        "flat_store_sites": 0,
+        "ds_read_instruction_sites": 0
+      },
+      {
+        "function": "_Z11ldsBaselineILb0ELb0ELi2EEvPKhPKN6ldsans6StreamEPKjS1_PhPj",
+        "ds_write_instruction_sites": 16,
+        "decoded_ds_write_b8_sites": 16,
+        "flat_store_sites": 0,
+        "ds_read_instruction_sites": 0
+      }
+    ]
+  },
+  "tool_availability": "component\tstatus\tdetail\nrocprofv3\tavailable\tLDS discard kernel, copies and host/device timeline\nrocprof-compute\tavailable\tSOL, memory, occupancy, waits, VALU, LDS and L2; inspect raw counters for missing metrics\n",
+  "official_counter_metrics": {
+    "2.1.0": {
+      "Metric_ID": "2.1.0",
+      "Metric": "VALU FLOPs",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "81715.2",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.1": {
+      "Metric_ID": "2.1.1",
+      "Metric": "MFMA FLOPs (F8)",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "2614886.4",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.2": {
+      "Metric_ID": "2.1.2",
+      "Metric": "MFMA FLOPs (BF16)",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "1307443.2",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.3": {
+      "Metric_ID": "2.1.3",
+      "Metric": "MFMA FLOPs (F16)",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "1307443.2",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.4": {
+      "Metric_ID": "2.1.4",
+      "Metric": "MFMA FLOPs (F32)",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "163430.4",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.5": {
+      "Metric_ID": "2.1.5",
+      "Metric": "MFMA FLOPs (F64)",
+      "Avg": "0.0",
+      "Unit": "GFLOP/s",
+      "Peak": "163430.4",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.6": {
+      "Metric_ID": "2.1.6",
+      "Metric": "MFMA IOPs (Int8)",
+      "Avg": "0.0",
+      "Unit": "GIOP/s",
+      "Peak": "2614886.4",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.7": {
+      "Metric_ID": "2.1.7",
+      "Metric": "Active CUs (deprecated)",
+      "Avg": "119.0",
+      "Unit": "CUs",
+      "Peak": "304.0",
+      "Percent of Peak": "39.14"
+    },
+    "2.1.8": {
+      "Metric_ID": "2.1.8",
+      "Metric": "SALU Utilization",
+      "Avg": "4.22",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.9": {
+      "Metric_ID": "2.1.9",
+      "Metric": "VALU Utilization",
+      "Avg": "6.98",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.10": {
+      "Metric_ID": "2.1.10",
+      "Metric": "MFMA Utilization",
+      "Avg": "0.0",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.11": {
+      "Metric_ID": "2.1.11",
+      "Metric": "VMEM Utilization",
+      "Avg": "0.46",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.12": {
+      "Metric_ID": "2.1.12",
+      "Metric": "Branch Utilization",
+      "Avg": "1.61",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.13": {
+      "Metric_ID": "2.1.13",
+      "Metric": "VALU Active Threads",
+      "Avg": "45.95",
+      "Unit": "Work-items",
+      "Peak": "64.0",
+      "Percent of Peak": "71.8"
+    },
+    "2.1.14": {
+      "Metric_ID": "2.1.14",
+      "Metric": "IPC",
+      "Avg": "0.39",
+      "Unit": "Instructions per Cycle",
+      "Peak": "5.0",
+      "Percent of Peak": "7.86"
+    },
+    "2.1.15": {
+      "Metric_ID": "2.1.15",
+      "Metric": "Wavefront Occupancy",
+      "Avg": "446.12",
+      "Unit": "Wavefronts",
+      "Peak": "9728.0",
+      "Percent of Peak": "4.59"
+    },
+    "2.1.16": {
+      "Metric_ID": "2.1.16",
+      "Metric": "Theoretical LDS Bandwidth",
+      "Avg": "928.19",
+      "Unit": "GB/s",
+      "Peak": "81715.2",
+      "Percent of Peak": "1.14"
+    },
+    "2.1.17": {
+      "Metric_ID": "2.1.17",
+      "Metric": "LDS Bank Conflicts/Access",
+      "Avg": "1.0",
+      "Unit": "Conflicts per Access",
+      "Peak": "32.0",
+      "Percent of Peak": "3.13"
+    },
+    "2.1.18": {
+      "Metric_ID": "2.1.18",
+      "Metric": "vL1D Cache Hit Rate",
+      "Avg": "98.58",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.19": {
+      "Metric_ID": "2.1.19",
+      "Metric": "vL1D Cache BW",
+      "Avg": "10144.46",
+      "Unit": "GB/s",
+      "Peak": "81715.2",
+      "Percent of Peak": "12.41"
+    },
+    "2.1.20": {
+      "Metric_ID": "2.1.20",
+      "Metric": "L2 Cache Hit Rate",
+      "Avg": "40.9",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.21": {
+      "Metric_ID": "2.1.21",
+      "Metric": "L2 Cache BW",
+      "Avg": "153.87",
+      "Unit": "GB/s",
+      "Peak": "34406.4",
+      "Percent of Peak": "0.45"
+    },
+    "2.1.22": {
+      "Metric_ID": "2.1.22",
+      "Metric": "L2-Fabric Read BW",
+      "Avg": "90.92",
+      "Unit": "GB/s",
+      "Peak": "5324.8",
+      "Percent of Peak": "1.71"
+    },
+    "2.1.23": {
+      "Metric_ID": "2.1.23",
+      "Metric": "L2-Fabric Write BW",
+      "Avg": "0.0",
+      "Unit": "GB/s",
+      "Peak": "5324.8",
+      "Percent of Peak": "0.0"
+    },
+    "2.1.24": {
+      "Metric_ID": "2.1.24",
+      "Metric": "L2-Fabric Read Latency",
+      "Avg": "773.81",
+      "Unit": "Cycles",
+      "Peak": "N/A",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.25": {
+      "Metric_ID": "2.1.25",
+      "Metric": "L2-Fabric Write Latency",
+      "Avg": "N/A",
+      "Unit": "Cycles",
+      "Peak": "N/A",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.26": {
+      "Metric_ID": "2.1.26",
+      "Metric": "sL1D Cache Hit Rate",
+      "Avg": "83.87",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.27": {
+      "Metric_ID": "2.1.27",
+      "Metric": "sL1D Cache BW",
+      "Avg": "1.45",
+      "Unit": "GB/s",
+      "Peak": "21504.0",
+      "Percent of Peak": "0.01"
+    },
+    "2.1.28": {
+      "Metric_ID": "2.1.28",
+      "Metric": "L1I Hit Rate",
+      "Avg": "99.98",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.29": {
+      "Metric_ID": "2.1.29",
+      "Metric": "L1I BW",
+      "Avg": "1279.13",
+      "Unit": "GB/s",
+      "Peak": "21504.0",
+      "Percent of Peak": "5.95"
+    },
+    "2.1.30": {
+      "Metric_ID": "2.1.30",
+      "Metric": "L1I Fetch Latency",
+      "Avg": "16.28",
+      "Unit": "Cycles",
+      "Peak": "N/A",
+      "Percent of Peak": "N/A"
+    },
+    "2.1.31": {
+      "Metric_ID": "2.1.31",
+      "Metric": "CU Utilization",
+      "Avg": "36.63",
+      "Unit": "Percent",
+      "Peak": "100.0",
+      "Percent of Peak": "N/A"
+    },
+    "6.1.0": {
+      "Metric_ID": "6.1.0",
+      "Metric": "Accelerator Utilization",
+      "Avg": "100.00",
+      "Min": "100.00",
+      "Max": "100.00",
+      "Unit": "Percent"
+    },
+    "6.1.1": {
+      "Metric_ID": "6.1.1",
+      "Metric": "Scheduler-Pipe Utilization",
+      "Avg": "22.43",
+      "Min": "22.43",
+      "Max": "22.43",
+      "Unit": "Percent"
+    },
+    "6.1.2": {
+      "Metric_ID": "6.1.2",
+      "Metric": "Workgroup Manager Utilization",
+      "Avg": "91.93",
+      "Min": "91.93",
+      "Max": "91.93",
+      "Unit": "Percent"
+    },
+    "6.1.3": {
+      "Metric_ID": "6.1.3",
+      "Metric": "Shader Engine Utilization",
+      "Avg": "89.21",
+      "Min": "89.21",
+      "Max": "89.21",
+      "Unit": "Percent"
+    },
+    "6.1.4": {
+      "Metric_ID": "6.1.4",
+      "Metric": "SIMD Utilization",
+      "Avg": "36.63",
+      "Min": "36.63",
+      "Max": "36.63",
+      "Unit": "Percent"
+    },
+    "6.1.5": {
+      "Metric_ID": "6.1.5",
+      "Metric": "Dispatched Workgroups",
+      "Avg": "1024.00",
+      "Min": "1024.00",
+      "Max": "1024.00",
+      "Unit": "Workgroups"
+    },
+    "6.1.6": {
+      "Metric_ID": "6.1.6",
+      "Metric": "Dispatched Wavefronts",
+      "Avg": "1024.00",
+      "Min": "1024.00",
+      "Max": "1024.00",
+      "Unit": "Wavefronts"
+    },
+    "6.1.7": {
+      "Metric_ID": "6.1.7",
+      "Metric": "VGPR Writes",
+      "Avg": "4.00",
+      "Min": "4.00",
+      "Max": "4.00",
+      "Unit": "Cycles/wave"
+    },
+    "6.1.8": {
+      "Metric_ID": "6.1.8",
+      "Metric": "SGPR Writes",
+      "Avg": "2.00",
+      "Min": "2.00",
+      "Max": "2.00",
+      "Unit": "Cycles/wave"
+    },
+    "6.2.0": {
+      "Metric_ID": "6.2.0",
+      "Metric": "Not-scheduled Rate (Workgroup Manager)",
+      "Avg": "0.58",
+      "Min": "0.58",
+      "Max": "0.58",
+      "Unit": "Percent"
+    },
+    "6.2.1": {
+      "Metric_ID": "6.2.1",
+      "Metric": "Not-scheduled Rate (Scheduler-Pipe)",
+      "Avg": "12.33",
+      "Min": "12.33",
+      "Max": "12.33",
+      "Unit": "Percent"
+    },
+    "6.2.2": {
+      "Metric_ID": "6.2.2",
+      "Metric": "Scheduler-Pipe Stall Rate",
+      "Avg": "11.96",
+      "Min": "11.96",
+      "Max": "11.96",
+      "Unit": "Percent"
+    },
+    "6.2.3": {
+      "Metric_ID": "6.2.3",
+      "Metric": "Scratch Stall Rate",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.4": {
+      "Metric_ID": "6.2.4",
+      "Metric": "Insufficient SIMD Waveslots",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.5": {
+      "Metric_ID": "6.2.5",
+      "Metric": "Insufficient SIMD VGPRs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.6": {
+      "Metric_ID": "6.2.6",
+      "Metric": "Insufficient SIMD SGPRs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.7": {
+      "Metric_ID": "6.2.7",
+      "Metric": "Insufficient CU LDS",
+      "Avg": "36.19",
+      "Min": "36.19",
+      "Max": "36.19",
+      "Unit": "Percent"
+    },
+    "6.2.8": {
+      "Metric_ID": "6.2.8",
+      "Metric": "Insufficient CU Barriers",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.9": {
+      "Metric_ID": "6.2.9",
+      "Metric": "Reached CU Workgroup Limit",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "6.2.10": {
+      "Metric_ID": "6.2.10",
+      "Metric": "Reached CU Wavefront Limit",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "7.1.0": {
+      "Metric_ID": "7.1.0",
+      "Metric": "Grid Size",
+      "Avg": "65536.00",
+      "Min": "65536.00",
+      "Max": "65536.00",
+      "Unit": "Work-items"
+    },
+    "7.1.1": {
+      "Metric_ID": "7.1.1",
+      "Metric": "Workgroup Size",
+      "Avg": "64.00",
+      "Min": "64.00",
+      "Max": "64.00",
+      "Unit": "Work-items"
+    },
+    "7.1.2": {
+      "Metric_ID": "7.1.2",
+      "Metric": "Total Wavefronts",
+      "Avg": "1024.00",
+      "Min": "1024.00",
+      "Max": "1024.00",
+      "Unit": "Wavefronts"
+    },
+    "7.1.3": {
+      "Metric_ID": "7.1.3",
+      "Metric": "Saved Wavefronts",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Wavefronts"
+    },
+    "7.1.4": {
+      "Metric_ID": "7.1.4",
+      "Metric": "Restored Wavefronts",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Wavefronts"
+    },
+    "7.1.5": {
+      "Metric_ID": "7.1.5",
+      "Metric": "VGPRs",
+      "Avg": "36.00",
+      "Min": "36.00",
+      "Max": "36.00",
+      "Unit": "Registers"
+    },
+    "7.1.6": {
+      "Metric_ID": "7.1.6",
+      "Metric": "AGPRs",
+      "Avg": "4.00",
+      "Min": "4.00",
+      "Max": "4.00",
+      "Unit": "Registers"
+    },
+    "7.1.7": {
+      "Metric_ID": "7.1.7",
+      "Metric": "SGPRs",
+      "Avg": "32.00",
+      "Min": "32.00",
+      "Max": "32.00",
+      "Unit": "Registers"
+    },
+    "7.1.8": {
+      "Metric_ID": "7.1.8",
+      "Metric": "LDS Allocation",
+      "Avg": "24576.00",
+      "Min": "24576.00",
+      "Max": "24576.00",
+      "Unit": "Bytes"
+    },
+    "7.1.9": {
+      "Metric_ID": "7.1.9",
+      "Metric": "Scratch Allocation",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Bytes per Work-item"
+    },
+    "7.2.0": {
+      "Metric_ID": "7.2.0",
+      "Metric": "Kernel Time",
+      "Avg": "90376.00",
+      "Min": "90376.00",
+      "Max": "90376.00",
+      "Unit": "Nanoseconds"
+    },
+    "7.2.1": {
+      "Metric_ID": "7.2.1",
+      "Metric": "Kernel Time (Cycles)",
+      "Avg": "204277.38",
+      "Min": "204277.38",
+      "Max": "204277.38",
+      "Unit": "Cycles"
+    },
+    "7.2.2": {
+      "Metric_ID": "7.2.2",
+      "Metric": "Instructions per wavefront",
+      "Avg": "8725.88",
+      "Min": "8725.88",
+      "Max": "8725.88",
+      "Unit": "Instructions per Wavefront"
+    },
+    "7.2.3": {
+      "Metric_ID": "7.2.3",
+      "Metric": "Wave Cycles",
+      "Avg": "90906760.00",
+      "Min": "90906760.00",
+      "Max": "90906760.00",
+      "Unit": "Cycles per kernel"
+    },
+    "7.2.4": {
+      "Metric_ID": "7.2.4",
+      "Metric": "Dependency Wait Cycles",
+      "Avg": "54776320.00",
+      "Min": "54776320.00",
+      "Max": "54776320.00",
+      "Unit": "Cycles per kernel"
+    },
+    "7.2.5": {
+      "Metric_ID": "7.2.5",
+      "Metric": "Issue Wait Cycles",
+      "Avg": "1405276.00",
+      "Min": "1405276.00",
+      "Max": "1405276.00",
+      "Unit": "Cycles per kernel"
+    },
+    "7.2.6": {
+      "Metric_ID": "7.2.6",
+      "Metric": "Active Cycles",
+      "Avg": "34947700.00",
+      "Min": "34947700.00",
+      "Max": "34947700.00",
+      "Unit": "Cycles per kernel"
+    },
+    "7.2.7": {
+      "Metric_ID": "7.2.7",
+      "Metric": "Wavefront Occupancy",
+      "Avg": "446.12",
+      "Min": "446.12",
+      "Max": "446.12",
+      "Unit": "Wavefronts"
+    },
+    "11.1.0": {
+      "Metric_ID": "11.1.0",
+      "Metric": "VALU FLOPs",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "81715.20",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.1": {
+      "Metric_ID": "11.1.1",
+      "Metric": "MFMA FLOPs (F8)",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "2614886.40",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.2": {
+      "Metric_ID": "11.1.2",
+      "Metric": "MFMA FLOPs (BF16)",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "1307443.20",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.3": {
+      "Metric_ID": "11.1.3",
+      "Metric": "MFMA FLOPs (F16)",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "1307443.20",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.4": {
+      "Metric_ID": "11.1.4",
+      "Metric": "MFMA FLOPs (F32)",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "163430.40",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.5": {
+      "Metric_ID": "11.1.5",
+      "Metric": "MFMA FLOPs (F64)",
+      "Avg": "0.00",
+      "Unit": "GFLOPs",
+      "Peak": "163430.40",
+      "Percent of Peak": "0.00"
+    },
+    "11.1.6": {
+      "Metric_ID": "11.1.6",
+      "Metric": "MFMA IOPs (INT8)",
+      "Avg": "0.00",
+      "Unit": "GIOPs",
+      "Peak": "2614886.40",
+      "Percent of Peak": "0.00"
+    },
+    "11.2.0": {
+      "Metric_ID": "11.2.0",
+      "Metric": "IPC",
+      "Avg": "0.39",
+      "Min": "0.39",
+      "Max": "0.39",
+      "Unit": "Instructions per Cycle"
+    },
+    "11.2.1": {
+      "Metric_ID": "11.2.1",
+      "Metric": "IPC (Issued)",
+      "Avg": "0.98",
+      "Min": "0.98",
+      "Max": "0.98",
+      "Unit": "Instructions per Cycle"
+    },
+    "11.2.2": {
+      "Metric_ID": "11.2.2",
+      "Metric": "SALU Utilization",
+      "Avg": "4.22",
+      "Min": "4.22",
+      "Max": "4.22",
+      "Unit": "Percent"
+    },
+    "11.2.3": {
+      "Metric_ID": "11.2.3",
+      "Metric": "VALU Utilization",
+      "Avg": "6.98",
+      "Min": "6.98",
+      "Max": "6.98",
+      "Unit": "Percent"
+    },
+    "11.2.4": {
+      "Metric_ID": "11.2.4",
+      "Metric": "VMEM Utilization",
+      "Avg": "0.46",
+      "Min": "0.46",
+      "Max": "0.46",
+      "Unit": "Percent"
+    },
+    "11.2.5": {
+      "Metric_ID": "11.2.5",
+      "Metric": "Branch Utilization",
+      "Avg": "1.61",
+      "Min": "1.61",
+      "Max": "1.61",
+      "Unit": "Percent"
+    },
+    "11.2.6": {
+      "Metric_ID": "11.2.6",
+      "Metric": "VALU Active Threads",
+      "Avg": "45.95",
+      "Min": "45.95",
+      "Max": "45.95",
+      "Unit": "Work-items"
+    },
+    "11.2.7": {
+      "Metric_ID": "11.2.7",
+      "Metric": "MFMA Utilization",
+      "Avg": "0.0",
+      "Min": "0.0",
+      "Max": "0.0",
+      "Unit": "Percent"
+    },
+    "11.2.8": {
+      "Metric_ID": "11.2.8",
+      "Metric": "MFMA Instruction Cycles",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Cycles per Instruction"
+    },
+    "11.2.9": {
+      "Metric_ID": "11.2.9",
+      "Metric": "VMEM Latency",
+      "Avg": "172.24",
+      "Min": "172.24",
+      "Max": "172.24",
+      "Unit": "Cycles"
+    },
+    "11.2.10": {
+      "Metric_ID": "11.2.10",
+      "Metric": "SMEM Latency",
+      "Avg": "637.02",
+      "Min": "637.02",
+      "Max": "637.02",
+      "Unit": "Cycles"
+    },
+    "11.3.0": {
+      "Metric_ID": "11.3.0",
+      "Metric": "FLOPs (Total)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.1": {
+      "Metric_ID": "11.3.1",
+      "Metric": "IOPs (Total)",
+      "Avg": "129104576.00",
+      "Min": "129104576.00",
+      "Max": "129104576.00",
+      "Unit": "IOPS per kernel"
+    },
+    "11.3.2": {
+      "Metric_ID": "11.3.2",
+      "Metric": "F8 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.3": {
+      "Metric_ID": "11.3.3",
+      "Metric": "F16 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.4": {
+      "Metric_ID": "11.3.4",
+      "Metric": "BF16 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.5": {
+      "Metric_ID": "11.3.5",
+      "Metric": "F32 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.6": {
+      "Metric_ID": "11.3.6",
+      "Metric": "F64 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "FLOPs per kernel"
+    },
+    "11.3.7": {
+      "Metric_ID": "11.3.7",
+      "Metric": "INT8 OPs",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "IOPS per kernel"
+    },
+    "12.1.0": {
+      "Metric_ID": "12.1.0",
+      "Metric": "Utilization",
+      "Avg": "2.11",
+      "Unit": "Percent"
+    },
+    "12.1.1": {
+      "Metric_ID": "12.1.1",
+      "Metric": "Access Rate",
+      "Avg": "1.58",
+      "Unit": "Percent"
+    },
+    "12.1.2": {
+      "Metric_ID": "12.1.2",
+      "Metric": "Theoretical Bandwidth Utilization",
+      "Avg": "1.14",
+      "Unit": "Percent"
+    },
+    "12.1.3": {
+      "Metric_ID": "12.1.3",
+      "Metric": "Bank Conflict Rate",
+      "Avg": "3.13",
+      "Unit": "Percent"
+    },
+    "12.2.0": {
+      "Metric_ID": "12.2.0",
+      "Metric": "LDS Instructions",
+      "Avg": "294912.00",
+      "Min": "294912.00",
+      "Max": "294912.00",
+      "Unit": "Instructions per kernel"
+    },
+    "12.2.1": {
+      "Metric_ID": "12.2.1",
+      "Metric": "Theoretical Bandwidth",
+      "Avg": "928.19",
+      "Min": "928.19",
+      "Max": "928.19",
+      "Unit": "Gbps"
+    },
+    "12.2.2": {
+      "Metric_ID": "12.2.2",
+      "Metric": "LDS Latency",
+      "Avg": "45.79",
+      "Min": "45.79",
+      "Max": "45.79",
+      "Unit": "Cycles"
+    },
+    "12.2.3": {
+      "Metric_ID": "12.2.3",
+      "Metric": "Bank Conflicts/Access",
+      "Avg": "1.00",
+      "Min": "1.00",
+      "Max": "1.00",
+      "Unit": "Conflicts per Access"
+    },
+    "12.2.4": {
+      "Metric_ID": "12.2.4",
+      "Metric": "Index Accesses",
+      "Avg": "1311750.00",
+      "Min": "1311750.00",
+      "Max": "1311750.00",
+      "Unit": "Cycles per kernel"
+    },
+    "12.2.5": {
+      "Metric_ID": "12.2.5",
+      "Metric": "Atomic Return Cycles",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cycles per kernel"
+    },
+    "12.2.6": {
+      "Metric_ID": "12.2.6",
+      "Metric": "Bank Conflict",
+      "Avg": "656390.00",
+      "Min": "656390.00",
+      "Max": "656390.00",
+      "Unit": "Cycles per kernel"
+    },
+    "12.2.7": {
+      "Metric_ID": "12.2.7",
+      "Metric": "Addr Conflict",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cycles per kernel"
+    },
+    "12.2.8": {
+      "Metric_ID": "12.2.8",
+      "Metric": "Unaligned Stall",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cycles per kernel"
+    },
+    "12.2.9": {
+      "Metric_ID": "12.2.9",
+      "Metric": "Mem Violations",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Accesses per kernel"
+    },
+    "16.1.0": {
+      "Metric_ID": "16.1.0",
+      "Metric": "Hit rate",
+      "Avg": "98.58",
+      "Unit": "Percent"
+    },
+    "16.1.1": {
+      "Metric_ID": "16.1.1",
+      "Metric": "Bandwidth Utilization",
+      "Avg": "12.41",
+      "Unit": "Percent"
+    },
+    "16.1.2": {
+      "Metric_ID": "16.1.2",
+      "Metric": "Utilization",
+      "Avg": "44.42",
+      "Unit": "Percent"
+    },
+    "16.1.3": {
+      "Metric_ID": "16.1.3",
+      "Metric": "Coalescing",
+      "Avg": "42.06",
+      "Unit": "Percent"
+    },
+    "16.2.0": {
+      "Metric_ID": "16.2.0",
+      "Metric": "Stalled on L2 Data",
+      "Min": "3.73",
+      "Q1": "3.73",
+      "Median": "3.73",
+      "Q3": "3.73",
+      "Max": "3.73"
+    },
+    "16.2.1": {
+      "Metric_ID": "16.2.1",
+      "Metric": "Stalled on L2 Req",
+      "Min": "0.00",
+      "Q1": "0.00",
+      "Median": "0.00",
+      "Q3": "0.00",
+      "Max": "0.00"
+    },
+    "16.2.2": {
+      "Metric_ID": "16.2.2",
+      "Metric": "Tag RAM Stall (Read)",
+      "Min": "2.01",
+      "Q1": "2.01",
+      "Median": "2.01",
+      "Q3": "2.01",
+      "Max": "2.01"
+    },
+    "16.2.3": {
+      "Metric_ID": "16.2.3",
+      "Metric": "Tag RAM Stall (Write)",
+      "Min": "0.00",
+      "Q1": "0.00",
+      "Median": "0.00",
+      "Q3": "0.00",
+      "Max": "0.00"
+    },
+    "16.2.4": {
+      "Metric_ID": "16.2.4",
+      "Metric": "Tag RAM Stall (Atomic)",
+      "Min": "0.00",
+      "Q1": "0.00",
+      "Median": "0.00",
+      "Q3": "0.00",
+      "Max": "0.00"
+    },
+    "16.3.0": {
+      "Metric_ID": "16.3.0",
+      "Metric": "Total Req",
+      "Avg": "10975000.00",
+      "Min": "10975000.00",
+      "Max": "10975000.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.1": {
+      "Metric_ID": "16.3.1",
+      "Metric": "Read Req",
+      "Avg": "10975000.00",
+      "Min": "10975000.00",
+      "Max": "10975000.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.2": {
+      "Metric_ID": "16.3.2",
+      "Metric": "Write Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.3": {
+      "Metric_ID": "16.3.3",
+      "Metric": "Atomic Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.4": {
+      "Metric_ID": "16.3.4",
+      "Metric": "Cache BW",
+      "Avg": "10144.46",
+      "Min": "10144.46",
+      "Max": "10144.46",
+      "Unit": "Gbps"
+    },
+    "16.3.5": {
+      "Metric_ID": "16.3.5",
+      "Metric": "Cache Hit Rate",
+      "Avg": "98.58",
+      "Min": "98.58",
+      "Max": "98.58",
+      "Unit": "Percent"
+    },
+    "16.3.6": {
+      "Metric_ID": "16.3.6",
+      "Metric": "Cache Accesses",
+      "Avg": "7162620.00",
+      "Min": "7162620.00",
+      "Max": "7162620.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.7": {
+      "Metric_ID": "16.3.7",
+      "Metric": "Cache Hits",
+      "Avg": "7060716.00",
+      "Min": "7060716.00",
+      "Max": "7060716.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.8": {
+      "Metric_ID": "16.3.8",
+      "Metric": "Invalidations",
+      "Avg": "304.00",
+      "Min": "304.00",
+      "Max": "304.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.9": {
+      "Metric_ID": "16.3.9",
+      "Metric": "L1-L2 BW",
+      "Avg": "144.33",
+      "Min": "144.33",
+      "Max": "144.33",
+      "Unit": "Gbps"
+    },
+    "16.3.10": {
+      "Metric_ID": "16.3.10",
+      "Metric": "L1-L2 Read",
+      "Avg": "101904.00",
+      "Min": "101904.00",
+      "Max": "101904.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.11": {
+      "Metric_ID": "16.3.11",
+      "Metric": "L1-L2 Write",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.3.12": {
+      "Metric_ID": "16.3.12",
+      "Metric": "L1-L2 Atomic",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.0": {
+      "Metric_ID": "16.4.0",
+      "Metric": "NC - Read",
+      "Xfer": "Read",
+      "Coherency": "NC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.1": {
+      "Metric_ID": "16.4.1",
+      "Metric": "UC - Read",
+      "Xfer": "Read",
+      "Coherency": "UC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.2": {
+      "Metric_ID": "16.4.2",
+      "Metric": "CC - Read",
+      "Xfer": "Read",
+      "Coherency": "CC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.3": {
+      "Metric_ID": "16.4.3",
+      "Metric": "RW - Read",
+      "Xfer": "Read",
+      "Coherency": "RW",
+      "Avg": "101904.00",
+      "Min": "101904.00",
+      "Max": "101904.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.4": {
+      "Metric_ID": "16.4.4",
+      "Metric": "RW - Write",
+      "Xfer": "Write",
+      "Coherency": "RW",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.5": {
+      "Metric_ID": "16.4.5",
+      "Metric": "NC - Write",
+      "Xfer": "Write",
+      "Coherency": "NC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.6": {
+      "Metric_ID": "16.4.6",
+      "Metric": "UC - Write",
+      "Xfer": "Write",
+      "Coherency": "UC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.7": {
+      "Metric_ID": "16.4.7",
+      "Metric": "CC - Write",
+      "Xfer": "Write",
+      "Coherency": "CC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.8": {
+      "Metric_ID": "16.4.8",
+      "Metric": "NC - Atomic",
+      "Xfer": "Atomic",
+      "Coherency": "NC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.9": {
+      "Metric_ID": "16.4.9",
+      "Metric": "UC - Atomic",
+      "Xfer": "Atomic",
+      "Coherency": "UC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.10": {
+      "Metric_ID": "16.4.10",
+      "Metric": "CC - Atomic",
+      "Xfer": "Atomic",
+      "Coherency": "CC",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.4.11": {
+      "Metric_ID": "16.4.11",
+      "Metric": "RW - Atomic",
+      "Xfer": "Atomic",
+      "Coherency": "RW",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.5.0": {
+      "Metric_ID": "16.5.0",
+      "Metric": "Req",
+      "Avg": "4122070.00",
+      "Min": "4122070.00",
+      "Max": "4122070.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.5.1": {
+      "Metric_ID": "16.5.1",
+      "Metric": "Hit Ratio",
+      "Avg": "99.99",
+      "Min": "99.99",
+      "Max": "99.99",
+      "Unit": "Percent"
+    },
+    "16.5.2": {
+      "Metric_ID": "16.5.2",
+      "Metric": "Hits",
+      "Avg": "4121720.00",
+      "Min": "4121720.00",
+      "Max": "4121720.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.5.3": {
+      "Metric_ID": "16.5.3",
+      "Metric": "Translation Misses",
+      "Avg": "114.00",
+      "Min": "114.00",
+      "Max": "114.00",
+      "Unit": "Requests per kernel"
+    },
+    "16.5.4": {
+      "Metric_ID": "16.5.4",
+      "Metric": "Permission Misses",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Requests per kernel"
+    },
+    "17.1.0": {
+      "Metric_ID": "17.1.0",
+      "Metric": "Utilization",
+      "Avg": "7.45",
+      "Unit": "Percent"
+    },
+    "17.1.1": {
+      "Metric_ID": "17.1.1",
+      "Metric": "Peak Bandwidth",
+      "Avg": "0.45",
+      "Unit": "Percent"
+    },
+    "17.1.2": {
+      "Metric_ID": "17.1.2",
+      "Metric": "Hit Rate",
+      "Avg": "40.90",
+      "Unit": "Percent"
+    },
+    "17.1.3": {
+      "Metric_ID": "17.1.3",
+      "Metric": "L2-Fabric Read BW",
+      "Avg": "90.92",
+      "Unit": "GB/s"
+    },
+    "17.1.4": {
+      "Metric_ID": "17.1.4",
+      "Metric": "L2-Fabric Write and Atomic BW",
+      "Avg": "0.00",
+      "Unit": "GB/s"
+    },
+    "17.1.5": {
+      "Metric_ID": "17.1.5",
+      "Metric": "HBM Bandwidth",
+      "Avg": "5324.80",
+      "Unit": "GB/s"
+    },
+    "17.2.0": {
+      "Metric_ID": "17.2.0",
+      "Metric": "Read BW",
+      "Avg": "90.92",
+      "Min": "90.92",
+      "Max": "90.92",
+      "Unit": "Gbps"
+    },
+    "17.2.1": {
+      "Metric_ID": "17.2.1",
+      "Metric": "HBM Read Traffic",
+      "Avg": "100.0",
+      "Min": "100.0",
+      "Max": "100.0",
+      "Unit": "Percent"
+    },
+    "17.2.2": {
+      "Metric_ID": "17.2.2",
+      "Metric": "Remote Read Traffic",
+      "Avg": "0.0",
+      "Min": "0.0",
+      "Max": "0.0",
+      "Unit": "Percent"
+    },
+    "17.2.3": {
+      "Metric_ID": "17.2.3",
+      "Metric": "Uncached Read Traffic",
+      "Avg": "0.05",
+      "Min": "0.05",
+      "Max": "0.05",
+      "Unit": "Percent"
+    },
+    "17.2.4": {
+      "Metric_ID": "17.2.4",
+      "Metric": "Write and Atomic BW",
+      "Avg": "0.0",
+      "Min": "0.0",
+      "Max": "0.0",
+      "Unit": "Gbps"
+    },
+    "17.2.5": {
+      "Metric_ID": "17.2.5",
+      "Metric": "HBM Write and Atomic Traffic",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Percent"
+    },
+    "17.2.6": {
+      "Metric_ID": "17.2.6",
+      "Metric": "Remote Write and Atomic Traffic",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Percent"
+    },
+    "17.2.7": {
+      "Metric_ID": "17.2.7",
+      "Metric": "Atomic Traffic",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Percent"
+    },
+    "17.2.8": {
+      "Metric_ID": "17.2.8",
+      "Metric": "Uncached Write and Atomic Traffic",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Percent"
+    },
+    "17.2.9": {
+      "Metric_ID": "17.2.9",
+      "Metric": "Read Latency",
+      "Avg": "773.81",
+      "Min": "773.81",
+      "Max": "773.81",
+      "Unit": "Cycles"
+    },
+    "17.2.10": {
+      "Metric_ID": "17.2.10",
+      "Metric": "Write and Atomic Latency",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Cycles"
+    },
+    "17.2.11": {
+      "Metric_ID": "17.2.11",
+      "Metric": "Atomic Latency",
+      "Avg": "N/A",
+      "Min": "N/A",
+      "Max": "N/A",
+      "Unit": "Cycles"
+    },
+    "17.3.0": {
+      "Metric_ID": "17.3.0",
+      "Metric": "Bandwidth",
+      "Avg": "153.87",
+      "Min": "153.87",
+      "Max": "153.87",
+      "Unit": "Gbps"
+    },
+    "17.3.1": {
+      "Metric_ID": "17.3.1",
+      "Metric": "Req",
+      "Avg": "108640.00",
+      "Min": "108640.00",
+      "Max": "108640.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.2": {
+      "Metric_ID": "17.3.2",
+      "Metric": "Read Req",
+      "Avg": "108640.00",
+      "Min": "108640.00",
+      "Max": "108640.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.3": {
+      "Metric_ID": "17.3.3",
+      "Metric": "Write Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.4": {
+      "Metric_ID": "17.3.4",
+      "Metric": "Atomic Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.5": {
+      "Metric_ID": "17.3.5",
+      "Metric": "Streaming Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.6": {
+      "Metric_ID": "17.3.6",
+      "Metric": "Probe Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.7": {
+      "Metric_ID": "17.3.7",
+      "Metric": "Cache Hit",
+      "Avg": "40.90",
+      "Min": "40.90",
+      "Max": "40.90",
+      "Unit": "Percent"
+    },
+    "17.3.8": {
+      "Metric_ID": "17.3.8",
+      "Metric": "Hits",
+      "Avg": "44432.00",
+      "Min": "44432.00",
+      "Max": "44432.00",
+      "Unit": "Hits per kernel"
+    },
+    "17.3.9": {
+      "Metric_ID": "17.3.9",
+      "Metric": "Misses",
+      "Avg": "64208.00",
+      "Min": "64208.00",
+      "Max": "64208.00",
+      "Unit": "Misses per kernel"
+    },
+    "17.3.10": {
+      "Metric_ID": "17.3.10",
+      "Metric": "Writeback",
+      "Avg": "120.00",
+      "Min": "120.00",
+      "Max": "120.00",
+      "Unit": "Cachelines per kernel"
+    },
+    "17.3.11": {
+      "Metric_ID": "17.3.11",
+      "Metric": "Writeback (Internal)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cachelines per kernel"
+    },
+    "17.3.12": {
+      "Metric_ID": "17.3.12",
+      "Metric": "Writeback (vL1D Req)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cachelines per kernel"
+    },
+    "17.3.13": {
+      "Metric_ID": "17.3.13",
+      "Metric": "Evict (Internal)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cachelines per kernel"
+    },
+    "17.3.14": {
+      "Metric_ID": "17.3.14",
+      "Metric": "Evict (vL1D Req)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Cachelines per kernel"
+    },
+    "17.3.15": {
+      "Metric_ID": "17.3.15",
+      "Metric": "NC Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.16": {
+      "Metric_ID": "17.3.16",
+      "Metric": "UC Req",
+      "Avg": "16.00",
+      "Min": "16.00",
+      "Max": "16.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.17": {
+      "Metric_ID": "17.3.17",
+      "Metric": "CC Req",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.3.18": {
+      "Metric_ID": "17.3.18",
+      "Metric": "RW Req",
+      "Avg": "108624.00",
+      "Min": "108624.00",
+      "Max": "108624.00",
+      "Unit": "Req per kernel"
+    },
+    "17.5.0": {
+      "Metric_ID": "17.5.0",
+      "Metric": "Write - Credit Starvation",
+      "Type": "Credit Starvation",
+      "Transaction": "Write",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Percent"
+    },
+    "17.6.0": {
+      "Metric_ID": "17.6.0",
+      "Metric": "Read (32B)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.1": {
+      "Metric_ID": "17.6.1",
+      "Metric": "Read (64B)",
+      "Avg": "352.00",
+      "Min": "352.00",
+      "Max": "352.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.2": {
+      "Metric_ID": "17.6.2",
+      "Metric": "Read (128B)",
+      "Avg": "64016.00",
+      "Min": "64016.00",
+      "Max": "64016.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.3": {
+      "Metric_ID": "17.6.3",
+      "Metric": "Read (Uncached)",
+      "Avg": "32.00",
+      "Min": "32.00",
+      "Max": "32.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.4": {
+      "Metric_ID": "17.6.4",
+      "Metric": "HBM Read",
+      "Avg": "64368.00",
+      "Min": "64368.00",
+      "Max": "64368.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.5": {
+      "Metric_ID": "17.6.5",
+      "Metric": "Remote Read",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.6": {
+      "Metric_ID": "17.6.6",
+      "Metric": "Write and Atomic (32B)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.7": {
+      "Metric_ID": "17.6.7",
+      "Metric": "Write and Atomic (Uncached)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.8": {
+      "Metric_ID": "17.6.8",
+      "Metric": "Write and Atomic (64B)",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.9": {
+      "Metric_ID": "17.6.9",
+      "Metric": "HBM Write and Atomic",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.10": {
+      "Metric_ID": "17.6.10",
+      "Metric": "Remote Write and Atomic",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    },
+    "17.6.11": {
+      "Metric_ID": "17.6.11",
+      "Metric": "Atomic",
+      "Avg": "0.00",
+      "Min": "0.00",
+      "Max": "0.00",
+      "Unit": "Req per kernel"
+    }
+  },
+  "analysis_dispatch": 3,
+  "limitations": [
+    "one 8 MiB matrix, not cold >256 MiB streaming",
+    "local byte-rANS reference, not optimized hipANS archive decoder",
+    "no GEMM/dequantization; scale stored but not consumed",
+    "LDS staging included; global LUT alternative not resident-LDS",
+    "MALL hit rate and separate barrier time unavailable",
+    "roofline microbenchmark not collected; BabelStream is a separate HBM reference"
+  ]
+}

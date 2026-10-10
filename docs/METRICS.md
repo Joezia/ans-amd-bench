@@ -105,12 +105,13 @@ counters and timeline evidence to explain the AMD gap.
 
 Paper: <https://arxiv.org/abs/2606.15789>
 
-## Planned LDS-stage metrics
+## LDS-stage metrics
 
 Offline compression, artifact loading/H2D and host correctness copies are
-outside the runtime decode measurement. Codebook staging is reported both as
-part of a complete kernel and separately from resident-table steady-state
-decode, with the timing region stated in every result.
+outside the runtime decode measurement. The implemented v1 LDS-table path
+includes per-workgroup codebook staging in the complete kernel. The alternative
+global-LUT path is not a resident-LDS steady-state measurement; persistent-table
+experiments remain future work. See [LDS_CLI.md](LDS_CLI.md) for exact JSON fields.
 
 Let `D` be actual consumer-format bytes produced in LDS, `N` the actual
 weights produced (including repeated tile decoding), `C` the logical compressed
@@ -137,3 +138,9 @@ tile geometry, consumer format and store pattern.
 
 Discarded output must still execute real LDS stores, established through ISA
 and LDS counters. Complete requirements are in [LDS_STAGE1.md](LDS_STAGE1.md).
+
+The v1 `decoded_LDS_GBps` includes padded tile bytes; `valid_weight_GBps` and
+`weights_per_second` exclude padding. `compressed_payload_GBps` counts only
+payload, not descriptors, table staging or scales. All three are logical rates,
+not physical memory traffic. The store-only control produces no real weights
+and is not decoder throughput; its LDS byte-store rate is labeled as a control.

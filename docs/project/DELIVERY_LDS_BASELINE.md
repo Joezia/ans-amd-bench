@@ -17,14 +17,14 @@
 它不阻塞此次 FP8 独立交付。Gemma E4B smoke 也可复用，但模拟 FP8 引入量化
 变量且可能需要 gated 访问，因此不作为首选。上游 native FP4/MXFP4 不进入本轮。
 
-## 本次验收
+## 交付节点与验收
 
-1. 真实 tensor 原始位模式与 scale、checkpoint 元数据和 hash 可查；离线保存
-   共享 codebook、计算 tile 的独立 ANS streams、offset/state 和压缩字节统计。
-2. 独立 benchmark 只加载现成 artifact；验证模式从实际 LDS 读回并逐位比较。
-   性能模式恢复至 LDS 后丢弃；raw-to-LDS 对照使用相同 tile/layout/store。
-3. MI300X HIP-event 结果、生成 ISA 的 LDS store 证据及可用 profiler 证据落盘。
-   测不出的项目写明缺失；不把 cache-resident 小矩阵解释成 cold HBM streaming。
+| 节点 | 任务描述 | 成功标准 |
+|---|---|---|
+| D0 | 确认与上游对应的真实负载 | 来源、格式、场景边界清楚，排除本轮不使用的格式 |
+| D1 | 提供可重复使用的离线压缩权重包 | 有可追溯来源、完整性证明和真实存储开销，不依赖运行时重新压缩 |
+| D2 | 建立可验证的片上解码 baseline | 完整真实权重可正确恢复；性能路径和正确性路径的边界明确 |
+| D3 | 形成 AMD 首轮测量证据包 | 结果可复查、对照条件清楚、局限显式记录，不夸大成完整推理性能 |
 
 成功意味着有可复现的未优化 baseline，不意味着已经达到目标性能。
 FP8 保留 checkpoint 编码；本轮没有浮点计算，后续 MI300X GEMM 的 FNUZ 兼容性
@@ -34,4 +34,5 @@ FP8 保留 checkpoint 编码；本轮没有浮点计算，后续 MI300X GEMM 的
 
 8 MiB 单矩阵是缓存内实验。下一交付扩展到大于 256 MiB 的不同真实矩阵集合，
 随后进行 counter-guided A/B 优化；通过后才进入 S2 ANS+GEMM。
-具体实现、命令、job 状态和验收证据记录在 STATUS 和 LDS 使用说明中。
+具体实现、命令、job 状态和验收证据记录在 STATUS 和 LDS 使用说明中；
+本计划只记录任务布局，不记录工程实施步骤。

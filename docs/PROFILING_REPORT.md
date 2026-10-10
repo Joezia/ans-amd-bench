@@ -4,8 +4,9 @@ Scope update (2026-10-10): this report profiles the historical standalone
 byte decoder writing to global memory. It is not a profile of precompressed
 real model tiles decoded to LDS or of a fused ANS+GEMM kernel. Its bottleneck
 attribution and headroom estimates apply only to the measured demo path.
-The current project scope is in [PLAN.md](project/PLAN.md); the new path still
-requires its own correctness checks and hardware evidence. The supplied local
+The current project scope is in [PLAN.md](project/PLAN.md); the new native-FP8
+LDS reference baseline now has its own correctness and hardware evidence in
+[LDS_BASELINE_REPORT.md](LDS_BASELINE_REPORT.md). The supplied local
 paper does not establish the previously cited 30% numerator/denominator; see
 [PAPER_SCENARIO.md](PAPER_SCENARIO.md).
 

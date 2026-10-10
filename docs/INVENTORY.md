@@ -130,3 +130,25 @@ The standardized CLI reuses the validated pointer-batch encode/decode sequence,
 HIP-event timing, byte-exact check, provenance collection, and out-of-tree link
 model from `harness/`.  The legacy matrix and separated-GEMM programs remain
 available for regression comparison; they are not rewritten.
+
+## 2026-10-10: real-weight LDS extension and upstream inventory
+
+The earlier sections are the original demo inventory. The independent native
+FP8 artifact/LDS path is documented in [LDS_CLI.md](LDS_CLI.md) and its measured
+evidence in [LDS_BASELINE_REPORT.md](LDS_BASELINE_REPORT.md).
+
+Read-only upstream entropyflow-lab inspection found an official 11-model
+T1–T3 registry, completed M2-v2 characterization (1,122 sampled rows), native
+FP8/FP4/MXFP4/BF16 handling, BF16-derived simulated formats, scalar CPU rANS
+size estimates and the old `ans_bench` subprocess bridge. Its GPU benchmark
+fields are null: these results do not contain decoder profiling. Large assets
+are outside git under its configured data directory; streaming removed sampled
+weight shards, leaving metadata/results rather than reusable weight tensors.
+
+The selected DeepSeek-V4-Flash-Base native-FP8 expert matrix exactly matches
+an upstream result row; Qwen3.8-27B BF16 is an auxiliary candidate. This delivery
+excludes 4-bit. Normalization/reference state design was reused, while a separate
+persisted tile-stream format and local GPU decoder were added to support shared
+matrix tables and LDS output. Existing benchmarks/profilers remain intact;
+neither upstream source tree was modified. This is a reference baseline, not
+evidence of an optimized hipANS decoder or a fused GEMM path.
