@@ -39,9 +39,13 @@ inputs, build products, raw logs, or private reference implementations.
   commit recorded in each result row.
 - hipBLASLt and rocBLAS for `sepbase`.
 
-By default, new scripts expect the read-only hipANS checkout at `../hipANS`.
+By default, new scripts locate the hipANS checkout at `../hipANS`.
 Override it with `HIPANS_ROOT=/path/to/hipANS`. Legacy harness scripts retain
 the `HIPANS_REPO` spelling. All build products stay under this repository.
+As authorized on 2026-10-11, hipANS sources may be modified for decoder and
+fusion optimization. Keep each repository's changes/commits separate and
+record codec commit, dirty state and build flags for every experiment.
+entropyflow-lab and its existing data/cache remain read-only.
 
 ## Quick start
 

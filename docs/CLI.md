@@ -22,13 +22,14 @@ depend on that advanced option.
 Build the executable on a ROCm compute node:
 
 ```bash
-HIPANS_ROOT=/path/to/read-only/hipANS \
+HIPANS_ROOT=/path/to/hipANS \
 HIPANS_BUILD_DIR="$PWD/build-hipans-mi300" \
 GPU_ARCH=gfx942 \
 ./scripts/build_ans_bench.sh
 ```
 
-The source checkout is never modified.  The default `HIPANS_ROOT` is
+This build command does not modify the source checkout; subsequent codec
+optimization edits are authorized as of 2026-10-11. The default `HIPANS_ROOT` is
 `../hipANS`; the legacy `HIPANS_REPO` spelling is confined to older scripts.
 
 ## Input contract

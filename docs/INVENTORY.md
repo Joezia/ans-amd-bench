@@ -4,12 +4,17 @@ This inventory describes the repository at the start of the MI300X
 standardization work.  It distinguishes measurements that already exist from
 the interfaces and measurements added by the rest of this project.
 
+Policy update (2026-10-11): the user now permits hipANS source modifications
+for optimization. Read-only descriptions below record the original inventory
+conditions, not a current restriction. entropyflow-lab remains read-only.
+
 ## Repositories and build layout
 
 - `ans-amd-bench` is the writable benchmark repository.  Its initial history
   contains the MI210 baseline (`67189ae`) and portable MI300 workflow
   (`6ffe245`).
-- hipANS is a separate, read-only checkout selected by `HIPANS_ROOT` (legacy
+- At the original inventory date hipANS was a separate, read-only checkout
+  selected by `HIPANS_ROOT` (legacy
   scripts call the same setting `HIPANS_REPO`) and defaults to `../hipANS`.
   At inventory time it is clean at commit
   `8cc8bc263bc943557682a5cc675a045cb9a86412`.

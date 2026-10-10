@@ -15,8 +15,10 @@ This exact tensor appears in entropyflow-lab M2. See the
 
 Python uses this repository's system-site-packages `.venv`; `requests` is the
 only additional extraction dependency. Build and CPU processing run inside
-Slurm; the shared workspace requires no node-local copy. Both sibling source
-trees and their existing caches remain read-only.
+Slurm; the shared workspace requires no node-local copy. This v1 delivery did
+not modify either sibling repository. As of 2026-10-11 hipANS source edits are
+authorized for subsequent optimization; entropyflow-lab and its existing
+caches remain read-only. Build products remain in this benchmark repository.
 
 ```bash
 bash scripts/build_lds_baseline.sh  # devel allocation, gfx942 by default

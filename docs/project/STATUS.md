@@ -1,6 +1,6 @@
 # 项目执行状态
 
-最后更新：2026-10-10 CST
+最后更新：2026-10-11 CST
 
 本文件与 [PLAN.md](PLAN.md) 的 S0–S3 一一对应。旧 P0–P5 与原始 Step 0–4
 属于历史 demo 测量任务，入口见 [LEGACY_STEPS.md](LEGACY_STEPS.md)。
@@ -89,8 +89,10 @@ write 0。完整证据见 [LDS_BASELINE_REPORT.md](../LDS_BASELINE_REPORT.md) �
 `results/profiling/lds-109484/`。如何运行和查看返回结果见 [LDS_CLI.md](../LDS_CLI.md)。
 
 本次 [独立交付计划](DELIVERY_LDS_BASELINE.md) 的 D0–D3 已验收。下一项需要另立
-范围：扩展缓存外真实负载并针对 occupancy、table footprint 和 stream 访存做
-受控 A/B；不自动开始 GEMM 融合或 4-bit 扩展。
+范围：将 hipANS 接入同一真实预压缩权重→LDS 测量/验证场景，保留现有 scalar
+reference 作为正确性与性能对照；扩展缓存外真实负载，并针对 occupancy、table
+footprint 和 stream 访存做受控 A/B。可在 hipANS 内实施修改，不自动开始 GEMM
+融合或 4-bit 扩展。本次权限澄清仅修正文档/构建提示，未修改任何 codec kernel。
 
 此前 job `107394` 完整测量成功，job `107500` 已验证 ROCm provenance 为
 `10.0.0`；两者均属于历史全局输出路径。
@@ -104,4 +106,6 @@ write 0。完整证据见 [LDS_BASELINE_REPORT.md](../LDS_BASELINE_REPORT.md) �
 ## 阶段变更日志
 
 - 2026-10-10：依据用户重新定义目标，旧“标准化+论文对照”任务归档；启动 S0–S3
-  两阶段优化路线。保留上游只读、共享路径执行和本地 out-of-tree 构建约束。
+  两阶段优化路线。当时保留上游只读、共享路径执行和本地 out-of-tree 构建约束。
+- 2026-10-11：用户明确允许修改 hipANS，撤销其源码只读限制；entropyflow-lab
+  仍只读，构建保持 out-of-tree，记录两仓库的独立提交及每次实验 provenance。

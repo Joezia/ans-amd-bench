@@ -1,6 +1,7 @@
 # 历史战略计划：全局输出 demo 测量阶段
 
 本计划于 2026-10-10 被新的 [PLAN.md](PLAN.md) 替代。
+旧计划中的 hipANS 只读限制已于 2026-10-11 被用户撤销，不适用于当前优化任务。
 它记录的是独立 hipANS byte decoder 的标准化和论文对照工作，不是当前 LDS 解码与
 融合推理优化的验收标准。旧 Step 0–4 的产物索引见 [LEGACY_STEPS.md](LEGACY_STEPS.md)。
 

@@ -36,7 +36,8 @@ decoder 验证实现需要的 state/metadata，不只使用论文 offset-table �
 - codebook/decode table 在计时前准备；不在每次 benchmark 启动重新编码全部权重。
   分别测 resident-table steady state 和包含 codebook staging 的完整 decode kernel。
 - kernel 按工作 tile 从 global memory 读压缩流，在 workgroup 的 LDS 中恢复 tile。
-  使用本仓库的 device helpers/kernel；上游 `HIPANS_ROOT` 继续只读。
+  可修改 `HIPANS_ROOT` 指向的 hipANS helpers/kernel（2026-10-11 用户授权），
+  本仓库的 scalar reference 保留为对照；两仓库分别提交并记录实验 provenance。
 - timed discard 模式必须保留真实 LDS stores。使用合适的 volatile/可观察消费方式，
   并检查生成 ISA 中的 `ds_write` 以及 profiler 的 LDS 操作数量，防止编译器删掉
   无用解码/输出。sink/checksum 若处于计时区域，必须记录并用对照测量其开销。

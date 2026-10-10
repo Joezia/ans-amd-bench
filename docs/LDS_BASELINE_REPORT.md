@@ -68,6 +68,26 @@ gfx942。实现提交 `3b52df3`，测量时 worktree clean；hipANS frozen refer
 与确认轮相差约 0.044%；该轮首次 dispatch counter 不作为正式 warm counter。
 新路径和旧合成 byte→global 的 637.57 GB/s 不构成直接性能回归比较。
 
+### 两个 baseline 的含义与差距
+
+两者均用“恢复/搬入 LDS 的 8,388,608 个 FP8 字节 / kernel 时间”计算速率，
+不是实测 HBM 带宽，也不是 LDS 峰值带宽或 GEMM 性能。
+ANS 路径读取离线压缩流，逐符号查表、更新 rANS state、按需读取补充字节，再写
+LDS；raw 路径直接读取未压缩权重并写 LDS，不做解码。两者 tile/layout/stores
+相同，但 ANS-LDS-table 路径额外分配并 staging 16 KiB LUT，不能假设驻留条件
+也相同。两者计时都不含离线压缩、H2D、正确性读回、scale 处理或 GEMM。
+
+源码中每 lane 的 128 个符号有 state 依赖链；变长补充读取带来分支，64 lanes
+读取各自独立 streams，地址不像 raw 路径相邻 lanes 的连续读取。低 occupancy
+与较多 dependency wait 支持“当前实现缺乏有效延迟隐藏”的判断，24 KiB LDS
+及 insufficient-CU-LDS counter 支持 table footprint 限制调度的判断。尚不能给
+每项原因分配精确耗时比例。global-LUT 123.905 GB/s 对照表明移除 LDS-table
+组织可改善本负载，但也不能把全部改善认定为 staging 拷贝开销。
+
+因此 6.29× 差距是“未优化解码供给”与“直接搬运供给”的差距，不是单靠压缩
+少读数据就应获得加速。每流串行依赖是算法特征，但这些结果不证明整个 GPU 上
+的 ANS 吞吐存在这一固定上限，也不能直接推广到缓存外大模型或融合 GEMM。
+
 ## AMD profiling：当前证据，不是最终归因
 
 rocprofv3 和 rocprof-compute 均成功。counter 在两次 warmup 后只分析最后

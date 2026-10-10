@@ -55,7 +55,7 @@ compile=(
   "${library_dir}/libglog.a" -pthread -o "${output}"
 )
 
-echo "hipANS source (read-only): ${hipans_root}"
+echo "hipANS source: ${hipans_root} (build does not edit sources)"
 echo "hipANS out-of-tree build: ${hipans_build_dir}"
 printf 'BUILD COMMAND: '
 printf '%q ' "${compile[@]}"
