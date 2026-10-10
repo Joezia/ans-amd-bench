@@ -1,10 +1,20 @@
 # MI300X decoder profiling report
 
+Scope update (2026-10-10): this report profiles the historical standalone
+byte decoder writing to global memory. It is not a profile of precompressed
+real model tiles decoded to LDS or of a fused ANS+GEMM kernel. Its bottleneck
+attribution and headroom estimates apply only to the measured demo path.
+The current project scope is in [PLAN.md](project/PLAN.md); the new path still
+requires its own correctness checks and hardware evidence. The supplied local
+paper does not establish the previously cited 30% numerator/denominator; see
+[PAPER_SCENARIO.md](PAPER_SCENARIO.md).
+
 ## Conclusion
 
-The measured gap is primarily an architecture-unaware scheduling, dependency,
-and memory-behavior problem, not a fundamental ANS decode limit and not simple
-HBM saturation.  The standardized single-stream decoder produces 637.57 GB/s,
+For the measured standalone demo, the observations favor scheduling,
+dependency, and memory-behavior limitations over simple HBM saturation.
+They do not establish a fundamental ANS limit or the bottlenecks of a future
+LDS/fused implementation. The standardized single-stream decoder produces 637.57 GB/s,
 or 15.54% of the measured 4,102.71 GB/s BabelStream Triad rate.  At the same
 time, the decoder kernel spends about 79.9% of wave cycles in dependency wait,
 has only 18.7% of peak IPC, and leaves the HBM-facing fabric well below its
@@ -42,9 +52,9 @@ roundtrip verification.
 | Compression ratio, raw/compressed | 1.4673 |
 
 The utilization numerator is decoded output bytes only, as defined in
-[METRICS.md](METRICS.md).  It is comparable to the stated “8–12% versus 30%+”
-diagnostic convention, but it is not literal HBM traffic and it is not the
-paper's fused decode-plus-GEMM throughput.
+[METRICS.md](METRICS.md). It is an output-normalized HBM reference, not literal
+HBM traffic or the paper's fused decode-plus-GEMM throughput. The paper's
+previously assumed 30% definition has not been verified.
 
 ## Counter and timeline evidence
 
@@ -111,12 +121,12 @@ than a replacement for the standardized result.
 
 | factor | evidence (counter values) | estimated headroom | proposed optimization for next month |
 |---|---|---|---|
-| Memory bandwidth and cache behavior | Useful output is 15.54% of BabelStream, while HBM-facing read+write is already 1,976 GB/s; L2 hit is 45.33%, L2-data stall is 70.85%, and read latency is 484 cycles | Reaching the 30% diagnostic target requires 1.93× useful throughput; traffic amplification means peak HBM alone cannot supply that gain | Improve coalescing and reuse of compressed state/table data; validate traffic bytes per decoded byte for each candidate |
+| Memory bandwidth and cache behavior | Useful output is 15.54% of BabelStream, while HBM-facing read+write is already 1,976 GB/s; L2 hit is 45.33%, L2-data stall is 70.85%, and read latency is 484 cycles | No speedup follows directly from output/peak or fabric traffic; traffic per useful byte must be measured for each candidate | Improve coalescing and reuse of compressed state/table data; validate traffic bytes per decoded byte for each candidate |
 | Compute and instruction issue | VALU 40.29%, IPC 18.73% of peak, active cycles about 15.0%, no MFMA work | Compute throughput is not the present roof; no defensible compute-only speedup is assigned | Shorten the serial state-update/ballot critical path and inspect generated ISA scheduling |
-| Synchronization and dependency | Dependency wait is about 79.9%; the full-block source executes at least 128 workgroup barriers per rANS block and couples two waves | Removing all non-active cycles would be a non-attainable ~6.7× upper bound; actual barrier headroom is not isolated | Replace workgroup-wide coordination with wave-scoped primitives where correctness permits, then run a barrier-only A/B counter experiment |
+| Synchronization and dependency | Dependency wait is about 79.9%; the full-block source executes at least 128 workgroup barriers per rANS block and couples two waves | Aggregate wave-cycle ratios are not additive wall-time accounting; barrier-specific speedup is not isolated | Replace workgroup-wide coordination with wave-scoped primitives where correctness permits, then run a barrier-only A/B counter experiment |
 | Occupancy and deployment | Occupancy 59.96%, CU use 80.12%; launch sweep changes only ~4%, but eight independent queues sum to ~2.86 TB/s | Simple grid/block tuning: about 4%; better independent-work scheduling may be much larger but is not yet a single-kernel result | Redesign tile-to-wave work assignment or use a persistent work queue so MI300X can hide per-stream dependency latency |
 | XCD/NUMA placement | Remote read 0.0104%, remote write 0%, NPS1/SPX, no fabric write-credit starvation | Below measurement relevance for this run (<0.1%) | Keep placement controls and counters in regression tests; do not prioritize NUMA tuning now |
-| Pipeline design | Table construction is 16.18 us versus 73.61 us main decode; copy/kernel overlap is zero and copies are excluded from the timed metric | Eliminating table construction entirely caps standalone-call speedup near 1.18×; fused consumer overlap can change the end-to-end bound | Cache/amortize decode tables where model semantics allow, and prototype decode-to-LDS producer/consumer overlap with GEMM |
+| Pipeline design | Table construction is 16.18 us versus 73.61 us main decode; copy/kernel overlap is zero and copies are excluded from the timed metric | For these two kernel durations alone, removing table work gives (16.18+73.61)/73.61 ≈ 1.22×; whole-call gain includes other overhead and must be remeasured | Cache/amortize decode tables where model semantics allow, and prototype decode-to-LDS producer/consumer overlap with GEMM |
 
 ## Tool coverage and limits
 
@@ -129,8 +139,8 @@ than a replacement for the standardized result.
   kept separate.  Raw profiling directories remain cluster-local; the durable
   selected values are in `results/profiling_summary.json`.
 
-The evidence therefore rejects both “fundamental ANS limit” and “just increase
-the grid” as primary explanations.  The leading hypothesis is that a
+The evidence does not establish a fundamental ANS limit, and grid-only tuning
+has little effect in the measured demo. The leading hypothesis is that a
 CUDA-oriented warp/workgroup organization exposes serial rANS dependencies,
 uses barriers broader than an AMD wave, and generates avoidable table/traffic
 work.  That conclusion is strong at the category level; the exact split among

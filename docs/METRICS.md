@@ -1,5 +1,9 @@
 # Metric definitions
 
+The existing `ans_bench` fields below describe the historical global-output
+byte decoder. Current LDS-stage metrics are defined separately at the end of
+this document; the existing JSON field meanings are preserved.
+
 All byte rates use decimal GB/s (`1 GB = 10^9 bytes`).  All primary latency
 statistics use HIP events recorded on the same non-blocking stream as the
 codec.  Percentiles are linearly interpolated after sorting measured samples.
@@ -71,11 +75,10 @@ The standardized utilization is:
 utilization_vs_peak = decode_GBps_over_decoded_written / P
 ```
 
-It is emitted as a fraction; multiply by 100 for percent.  The numerator is
-decoded output bytes because that is the convention behind the stated
-"8--12% vs 30%+" comparison: for example, 650 GB/s decoded output against a
-5,300 GB/s measured peak is 12.3%.  Using compressed read plus decoded write
-would answer a different question and inflate this comparison.
+It is emitted as a fraction; multiply by 100 for percent. The numerator is
+logical decoded output bytes. This output-normalized HBM reference is a
+harness convention, not a verified definition of a 30% result in the paper.
+Using compressed read plus decoded write answers a different question.
 
 ## Relationship to Tan et al. (ISCA 2026)
 
@@ -87,8 +90,9 @@ wave with tensor-core consumers.  The paper's principal microbenchmark figures
 report fused GEMM TFLOP/s and speedups, not a standalone global-output decoder
 counter table.
 
-Accordingly, the 30%+ reference is mapped here only through the same effective
-decoded-byte/peak convention.  It is not directly equivalent to either:
+The supplied local PDF does not give an explicit 30% numerator/denominator.
+The old output-normalized comparison is therefore not a verified paper metric.
+It is not directly equivalent to either:
 
 - hardware HBM bytes, because the NVIDIA fused path does not materialize all
   decoded weights in global memory; or
@@ -100,3 +104,36 @@ a claim of reproducing the fused paper kernel.  Profiling must use measured HBM
 counters and timeline evidence to explain the AMD gap.
 
 Paper: <https://arxiv.org/abs/2606.15789>
+
+## Planned LDS-stage metrics
+
+Offline compression, artifact loading/H2D and host correctness copies are
+outside the runtime decode measurement. Codebook staging is reported both as
+part of a complete kernel and separately from resident-table steady-state
+decode, with the timing region stated in every result.
+
+Let `D` be actual consumer-format bytes produced in LDS, `N` the actual
+weights produced (including repeated tile decoding), `C` the logical compressed
+bytes consumed, and `t` the stated GPU interval in seconds:
+
+```text
+decoded_to_LDS_GBps       = D / t / 1e9
+decoded_weights_per_sec  = N / t
+compressed_input_GBps    = C / t / 1e9
+```
+
+Record unique weights separately from actual tile work. Record storage dtype,
+ANS symbol dtype, LDS consumer dtype, scale metadata, and unpack/dequantization
+work. For example, 4-bit weights expanded to BF16 produce 2 consumer bytes per
+weight; their rate cannot be compared to packed-nibble output by byte rates alone.
+
+The above logical rates remain distinct from profiler HBM reads/writes and LDS
+transactions. `decoded_to_LDS_GBps / BabelStream_Triad_GBps` may be reported as
+an explicitly named output-normalized HBM reference, but is not LDS hardware
+utilization and may exceed 100% when decompression expands input. Actual LDS
+utilization requires LDS counters and a stated, relevant LDS roofline/control
+benchmark. The primary practical control is raw-weight-to-LDS at the same
+tile geometry, consumer format and store pattern.
+
+Discarded output must still execute real LDS stores, established through ISA
+and LDS counters. Complete requirements are in [LDS_STAGE1.md](LDS_STAGE1.md).
