@@ -1,6 +1,6 @@
 # 项目执行状态
 
-最后更新：2026-10-07 CST
+最后更新：2026-10-10 CST
 
 战略目标和成功标准见 [PLAN.md](PLAN.md)。本文使用相同的 P0–P5 编号记录实际
 进展、证据、阻塞和近期动作。
@@ -24,7 +24,7 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 | 编号 | 状态 | 当前结论 | 下一验收点 |
 |---|---|---|---|
 | P0 | 已完成 | 仓库、历史结果、指标口径和上游接口已经盘点 | 仅在事实基础变化时更新 |
-| P1 | 已完成 | 标准 CLI、正确性校验、指标定义和 MI300X/BabelStream 基线均已取得 | 等待 job `107500` smoke-test provenance 修复 |
+| P1 | 已完成 | 标准 CLI、正确性校验、指标定义和 MI300X/BabelStream 基线均已取得；job `107500` 验证 ROCm provenance 正确 | 仅在环境或 CLI 改变时回归 |
 | P2 | 已完成 | timeline、完整 counter 和所有必需诊断维度已有证据；不可用工具已显式记录 | 复测一个异常 sweep 点，并可选补齐两个 launch 组合 |
 | P3 | 已完成 | 已形成瓶颈排序、headroom 边界及非根本上限结论 | 下一阶段用受控 A/B 区分 barrier 与数据依赖占比 |
 | P4 | 受阻 | 对照框架和论文报告值已记录；六个评估模型输入均缺失 | 获得合法模型输入，或保留明确的缺失状态 |
@@ -37,6 +37,9 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 - P1：标准化 JSON benchmark、正确性校验、指标定义和 provenance 已完成；提交
   `36278d4`。正式结果见 `results/standard_mi300.json` 和
   `results/peak_bw.json`。
+- provenance 修复已在 MI300X 上经 job `107500` 验证；任务于 2026-10-07
+  10:50:14–10:50:16 CST 在 `tn1-003-001` 完成，exit code `0:0`，JSON 正确报告
+  ROCm `10.0.0`，byte-exact roundtrip 成功。
 - P2：profiling/sweep 工作流提交为 `c870059`；job `107394` 已取得 SOL、HBM/L2、
   occupancy、wave wait、VALU、LDS、remote traffic 和 timeline 数据。
 - P3：`docs/PROFILING_REPORT.md` 给出归因表；可机器读取的精选计数器与 sweep 结果
@@ -56,9 +59,9 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
 - 时间：2026-10-06 23:46:40–23:48:10 CST。
 - stdout/stderr：`results/slurm-mi300-campaign-107394.out` 和 `.err`。
 
-### 活动任务
+### 最近完成的 smoke test
 
-- Slurm job `107500`：短 GPU provenance smoke test，已用 `sbatch` 提交。
+- Slurm job `107500`：`COMPLETED (0:0)`，运行 2 秒；本项目当前没有排队中的任务。
 - 共享工作目录：本仓库路径；没有复制到计算节点本地目录。
 - 返回文件：`results/slurm-provenance-smoke-107500.out` 和 `.err`。
 
@@ -70,21 +73,18 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
   它只证明延迟隐藏潜力，不替代标准单流指标。
 - gfx942 分析块没有给出独立的 256 MiB MALL hit-rate 字段；当前以 L2 hit、fabric
   traffic、remote traffic 和跨 256 MiB 的规模 sweep 作为证据边界。
-- CLI 原先把 HIP runtime 整数 `71526333` 写成 ROCm 版本；代码已经改为从
-  `hipconfig --path` 下的 `.info/version` 获取发行版版本，正式 JSON 已根据同节点
-  记录校正为 `10.0.0`。CLI 已重建；interactive smoke job `107492` 因预计等待约
-  12 小时而主动取消，GPU 运行验证改由 batch job `107500` 排队完成。
+- CLI 曾把 HIP runtime 整数 `71526333` 写成 ROCm 版本；现已修复为发行版版本，且
+  job `107500` 已验证返回 `10.0.0`。interactive job `107492` 因预计长时间等待而
+  取消，之后由成功完成的 batch job `107500` 替代。
 
 ## 紧接着的工作
 
-1. 检查 job `107500` 的状态和 stdout JSON，确认已重建的 `ans_bench` 输出
-   `ROCm_version: 10.0.0`，不重新执行完整 campaign。
-2. 对异常的 192 MiB/64 KiB tile 点做独立复测；若稳定再追加针对性 counter。
-3. 可选构建 64-thread/grid-2 与 grid-8 变体，补齐 launch 全因子表；现有结果已经覆盖
+1. 对异常的 192 MiB/64 KiB tile 点做独立复测；若稳定再追加针对性 counter。
+2. 可选构建 64-thread/grid-2 与 grid-8 变体，补齐 launch 全因子表；现有结果已经覆盖
    workgroup size 与 grid multiplier 的主效应。
-4. 将当前报告作为 P5 输入，另行拆分 barrier、tile/work-queue、cache traffic 和
+3. 将当前报告作为 P5 输入，另行拆分 barrier、tile/work-queue、cache traffic 和
    decode-to-GEMM overlap 的下一阶段实验。
-5. 获得合法模型输入后重新运行 `scripts/run_paper_reproduction.sh`，完成 P4 AMD 列。
+4. 获得合法模型输入后重新运行 `scripts/run_paper_reproduction.sh`，完成 P4 AMD 列。
 
 ## 阶段变更日志
 
@@ -94,3 +94,5 @@ XCD 流量几乎为零。当前判断是差距主要来自架构适配不足的�
   重新提交，等待 MI300X 资源。
 - 2026-10-07：job `107394` 完整成功；P1、P2、P3 达到验收标准，形成 MI300X
   基线、counter 汇总和瓶颈归因。P4 继续受输入缺失阻塞，P5 开始。
+- 2026-10-10：核实 job `107500` 已成功完成并验证 ROCm provenance；当前没有本项目
+  相关 Slurm 排队任务。项目进入 P5 后续实验规划阶段，P4 仍等待模型输入。
