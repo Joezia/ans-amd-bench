@@ -51,6 +51,13 @@ producer/consumer 与双缓冲重叠 GEMM。论文包含 dense 与 MoE，以及�
 
 ## 当前活动与后续节点
 
+2026-10-10 启动 [真实 artifact + LDS baseline 独立交付](DELIVERY_LDS_BASELINE.md)。
+已只读检查 entropyflow-lab 的 PLAN、registry、M2 结果、CPU rANS 与格式代码；
+已核对 M2 parquet 中 `dsv4-flash-base / layers.0.ffn.experts.10.w1.weight`
+为原生 FP8、8,388,608 元素。选择原生 FP8 避免模拟量化变量，本轮排除 4-bit。
+checkpoint shard 将按 HTTP byte range 只提取目标 tensor/scale；上游 cache 不改写。
+当前先实施离线包与逐位验证，之后记录 MI300X baseline 和 LDS store 证据。
+
 当前没有本项目的活动 Slurm job。下一项可独立验收的实现是 S1 的首个 LDS
 baseline：在计时前加载预压缩真实权重、预构建 table，按 tile 解码到 LDS 并
 丢弃输出；验证模式从 LDS 导出结果逐位比对。详细要求见
