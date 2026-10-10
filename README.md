@@ -3,6 +3,12 @@
 This repository contains reproducible MI210 (`gfx90a`) baselines and a
 standardized MI300X (`gfx942`) measurement/profiling workflow for hipANS:
 
+The current objective is AMD optimization for precompressed model-weight
+inference: first decode real weight tiles to LDS and profile/optimize that
+stage, then fuse ANS decoding with pipelined GEMM. The existing `ans_bench`
+measures a historical global-output byte-codec path; the LDS and fused paths
+are not implemented yet.
+
 - `ans_bench`: stable single-case JSON CLI with byte-exact verification.
 - `bench/`: implementation of the standardized CLI.
 - `harness/`: bit-exact validation and raw ANS decode throughput.
@@ -18,6 +24,9 @@ inputs, build products, raw logs, or private reference implementations.
 
 - [战略计划](docs/project/PLAN.md)：记录长期目标、阶段关系和成功标准。
 - [执行状态](docs/project/STATUS.md)：记录当前进展、证据、阻塞和近期动作。
+- [原始 Step 0–4 产物索引](docs/project/LEGACY_STEPS.md)：定位已有代码、结果和完成边界。
+- [论文场景与数值格式](docs/PAPER_SCENARIO.md)：本地论文核对结果。
+- [第一阶段 LDS 工程验收](docs/LDS_STAGE1.md)：预压缩输入、正确性、计时和 profiling 要求。
 
 ## Dependencies
 
