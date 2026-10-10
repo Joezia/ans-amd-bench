@@ -135,12 +135,12 @@ int main(int argc,char**argv){try {
   uint64_t metadata=64+1024+a.streams.size()*16;
   std::cout<<std::setprecision(10)<<"{\"schema\":\"lds-bench-v1\",\"mode\":\""<<mode<<"\",\"table_mode\":\""<<tableMode<<"\",\"verified_actual_LDS\":"<<(!skip&&mode!="lds-control"?"true":"false")
     <<",\"raw_bytes\":"<<a.h.raw_bytes<<",\"padded_decoded_bytes\":"<<tiled.size()<<",\"unique_weights\":"<<a.h.raw_bytes
-    <<",\"weights_produced_per_launch\":"<<a.h.raw_bytes<<",\"padding_bytes\":"<<tiled.size()-a.h.raw_bytes
+    <<",\"weights_produced_per_launch\":"<<(mode=="lds-control"?0:a.h.raw_bytes)<<",\"padding_bytes\":"<<tiled.size()-a.h.raw_bytes
     <<",\"compressed_payload_bytes\":"<<a.h.payload_bytes<<",\"artifact_metadata_bytes\":"<<metadata
     <<",\"artifact_bytes\":"<<a.h.payload_bytes+metadata<<",\"ratio_codes\":"<<double(a.h.raw_bytes)/(a.h.payload_bytes+metadata)
     <<",\"decode_ms\":{\"median\":"<<median<<",\"p10\":"<<pct(.1)<<",\"p90\":"<<pct(.9)<<"}"
-    <<",\"decoded_LDS_GBps\":"<<tiled.size()/median/1e6<<",\"valid_weight_GBps\":"<<a.h.raw_bytes/median/1e6
-    <<",\"weights_per_second\":"<<a.h.raw_bytes/median*1e3
+    <<",\"decoded_LDS_GBps\":"<<tiled.size()/median/1e6<<",\"valid_weight_GBps\":"<<(mode=="lds-control"?0:a.h.raw_bytes/median/1e6)
+    <<",\"weights_per_second\":"<<(mode=="lds-control"?0:a.h.raw_bytes/median*1e3)
     <<",\"compressed_payload_GBps\":"<<(mode=="decode"?a.h.payload_bytes/median/1e6:0)
     <<",\"warmup\":"<<warmup<<",\"iters\":"<<iters
     <<",\"cache_policy\":\"warm repeated tensor; no cache flush\",\"sink\":\"volatile inline-assembly ds_write_b8; final wait/barrier; no checksum\""

@@ -1,7 +1,9 @@
 # 第一阶段：真实预压缩权重解码到 LDS
 
-这是待实现的工程验收说明，服务于 [PLAN.md](project/PLAN.md) 的 S0/S1。
-现有 `ans_bench` 仍用于历史全局输出基线；本说明不表示 LDS kernel 已经存在。
+这是第一阶段工程验收说明，服务于 [PLAN.md](project/PLAN.md) 的 S0/S1。
+现有 `ans_bench` 仍用于历史全局输出基线；已新增原生 FP8 的未优化 LDS 参考
+kernel 与离线 artifact，接口和已实现边界见 [LDS_CLI.md](LDS_CLI.md)。
+完整第一阶段的多工作负载、large-working-set profiling 和优化尚未完成。
 
 ## 首个可独立验收的结果
 

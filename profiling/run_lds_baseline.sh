@@ -5,7 +5,7 @@ manifest="${1:?Usage: run_lds_baseline.sh artifact.json output-directory}"
 output="${2:?output directory required}"
 mkdir -p "${output}"
 command=("${bench_dir}/.venv/bin/python" "${bench_dir}/scripts/run_lds_bench.py"
-  --manifest "${manifest}" --skip-verify --warmup 0 --iters 1)
+  --manifest "${manifest}" --skip-verify --warmup "${PROFILE_LDS_WARMUP:-2}" --iters 1)
 if command -v rocprofv3 >/dev/null 2>&1; then
   mkdir -p "${output}/timeline"
   if rocprofv3 --runtime-trace --stats --output-directory "${output}/timeline" \

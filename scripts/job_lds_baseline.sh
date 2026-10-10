@@ -23,4 +23,9 @@ done
 "${bench_dir}/.venv/bin/python" scripts/audit_lds_isa.py \
   "${bench_dir}/build-lds/lds_bench-hip-amdgcn-amd-amdhsa-gfx942.s" >"${output}/isa.json"
 bash profiling/run_lds_baseline.sh "${manifest}" "${output}/profile"
+if bash scripts/analyze_lds_profile.sh "${output}"; then
+  echo "Decoder-only official counter analysis complete"
+else
+  echo "WARNING: analysis unavailable; preserve raw counters and analysis logs" >&2
+fi
 echo "LDS baseline complete: ${output}"

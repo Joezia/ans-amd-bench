@@ -6,8 +6,9 @@ standardized MI300X (`gfx942`) measurement/profiling workflow for hipANS:
 The current objective is AMD optimization for precompressed model-weight
 inference: first decode real weight tiles to LDS and profile/optimize that
 stage, then fuse ANS decoding with pipelined GEMM. The existing `ans_bench`
-measures a historical global-output byte-codec path; the LDS and fused paths
-are not implemented yet.
+measures a historical global-output byte-codec path. A separate, verified
+native-FP8 decode-to-LDS reference baseline is now implemented; the optimized
+and fused paths are not implemented yet.
 
 - `ans_bench`: stable single-case JSON CLI with byte-exact verification.
 - `bench/`: implementation of the standardized CLI.
@@ -27,6 +28,8 @@ inputs, build products, raw logs, or private reference implementations.
 - [原始 Step 0–4 产物索引](docs/project/LEGACY_STEPS.md)：定位已有代码、结果和完成边界。
 - [论文场景与数值格式](docs/PAPER_SCENARIO.md)：本地论文核对结果。
 - [第一阶段 LDS 工程验收](docs/LDS_STAGE1.md)：预压缩输入、正确性、计时和 profiling 要求。
+- [当前独立交付计划](docs/project/DELIVERY_LDS_BASELINE.md)：真实权重与 LDS baseline 的范围。
+- [LDS baseline 使用说明](docs/LDS_CLI.md)：离线包、独立 CLI、验证及 Slurm 返回结果。
 
 ## Dependencies
 
