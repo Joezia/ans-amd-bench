@@ -1,6 +1,8 @@
-# 真实 FP8 权重 → LDS：首个未优化 baseline
+# 真实 FP8 权重 → LDS：scalar reference（不是 S1 hipANS baseline）
 
-独立交付 D0–D3 已完成；这是 S1 的起点，不是优化完成或 ANS+GEMM 实现。
+2026-10-11 更正：本报告使用另一 scalar byte-rANS 实现，不符合用户定义的
+S1 baseline；93.565 GB/s 不代表当前 hipANS 解码吞吐。此前 D0–D3 只完成了
+参考路径，不视为 S1 baseline 验收。实际 hipANS baseline 正在重新实施。
 正式证据为 `results/lds_baseline.json`；原始文件位于
 `results/profiling/lds-109484/`。运行方式见 [LDS_CLI.md](LDS_CLI.md)。
 

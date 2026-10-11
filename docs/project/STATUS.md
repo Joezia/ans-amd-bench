@@ -8,8 +8,9 @@
 ## 当前摘要
 
 主任务为真实压缩权重推理的 AMD 性能优化。S0 的首个真实负载已确认；S1 的
-首项独立交付“真实权重离线 artifact + 可验证 LDS baseline”已完成。当前进入
-S1 优化前的实验扩展准备；ANS+GEMM 融合尚未实现。本次未使用 4-bit。
+之前的独立交付完成了另一 scalar rANS 参考路径，不符合 S1 baseline 的实现要求。
+当前重新实施“当前 hipANS → LDS，在充分资源供给下测量有效吞吐”。S1 baseline
+尚未验收，性能优化与 ANS+GEMM 融合尚未开始。本次未使用 4-bit。
 此前 637.57 GB/s、15.54% 及相关 counter 只描述独立 byte decoder 向全局内存
 输出的历史路径，不能作为新场景已完成或已经定位瓶颈的证据。
 
@@ -23,7 +24,7 @@ producer/consumer 与双缓冲重叠 GEMM。论文包含 dense 与 MoE，以及�
 | 编号 | 状态 | 已完成的实际进展 | 下一验收点 |
 |---|---|---|---|
 | S0 | 首个负载已完成 | 与 entropyflow-lab 对齐的 DeepSeek-V4-Flash-Base 原生 FP8 专家矩阵已提取，来源/shape/scale/hash 已记录；BF16 dense 作为辅助候选 | 后续扩展到多矩阵与缓存外真实工作集 |
-| S1 | 进行中：baseline 已完成 | 持久化 artifact、独立 LDS kernel、逐位验证、raw/control 对照与 AMD profiling 均完成；未做性能优化 | 基于新路径证据建立受控优化实验，补齐 >256 MiB 真实工作集 |
+| S1 | 重做 baseline | 真实输入和 scalar reference 可复用；当前 hipANS clean 8cc8bc2 已检查，实际 decoder helpers 可直接调用 | hipANS 原生 artifact、LDS 验证、资源饱和 sweep 与重复确认 |
 | S2 | 未开始 | 已明确 LDS 数据必须在同一个 workgroup/kernel 中被 GEMM 消费 | 基于 S1 建立融合 kernel 和 producer/consumer 双缓冲 |
 | S3 | 未开始 | 4-bit 权重与 dense/MoE 扩展列入目标 | 在同一数值格式和 workload 下衡量实际层级收益 |
 
@@ -36,7 +37,7 @@ producer/consumer 与双缓冲重叠 GEMM。论文包含 dense 与 MoE，以及�
 - `sepbase/` 的独立 GEMM 和串行 decode+GEMM，可作为后续比较参考。
 - 保留 `ans_bench` 的现有 JSON API；新 LDS 路径使用独立接口以保留原字段含义。
 
-## 已实现的独立交付（D0–D3，与交付计划对应）
+## 已实现的参考交付（D0–D3，不计为 S1 hipANS baseline）
 
 | 节点 | 状态 | 实际证据 |
 |---|---|---|
@@ -51,7 +52,7 @@ producer/consumer 与双缓冲重叠 GEMM。论文包含 dense 与 MoE，以及�
 每矩阵一张共享概率表。离线 payload 为 6,884,189 bytes，metadata 为 1,049,664
 bytes，含 scale 的真实压缩比 1.05730×。这不是 hipANS archive 格式。
 
-正式未优化 warm-cache baseline（10 warmup / 50 iterations）：LDS-table decode
+scalar reference 的 warm-cache 测量（10 warmup / 50 iterations）：LDS-table decode
 93.565 GB/s / 89.655 us；global-LUT decode 123.905 GB/s / 67.702 us；raw-to-LDS
 588.220 GB/s / 14.261 us；纯 LDS control 1,414.844 GB/s / 5.929 us（不是权重解码）。
 
@@ -88,11 +89,10 @@ write 0。完整证据见 [LDS_BASELINE_REPORT.md](../LDS_BASELINE_REPORT.md) �
 共享路径返回文件为 `results/slurm-lds-baseline-109484.out/.err`，原始证据目录
 `results/profiling/lds-109484/`。如何运行和查看返回结果见 [LDS_CLI.md](../LDS_CLI.md)。
 
-本次 [独立交付计划](DELIVERY_LDS_BASELINE.md) 的 D0–D3 已验收。下一项需要另立
-范围：将 hipANS 接入同一真实预压缩权重→LDS 测量/验证场景，保留现有 scalar
-reference 作为正确性与性能对照；扩展缓存外真实负载，并针对 occupancy、table
-footprint 和 stream 访存做受控 A/B。可在 hipANS 内实施修改，不自动开始 GEMM
-融合或 4-bit 扩展。本次权限澄清仅修正文档/构建提示，未修改任何 codec kernel。
+当前任务为 [hipANS S1 baseline 重做](DELIVERY_HIPANS_S1_BASELINE.md)，H0 已确认
+当前 clean hipANS revision 与真实输入；H1–H3 正在实施。旧 D0–D3 是参考交付，
+不再作为 S1 baseline 完成依据。保留 scalar reference 对照，不自动开始 codec
+优化、GEMM 融合或 4-bit 扩展。
 
 此前 job `107394` 完整测量成功，job `107500` 已验证 ROCm provenance 为
 `10.0.0`；两者均属于历史全局输出路径。
@@ -109,3 +109,5 @@ footprint 和 stream 访存做受控 A/B。可在 hipANS 内实施修改，不�
   两阶段优化路线。当时保留上游只读、共享路径执行和本地 out-of-tree 构建约束。
 - 2026-10-11：用户明确允许修改 hipANS，撤销其源码只读限制；entropyflow-lab
   仍只读，构建保持 out-of-tree，记录两仓库的独立提交及每次实验 provenance。
+- 2026-10-11：用户明确 S1 baseline 必须来自当前 hipANS，撤回 scalar reference
+  的基线验收标签，启动 H0–H3 重做；只有实际 GPU 证据返回才算完成。
