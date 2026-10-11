@@ -27,7 +27,7 @@ MI350X artifact 与 LDS 逐位验证完成。R2 的 MI300X 单矩阵主测量及
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
 | R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
 | R2：两机场景 baseline | MI300X 完成；MI350X 排队 | job 109848 已完成：单矩阵 decode→LDS 276.39 GB/s，raw→LDS 507.63 GB/s；replica 4/16/64 单独记录为辅助诊断；MI350X job 109847 仍排队 |
-| R3：瓶颈证据及建议 | MI300X 作业已提交 | job 109852 已排队，使用 GLM 单矩阵 R2 主配置采集 counters / timeline；旧 workload 的 profiling 只能作背景，不替代此阶段证据 |
+| R3：瓶颈证据及建议 | 两机作业已提交 | MI300X job 109852 排队；MI350X job 109853 依赖 R2 job 109847 成功完成后运行；均使用 GLM 单矩阵 R2 主配置 |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
 shard 的有界 header range；未下载 checkpoint 权重 payload，也未写入 entropyflow-lab
@@ -74,8 +74,10 @@ R2 stdout/stderr 路径分别为 `results/slurm-lds-r2-glm-mi350x-%j.out/.err` �
 `results/slurm-lds-r2-glm-mi300x-%j.out/.err`；结果位于
 `results/profiling/lds-r2-glm-mi300x-109848/summary.json`，MI350X 结果待作业返回。
 R3 MI300X profiling job 109852 已提交，目前 PENDING (Resources)，计划输出至
-`results/profiling/lds-r3-glm-mi300x-109852/`；插桩计时只用于诊断。MI350X R2 返回后，
-再按其正式场景配置补齐第二台机器的 profiling。R3 不把 replicas 当作主要场景。
+`results/profiling/lds-r3-glm-mi300x-109852/`。MI350X profiling job 109853 已提交，
+依赖 R2 job 109847 成功完成后运行，计划输出至
+`results/profiling/lds-r3-glm-mi350x-109853/`。两者插桩计时只用于诊断；R3 不把
+replicas 当作主要场景。
 
 MI300X R2 的主要配置为一个 72 MiB 权重（replicas=1）、128 threads、grid
 multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel 时间为
@@ -90,6 +92,7 @@ multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel �
 | MI300X / gfx942 | 109848 | COMPLETED (0:0)，14 秒，tn1-003-002 | `results/profiling/lds-r2-glm-mi300x-109848/summary.json`；主测量 decode→LDS 276.394 GB/s，raw→LDS 507.635 GB/s |
 | MI350X / gfx950 | 109847 | PENDING (Resources) | 排队中；stdout/stderr 为 `results/slurm-lds-r2-glm-mi350x-109847.out/.err` |
 | MI300X / gfx942 | 109852 | PENDING (Resources) | R3 counters / timeline；stdout/stderr 为 `results/slurm-lds-r3-glm-mi300x-109852.out/.err` |
+| MI350X / gfx950 | 109853 | PENDING (Dependency) | R3 counters / timeline，afterok:109847；stdout/stderr 为 `results/slurm-lds-r3-glm-mi350x-109853.out/.err` |
 | MI300X / gfx942 | 109618 | COMPLETED (0:0)，3 分 20 秒，tn1-003-002 | results/lds_baseline.json；docs/LDS_BASELINE_REPORT.md |
 | MI350X / gfx950 | 109666 | COMPLETED (0:0)，3 分 5 秒，tn1-004-001 | results/lds_baseline_mi350x.json；docs/LDS_BASELINE_REPORT_MI350X.md |
 
