@@ -56,8 +56,9 @@ compressed logical bytes/s，以及单独记录的 HBM read/write 和 LDS 流量
 若一个 weight 因 GEMM tile 的访问顺序被多次解码，输出 numerator 按实际生产量
 计算，并同时给出 unique-weight count，不能用整层唯一字节数替代实际工作量。
 
-分别准备可复用 cache 数据和大于 MALL 的真实有效工作集，记录缓存状态；反复
-解码一小 tile 或重复合成同一内容不自动代表 cold inference streaming。
+按确认的推理场景准备权重工作集并记录缓存状态。可另做大于 MALL 的压力测试，
+但它是诊断条件，不是主要验收负载；反复解码小 tile 或复制同一内容不自动代表
+cold inference streaming。
 
 rocprofv3 检查 dispatch、host/device copies 和 kernel timeline；rocprof-compute
 检查 dependency/issue wait、VALU、occupancy、LDS bandwidth/bank conflicts、L2

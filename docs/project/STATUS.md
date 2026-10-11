@@ -7,12 +7,14 @@
 当前目标：贴近真实预压缩权重计算场景的 AMD 解码优化，随后再融合 GEMM。
 实际未优化 hipANS 的已有工程测量在两台机器均已返回，但此前 replicas 饱和
 实验不再作为主要场景验收。错误 scalar baseline 已撤销，不作为对照。
-新的 R0–R3 交付仅完成计划；没有启动新实验、修改 kernel 或提交新 Slurm 作业。
+S1 的 R0–R3 已并入战略计划。R0 已完成上游配置与 safetensors header 的只读核查，
+证据支持 GLM-5.2-FP8 dense projection 作为推荐候选；等待用户确认后才提取新权重。
+没有启动新性能实验、修改 kernel 或提交新 Slurm 作业。
 
 | 阶段 | 状态 | 实际进展 | 下一验收点 |
 |---|---|---|---|
-| S0：真实负载 | 工程输入已有；代表场景待确认 | 上游对应的原生 FP8 专家矩阵 2048×4096、8 MiB，scale 2 KiB；尚未确认目标 GEMM 的权重消费需求 | R0 提交经核实的候选矩阵及场景，用户确认 |
-| S1：片上解码 | 工程路径已验证；真实场景 baseline 未完成 | hipANS clean revision 8cc8bc2；MI300X / MI350X LDS 验证、部署诊断和 profiling 已返回；未优化 | R1–R3 完成对应场景的 artifact、baseline 与归因 |
+| S0：真实负载 | 初始来源已选 | entropyflow-lab 对齐的原生 FP8 权重；场景级矩阵候选已核实，等待确认 | 确认 S1/R0 的代表场景 |
+| S1：片上解码 | 真实场景 baseline 未完成 | hipANS clean revision 8cc8bc2；两机已有的是工程验证与资源诊断，不是新场景结果 | 确认 R0 后逐步完成 artifact、baseline 与归因 |
 | S2：解码+GEMM | 未开始 | 尚无 GEMM 消费者和融合流水线 | 依据 S1 场景证据另行规划 |
 | S3：部署验证 | 未开始 | 格式及模型扩展另行规划 | 完整推理价值验证 |
 
@@ -22,16 +24,28 @@
 
 | 节点 | 状态 | 实际进展 / 下一验收点 |
 |---|---|---|
-| R0：确认权重与计算场景 | 已规划，待核实 | 候选为上游 DeepSeek-V4-Flash-Base / GLM-5.2-FP8 的实际矩阵；尚未核实新 tensor 名、shape 和适用计算；先提交 1–2 个候选给用户确认 |
-| R1：场景 artifact 与正确性 | 未开始 | 现有 8 MiB artifact 可复用工程路径，不代表新场景已经完成；确认 R0 后再提取新权重 |
+| R0：确认权重与计算场景 | 元数据核实完成，待用户确认负载 | 推荐 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；替代为现有 DeepSeek-V4-Flash-Base routed expert；候选细节见下表 |
+| R1：场景 artifact 与正确性 | 未开始 | 现有 8 MiB artifact 可复用工程路径，不代表新场景已经完成；确认后提取新权重并适配其 scale 元数据 |
 | R2：两机场景 baseline | 未开始 | 已有二机测量仅作诊断；需要按确认场景测量；优先 MI350X，MI300X 独立记录 |
 | R3：瓶颈证据及建议 | 未开始 | 已有 counters 可帮助准备分析，不可直接替代新场景 profiling |
 
-R0 需确定 prefill / decode 等推理阶段、输入规模、权重矩阵角色，以及目标
-GEMM 的 tile 消费与复用需求。当前 CLI 不包含 activation、token 或 GEMM
-消费者，因此尚不能证明其线性遍历就是目标推理的访问过程。
-本轮优先原生 FP8、不使用 4-bit；BF16 进入实验前需单独明确可逆符号组织。
-下一个反馈点是 R0 候选及理由确认，不自动开始融合或算法优化。
+R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
+shard 的有界 header range；未下载 checkpoint 权重 payload，也未写入 entropyflow-lab
+或其 cache。
+
+| 候选 | 已核实事实 | 场景适配判断 |
+|---|---|---|
+| 推荐：GLM-5.2-FP8 layer 0 `model.layers.0.mlp.gate_proj.weight` | `zai-org/GLM-5.2-FP8@f33c6dc501ee5a2c7e35155653b1b1abbc320951`；F8_E4M3 `[12288,6144]`，75,497,472 bytes = 72 MiB；伴随 `weight_scale_inv` 为 F32 `[96,48]`（18 KiB）；配置给出 hidden 6144、intermediate 12288、前 3 层 dense、FP8 block 128×128 | batch 1、prompt 4096 的 prefill projection 可表示为 M=4096、K=6144、N=12288。真实 dense MLP 矩阵，规模比现有 8 MiB 输入更适合大层测量。4096-token prefill 取自论文评估范围；模型和权重不同于论文，不构成复现 |
+| 替代：DeepSeek-V4-Flash-Base layer 0 expert 10 `layers.0.ffn.experts.10.w1.weight` | 已有 artifact 确认 F8_E4M3 `[2048,4096]`、8 MiB；256 routed experts，每 token top-6 | 与上游和现有工具链最直接对应，但只对应动态路由的一个 expert；是否被实际 token 选中取决于 router |
+
+推荐首轮只取 GLM layer 0 的 `gate_proj`，不代表整个 MLP；scale 18 KiB 随 artifact
+保留。checkpoint 使用 `weight_scale_inv`，现有 DeepSeek 提取脚本假定 companion
+命名为 `.scale`，R1 需按真实布局处理。目标 prefill GEMM 中，完整矩阵作用于
+M=4096 个 token；具体融合 kernel 对权重 tile 的复用/重复解码次数尚未确定，不能
+据此声称每个 tile 在真实 GEMM 中只解码一次。独立 LDS 丢弃测量仅回答解码代理阶段。
+
+本轮优先原生 FP8、不使用 4-bit；若改用 BF16，需先明确可逆符号组织。下一个反馈点
+是确认推荐的 GLM workload 或改选 DeepSeek expert，之后继续 R1。
 
 ## 已有工程诊断：H0–H3
 
