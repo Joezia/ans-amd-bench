@@ -27,7 +27,7 @@ MI350X artifact 与 LDS 逐位验证完成。R2 的 MI300X 单矩阵主测量及
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
 | R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
 | R2：两机场景 baseline | MI300X 完成；MI350X 排队 | job 109848 已完成：单矩阵 decode→LDS 276.39 GB/s，raw→LDS 507.63 GB/s；replica 4/16/64 单独记录为辅助诊断；MI350X job 109847 仍排队 |
-| R3：瓶颈证据及建议 | 两机作业已提交 | MI300X job 109852 排队；MI350X job 109853 依赖 R2 job 109847 成功完成后运行；均使用 GLM 单矩阵 R2 主配置 |
+| R3：瓶颈证据及建议 | 两机作业已提交 | MI300X job 109852 排队；MI350X job 109853 依赖 R2 job 109847 成功完成后运行；follow-up job 109854 等待三项作业结束后记录状态并执行可用的 counter dispatch 分析 |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
 shard 的有界 header range；未下载 checkpoint 权重 payload，也未写入 entropyflow-lab
@@ -78,6 +78,10 @@ R3 MI300X profiling job 109852 已提交，目前 PENDING (Resources)，计划�
 依赖 R2 job 109847 成功完成后运行，计划输出至
 `results/profiling/lds-r3-glm-mi350x-109853/`。两者插桩计时只用于诊断；R3 不把
 replicas 当作主要场景。
+低资源后续 job 109854（devel，1 CPU、无 GPU）依赖 R2/R3 三项作业全部终止后启动，
+写出 `results/profiling/lds-s1-followup-109854/handoff.tsv`，并在 counter 数据和
+rocprof-compute 可用时调用现有 `scripts/analyze_lds_profile.sh`。此处使用 Slurm 依赖
+作事件触发，不在登录节点运行周期轮询。
 
 MI300X R2 的主要配置为一个 72 MiB 权重（replicas=1）、128 threads、grid
 multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel 时间为
@@ -93,6 +97,7 @@ multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel �
 | MI350X / gfx950 | 109847 | PENDING (Resources) | 排队中；stdout/stderr 为 `results/slurm-lds-r2-glm-mi350x-109847.out/.err` |
 | MI300X / gfx942 | 109852 | PENDING (Resources) | R3 counters / timeline；stdout/stderr 为 `results/slurm-lds-r3-glm-mi300x-109852.out/.err` |
 | MI350X / gfx950 | 109853 | PENDING (Dependency) | R3 counters / timeline，afterok:109847；stdout/stderr 为 `results/slurm-lds-r3-glm-mi350x-109853.out/.err` |
+| CPU follow-up / devel | 109854 | PENDING (Dependency) | afterany:109847:109852:109853；记录三项作业状态并尝试生成 counter dispatch analysis |
 | MI300X / gfx942 | 109618 | COMPLETED (0:0)，3 分 20 秒，tn1-003-002 | results/lds_baseline.json；docs/LDS_BASELINE_REPORT.md |
 | MI350X / gfx950 | 109666 | COMPLETED (0:0)，3 分 5 秒，tn1-004-001 | results/lds_baseline_mi350x.json；docs/LDS_BASELINE_REPORT_MI350X.md |
 
