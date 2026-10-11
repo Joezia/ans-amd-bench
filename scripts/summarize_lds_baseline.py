@@ -3,10 +3,23 @@
 import argparse
 import json
 import os
+import re
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+def metrics(text):
+    result, headings = {}, []
+    for line in text.splitlines():
+        if not line.startswith('│'):
+            continue
+        fields = [field.strip() for field in line.split('│')[1:-1]]
+        if fields and fields[0] == 'Metric_ID':
+            headings = fields
+        elif fields and re.fullmatch(r'\d+\.\d+\.\d+', fields[0]):
+            result[fields[0]] = dict(zip(headings, fields))
+    return result
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
@@ -39,6 +52,12 @@ def main():
         availability[label] = path.read_text() if path.exists() else 'not collected'
     summary['tool_availability'] = availability
     summary['profiling_analysis_status'] = 'raw counters/timeline collected where available; attribution pending'
+    analysis_path = a.run / 'profile-default/analysis.txt'
+    summary['official_counter_metrics'] = metrics(analysis_path.read_text()) if analysis_path.exists() else {}
+    dispatch_path = a.run / 'profile-default/analysis-dispatch.txt'
+    summary['counter_scope'] = {'configuration': 'default 128 threads, grid multiplier 4, single queue, replicas 256',
+                              'dispatch': int(dispatch_path.read_text()) if dispatch_path.exists() else None,
+                              'not_selected_multi_queue_configuration': True}
     target = Path(os.environ.get('LDS_RESULT_FILE', str(ROOT / 'results/lds_baseline.json')))
     temporary = target.with_suffix('.json.pending')
     temporary.write_text(json.dumps(summary, indent=2) + '\n')
@@ -92,6 +111,18 @@ spread={summary['confirmation_spread_fraction']:.2%}。
 证据目录：{a.run}。所有部署案例、失败 stderr、hash 与 provenance 存于正式 JSON。
 """
     report_path = Path(os.environ.get('LDS_REPORT_FILE', str(ROOT / 'docs/LDS_BASELINE_REPORT.md')))
+    counters = summary['official_counter_metrics']
+    if counters:
+        report += '\n## 单队列资源证据（不是上述最佳多队列配置）\n\n'
+        report += '仅分析默认 128 threads、grid multiplier=4、streams=1 的末次 decoder dispatch；\n'
+        report += '不将重放 counters 当作未插桩吞吐，也不把这些值外推到最佳 384-thread/4-queue 配置。\n\n'
+        report += '| Metric ID | 指标 | Avg | 单位 | Percent of Peak |\n|---|---|---|---|---|\n'
+        for identifier in ['2.1.8', '2.1.10', '2.1.16', '2.1.21', '6.2.8', '7.2.4', '17.6.6', '17.6.12']:
+            row = counters.get(identifier, {})
+            if row:
+                report += f"| {identifier} | {row.get('Metric', '')} | {row.get('Avg', '')} | {row.get('Unit', '')} | {row.get('Percent of Peak', '—')} |\n"
+        report += '\n工具报告的 L2–HBM interface bandwidth 保留原单位标签，不等同于独立实测 HBM pin 峰值。\n'
+        report += 'Active CUs 是工具标记 deprecated 的指标；occupancy 及调度拒绝比例不是算法上限的证明。\n'
     report_path.write_text(report)
     # Concurrent machine jobs publish their own results/reports, never rewrite
     # the shared strategic/tactical status document with a read/modify/write race.
