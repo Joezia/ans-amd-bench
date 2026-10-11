@@ -36,6 +36,8 @@ def main():
     p.add_argument("--repo", default="deepseek-ai/DeepSeek-V4-Flash-Base")
     p.add_argument("--revision", default="8855555deef230a27a21a8d6f294b7b7497759b6")
     p.add_argument("--tensor", default="layers.0.ffn.experts.10.w1.weight")
+    p.add_argument("--scale-tensor", help="companion scale tensor (default: <tensor stem>.scale)")
+    p.add_argument("--model-id", default="dsv4-flash-base")
     p.add_argument("--index", required=True, type=Path, help="read-only cached safetensors index")
     p.add_argument("--output", required=True, type=Path)
     p.add_argument("--token-file", type=Path, help="optional credential; contents are never logged")
@@ -55,9 +57,12 @@ def main():
     weight = header[a.tensor]
     if weight["dtype"] not in ("F8_E4M3", "F8_E5M2") or len(weight["shape"]) != 2:
         raise ValueError(f"expected native FP8 matrix, got {weight}")
-    names = [a.tensor, a.tensor.removesuffix(".weight") + ".scale"]
+    scale_name = a.scale_tensor or (a.tensor.removesuffix(".weight") + ".scale")
+    names = [a.tensor, scale_name]
+    if any(name not in header or name not in index["weight_map"] for name in names):
+        raise ValueError(f"weight and companion scale must both be present in the selected shard: {names}")
     a.output.mkdir(parents=True, exist_ok=True)
-    if (a.output / "source.json").exists():
+    if any((a.output / name).exists() for name in ("source.json", "weights.bin", "scales.bin")):
         raise ValueError("output already has a source manifest; choose a new directory")
     extracted = {}
     for name, filename in zip(names, ["weights.bin", "scales.bin"]):
@@ -73,7 +78,7 @@ def main():
             f.write(content)
         extracted[name] = {**entry, "file": filename, "bytes": len(content),
                            "sha256": hashlib.sha256(content).hexdigest()}
-    manifest = {"schema": "lds-weight-source-v1", "model_id": "dsv4-flash-base",
+    manifest = {"schema": "lds-weight-source-v1", "model_id": a.model_id,
                 "hf_repo": a.repo, "revision": a.revision, "tensor_name": a.tensor,
                 "shard": shard, "source": "native", "conversion": "none",
                 "encoding": weight["dtype"], "shape": weight["shape"],
