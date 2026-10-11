@@ -39,5 +39,14 @@ class ArtifactTests(unittest.TestCase):
         self.assertIn('hipStreamWaitEvent(stream,begin,0)', code)
         self.assertIn('hipStreamWaitEvent(control,finished[s],0)', code)
 
+    def test_machine_outputs_are_isolated(self):
+        code = (ROOT / 'scripts/job_lds_mi350.sh').read_text()
+        for path in ['bin/hipans_lds_bench_mi350', 'build-hipans-mi350',
+                     'results/lds_baseline_mi350x.json', 'docs/LDS_BASELINE_REPORT_MI350X.md']:
+            self.assertIn(path, code)
+        self.assertIn('--output-dir', code)
+        for path in ['scripts/run_lds_bench.py', 'scripts/prepare_lds_artifact.py', 'tests/run_lds_gpu_cases.py']:
+            self.assertIn('HIPANS_LDS_BINARY', (ROOT / path).read_text())
+
 if __name__ == '__main__':
     unittest.main()

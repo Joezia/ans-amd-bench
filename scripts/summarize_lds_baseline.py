@@ -2,6 +2,8 @@
 """Publish only the verified actual-hipANS result and regenerate the baseline report."""
 import argparse
 import json
+import os
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,20 +13,36 @@ def main():
     p.add_argument('--run', required=True, type=Path, help='new hipans-lds job directory')
     a = p.parse_args()
     summary = json.loads((a.run / 'sweep/summary.json').read_text())
+    rocm_root = Path(subprocess.check_output(['hipconfig', '--rocmpath'], text=True).strip())
+    rocm_version_file = rocm_root / '.info/version'
+    hip_version = subprocess.check_output(['hipconfig', '--version'], text=True).strip()
+    # Early records used hipconfig --version in the ROCm field. Preserve that
+    # observed HIP value and explicitly correct only the metadata, not timings.
+    if rocm_version_file.exists():
+        for record in summary['records'] + summary['confirmation'] + [summary['raw_matched']]:
+            provenance = record.get('provenance', {})
+            if provenance.get('ROCm_version') == hip_version:
+                provenance['HIP_version'] = hip_version
+                provenance['ROCm_version'] = rocm_version_file.read_text().strip()
+                provenance['ROCm_version_source'] = str(rocm_version_file)
+                provenance['metadata_correction'] = 'original runner labelled HIP version as ROCm; timings unchanged'
     validation = json.loads((a.run / 'sweep/gpu-cases/validation.json').read_text())
     isa = json.loads((a.run / 'sweep/isa.json').read_text())
     assert summary['actual_hipANS'] and len(validation) == 70
     assert all(r['verified_actual_LDS'] for r in validation) and isa['discard_store_retention_pass']
     summary['gpu_validation'] = validation
     summary['isa'] = isa
-    summary['job_id'] = a.run.name.removeprefix('hipans-lds-')
+    summary['job_id'] = a.run.name.rsplit('-', 1)[-1]
     availability = {}
     for label in ['default', 'selected']:
         path = a.run / ('profile-' + label) / 'availability.tsv'
         availability[label] = path.read_text() if path.exists() else 'not collected'
     summary['tool_availability'] = availability
     summary['profiling_analysis_status'] = 'raw counters/timeline collected where available; attribution pending'
-    (ROOT / 'results/lds_baseline.json').write_text(json.dumps(summary, indent=2) + '\n')
+    target = Path(os.environ.get('LDS_RESULT_FILE', str(ROOT / 'results/lds_baseline.json')))
+    temporary = target.with_suffix('.json.pending')
+    temporary.write_text(json.dumps(summary, indent=2) + '\n')
+    temporary.replace(target)
     launch = summary['selected_launch']
     baseline = summary['confirmation'][0]
     rate = summary['effective_LDS_GBps']
@@ -32,7 +50,7 @@ def main():
     for record in summary['records']:
         if record['stage'] in ['workload', 'selected-workload', 'confirmation', 'raw-matched'] and record['status'] == 'ok':
             rows.append(f"| {record['stage']} | {record['replicas']} | {record['effective_LDS_GBps']:.3f} | {record['decode_ms']['median']:.6f} |")
-    report = f"""# 当前 hipANS → LDS：S1 baseline
+    report = f"""# {summary.get('machine', 'mi300x')} 当前 hipANS → LDS：S1 baseline
 
 Slurm job {summary['job_id']}，真实 hipANS 原生 archive 与实际 LDS 验证通过。
 错误 scalar baseline 已覆盖，不作为参考。
@@ -69,16 +87,14 @@ spread={summary['confirmation_spread_fraction']:.2%}。
 - 70 项 GPU 边界验证通过，14 个 timed kernel 保留 ds_write_b8，无全局输出。
 - launch 理论资源不等于实测 occupancy；测试范围的最大值不等于数学极限。
 - Profiler 插桩/重放会改变调度，正式吞吐只使用未插桩记录。
-  counters/timeline 可用项见 results/lds_baseline.json；硬件归因尚待分析。
+  counters/timeline 可用项见 {target.name}；硬件归因尚待分析。
 
 证据目录：{a.run}。所有部署案例、失败 stderr、hash 与 provenance 存于正式 JSON。
 """
-    (ROOT / 'docs/LDS_BASELINE_REPORT.md').write_text(report)
-    status = ROOT / 'docs/project/STATUS.md'
-    text = status.read_text().replace('当前等待 GPU 资源。', 'GPU 测量已返回；counter 归因待分析。')
-    text = text.replace('Slurm job **109618** 已提交到 mi3001x', f"Slurm job **{summary['job_id']}** 已执行于 mi3001x")
-    text += f"\n## 最新实测返回\n\nJob {summary['job_id']}：hipANS→LDS {rate:.3f} GB/s；70 项 GPU 验证和 ISA 审核通过。\nH1 完成；H2 sweep 已返回；H3 重复确认已返回，资源平台验收={summary['workload_plateau_within_5_percent']}，\n硬件 counter 归因仍待分析。S1 性能优化与 S2 融合尚未开始。\n"
-    status.write_text(text)
+    report_path = Path(os.environ.get('LDS_REPORT_FILE', str(ROOT / 'docs/LDS_BASELINE_REPORT.md')))
+    report_path.write_text(report)
+    # Concurrent machine jobs publish their own results/reports, never rewrite
+    # the shared strategic/tactical status document with a read/modify/write race.
     print(json.dumps({'effective_LDS_GBps': rate, 'job_id': summary['job_id']}))
 
 if __name__ == '__main__':

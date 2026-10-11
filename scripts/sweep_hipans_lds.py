@@ -18,7 +18,7 @@ def main():
     subprocess.run([sys.executable, str(ROOT / 'tests/run_lds_gpu_cases.py'),
                     str(a.output / 'gpu-cases')], check=True)
     isa = subprocess.check_output([sys.executable, str(ROOT / 'scripts/audit_lds_isa.py'),
-        str(ROOT / 'build-hipans-lds/hipans_lds_bench-hip-amdgcn-amd-amdhsa-gfx942.s')], text=True)
+        os.environ.get('HIPANS_LDS_ISA', str(ROOT / 'build-hipans-lds/hipans_lds_bench-hip-amdgcn-amd-amdhsa-gfx942.s'))], text=True)
     (a.output / 'isa.json').write_text(isa)
     records = []
     def run(stage, replicas=256, threads=128, grid=4, streams=1, mode='decode', iters=30):
@@ -53,13 +53,14 @@ def main():
     values = [r['effective_LDS_GBps'] for r in confirmations]
     delta = abs(boundary[-1]['effective_LDS_GBps'] / boundary[-2]['effective_LDS_GBps'] - 1)
     summary = {'schema': 'hipans-s1-baseline-v1', 'status': 'measured', 'actual_hipANS': True,
+        'machine': os.environ.get('LDS_MACHINE', 'mi300x'),
         'selected_launch': best['launch'], 'effective_LDS_GBps': statistics.median(values),
         'confirmation_GBps': values, 'confirmation_spread_fraction': (max(values)-min(values))/statistics.median(values),
         'workload_boundary_delta_fraction': delta, 'workload_plateau_within_5_percent': delta <= .05,
         'claim': 'confirmed best in tested envelope; not mathematical ceiling',
         'raw_matched': raw, 'confirmation': confirmations, 'records': records}
     (a.output / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
-    target = ROOT / 'results/lds_baseline.json'
+    target = Path(os.environ.get('LDS_RESULT_FILE', str(ROOT / 'results/lds_baseline.json')))
     temporary = target.with_suffix('.json.pending')
     temporary.write_text(json.dumps(summary, indent=2) + '\n')
     temporary.replace(target)

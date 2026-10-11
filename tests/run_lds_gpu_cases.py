@@ -1,5 +1,6 @@
 """GPU correctness cases for the actual native hipANS encoder and LDS decoder."""
 import json
+import os
 from pathlib import Path
 import random
 import subprocess
@@ -18,7 +19,7 @@ results = []
 for name, rows, cols, data in cases:
     raw, artifact = base / f'{name}.bin', base / f'{name}.ans'
     raw.write_bytes(data)
-    args = [str(ROOT / 'bin/hipans_lds_bench'), '--artifact', str(artifact),
+    args = [os.environ.get('HIPANS_LDS_BINARY', str(ROOT / 'bin/hipans_lds_bench')), '--artifact', str(artifact),
             '--reference', str(raw), '--rows', str(rows), '--cols', str(cols), '--warmup', '0', '--iters', '1']
     prepare = json.loads(subprocess.check_output(args + ['--prepare', '--replace'], text=True))
     assert prepare['verified_actual_LDS']

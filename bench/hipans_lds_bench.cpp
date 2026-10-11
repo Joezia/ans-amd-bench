@@ -19,6 +19,9 @@
 #ifndef HIPANS_LDS_BUILD_FLAGS
 #define HIPANS_LDS_BUILD_FLAGS "unknown"
 #endif
+#ifndef HIPANS_GPU_ARCH_BUILT
+#define HIPANS_GPU_ARCH_BUILT "gfx942"
+#endif
 namespace ha = hipans;
 static void check(hipError_t e) { if(e!=hipSuccess) throw std::runtime_error(hipGetErrorString(e)); }
 template<class T> struct Device {
@@ -172,8 +175,8 @@ static ha::ANSCoalescedHeader validate(const std::vector<uint8_t>& b,size_t expe
 int main(int argc,char**argv) {try {
   auto a=options(argc,argv);auto raw=read(a.reference);auto tiled=tiles(raw,a.rows,a.cols);
   int dev;check(hipGetDevice(&dev));hipDeviceProp_t props;check(hipGetDeviceProperties(&props,dev));
-  if(props.warpSize!=64||std::string(props.gcnArchName).rfind("gfx942",0)!=0)
-    throw std::runtime_error("S1 measurement requires MI300X gfx942 wave64");
+  if(props.warpSize!=64||std::string(props.gcnArchName).rfind(HIPANS_GPU_ARCH_BUILT,0)!=0)
+    throw std::runtime_error("GPU must match the compiled S1 wave64 target");
   hipStream_t control;check(hipStreamCreateWithFlags(&control,hipStreamNonBlocking));
   std::vector<uint8_t> archive;
   if(a.prepare) {
