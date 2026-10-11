@@ -6,15 +6,15 @@
 
 当前目标：贴近真实预压缩权重计算场景的 AMD 解码优化，随后再融合 GEMM。
 实际未优化 hipANS 的已有工程测量在两台机器均已返回，但此前 replicas 饱和
-实验不再作为主要场景验收。错误 scalar baseline 已撤销，不作为对照。
+实验不作为主要场景验收。错误 scalar baseline 已撤销，不作为对照。
 S1 的 R0–R3 已并入战略计划。用户已选定 GLM-5.2-FP8 dense projection；R1 的
-MI350X artifact 与 LDS 逐位验证完成。R2 正在准备两机单矩阵主测量，以及单独标注的
-replica 辅助诊断。没有修改 decoder kernel。
+MI350X artifact 与 LDS 逐位验证完成。R2 的 MI300X 单矩阵主测量及辅助 replica
+诊断已完成；MI350X 作业仍在队列。尚未修改 decoder kernel。
 
 | 阶段 | 状态 | 实际进展 | 下一验收点 |
 |---|---|---|---|
 | S0：真实负载 | 首个场景已选 | GLM-5.2-FP8 layer 0 dense MLP gate projection，native F8_E4M3 | 在 R2 测量确认场景解码表现 |
-| S1：片上解码 | R1 完成；R2 准备中 | GLM artifact 已在 MI350X 完成逐位 LDS 验证；两机旧结果仍只作工程诊断 | 同一 artifact 上跑两机单矩阵主测量及辅助 replica 诊断 |
+| S1：片上解码 | R1 完成；R2 部分完成 | GLM artifact 已在 MI350X 完成逐位 LDS 验证；MI300X 场景测量已返回，MI350X 在队列中 | 完成 MI350X 对照，随后完成两机 R3 profiling 归因 |
 | S2：解码+GEMM | 未开始 | 尚无 GEMM 消费者和融合流水线 | 依据 S1 场景证据另行规划 |
 | S3：部署验证 | 未开始 | 格式及模型扩展另行规划 | 完整推理价值验证 |
 
@@ -26,8 +26,8 @@ replica 辅助诊断。没有修改 decoder kernel。
 |---|---|---|
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
 | R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
-| R2：两机场景 baseline | 两机作业排队 | MI350X job 109847、MI300X job 109848；单矩阵 decode 为主结果、raw→LDS 作控制，replica 4/16/64 单独作为辅助诊断 |
-| R3：瓶颈证据及建议 | 未开始 | 已有 counters 可帮助准备分析，不可直接替代新场景 profiling |
+| R2：两机场景 baseline | MI300X 完成；MI350X 排队 | job 109848 已完成：单矩阵 decode→LDS 276.39 GB/s，raw→LDS 507.63 GB/s；replica 4/16/64 单独记录为辅助诊断；MI350X job 109847 仍排队 |
+| R3：瓶颈证据及建议 | 未开始 | 需针对 GLM 单矩阵 R2 配置采集 counters / timeline；旧 workload 的 profiling 只能作背景，不替代此阶段证据 |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
 shard 的有界 header range；未下载 checkpoint 权重 payload，也未写入 entropyflow-lab
@@ -67,16 +67,26 @@ M=4096 个 token；具体融合 kernel 对权重 tile 的复用/重复解码次�
 
 ## 作业与已返回结果
 
-2026-10-11 使用 sacct 核实：两个测量作业均 COMPLETED，ExitCode 0:0。
-共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2 两机作业
-109847 / 109848 均已提交，目前均因 GPU 资源占用而 PENDING (Resources)。
+2026-10-11 使用 sacct 核实：两个历史测量作业均 COMPLETED，ExitCode 0:0。
+共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2 的
+MI300X job 109848 已完成，MI350X job 109847 仍因 GPU 资源占用而 PENDING (Resources)。
 R2 stdout/stderr 路径分别为 `results/slurm-lds-r2-glm-mi350x-%j.out/.err` 和
-`results/slurm-lds-r2-glm-mi300x-%j.out/.err`；详细结果将写入
-`results/profiling/lds-r2-glm-mi350x-<jobid>/` 与 `results/profiling/lds-r2-glm-mi300x-<jobid>/`。
-R3 profiler 作业尚未提交。
+`results/slurm-lds-r2-glm-mi300x-%j.out/.err`；结果位于
+`results/profiling/lds-r2-glm-mi300x-109848/summary.json`，MI350X 结果待作业返回。
+R3 将按 GLM 单矩阵主配置采集 profiling，而不把 replicas 当作主要场景。
+
+MI300X R2 的主要配置为一个 72 MiB 权重（replicas=1）、128 threads、grid
+multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel 时间为
+0.273152 ms，按解码后 75,497,472 bytes 计算有效 LDS 写入速率为 276.394 GB/s。
+匹配的 raw→LDS 控制为 0.148724 ms / 507.635 GB/s。两者都只计 decoder 或 raw
+写入 LDS 的 kernel，不包含 GEMM、H2D、ANS 查表准备；scale 未被消费，LDS 内容在
+测量后丢弃。replica 结果仅作为辅助供给/缓存诊断：4、16、64 份分别为 303.605、
+258.781、259.847 GB/s；它们不是实际模型参数数或 batch。详见上述 `summary.json`。
 
 | 机器 | 作业 | 状态 / 耗时 | 正式结果 / 报告 |
 |---|---|---|---|
+| MI300X / gfx942 | 109848 | COMPLETED (0:0)，14 秒，tn1-003-002 | `results/profiling/lds-r2-glm-mi300x-109848/summary.json`；主测量 decode→LDS 276.394 GB/s，raw→LDS 507.635 GB/s |
+| MI350X / gfx950 | 109847 | PENDING (Resources) | 排队中；stdout/stderr 为 `results/slurm-lds-r2-glm-mi350x-109847.out/.err` |
 | MI300X / gfx942 | 109618 | COMPLETED (0:0)，3 分 20 秒，tn1-003-002 | results/lds_baseline.json；docs/LDS_BASELINE_REPORT.md |
 | MI350X / gfx950 | 109666 | COMPLETED (0:0)，3 分 5 秒，tn1-004-001 | results/lds_baseline_mi350x.json；docs/LDS_BASELINE_REPORT_MI350X.md |
 
