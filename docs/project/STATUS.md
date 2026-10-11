@@ -7,14 +7,14 @@
 当前目标：贴近真实预压缩权重计算场景的 AMD 解码优化，随后再融合 GEMM。
 实际未优化 hipANS 的已有工程测量在两台机器均已返回，但此前 replicas 饱和
 实验不再作为主要场景验收。错误 scalar baseline 已撤销，不作为对照。
-S1 的 R0–R3 已并入战略计划。R0 已完成并由用户选定 GLM-5.2-FP8 dense projection；
-目标权重和 scale 已提取。R1 的 MI350X LDS artifact/正确性作业正在排队；尚无新测量返回。
-没有修改 decoder kernel，也没有启动 replica sweep。
+S1 的 R0–R3 已并入战略计划。用户已选定 GLM-5.2-FP8 dense projection；R1 的
+MI350X artifact 与 LDS 逐位验证完成。R2 正在准备两机单矩阵主测量，以及单独标注的
+replica 辅助诊断。没有修改 decoder kernel。
 
 | 阶段 | 状态 | 实际进展 | 下一验收点 |
 |---|---|---|---|
-| S0：真实负载 | 首个场景已选 | GLM-5.2-FP8 layer 0 dense MLP gate projection，native F8_E4M3 | 依 S1/R1 生成可复用 artifact |
-| S1：片上解码 | R1 进行中 | 原权重/scale 已提取，MI350X 实际 LDS 验证 job 排队；两机旧结果仍只作工程诊断 | R1 通过后进行 R2 场景 baseline，replica sweep 作为辅助 |
+| S0：真实负载 | 首个场景已选 | GLM-5.2-FP8 layer 0 dense MLP gate projection，native F8_E4M3 | 在 R2 测量确认场景解码表现 |
+| S1：片上解码 | R1 完成；R2 准备中 | GLM artifact 已在 MI350X 完成逐位 LDS 验证；两机旧结果仍只作工程诊断 | 同一 artifact 上跑两机单矩阵主测量及辅助 replica 诊断 |
 | S2：解码+GEMM | 未开始 | 尚无 GEMM 消费者和融合流水线 | 依据 S1 场景证据另行规划 |
 | S3：部署验证 | 未开始 | 格式及模型扩展另行规划 | 完整推理价值验证 |
 
@@ -25,8 +25,8 @@ S1 的 R0–R3 已并入战略计划。R0 已完成并由用户选定 GLM-5.2-FP
 | 节点 | 状态 | 实际进展 / 下一验收点 |
 |---|---|---|
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
-| R1：场景 artifact 与正确性 | GPU 验证排队 | 72 MiB 原生权重及 18 KiB scale 已提取并 hash 校验；MI350X job 109840 等待资源 |
-| R2：两机场景 baseline | 未开始 | 已有二机测量仅作诊断；需要按确认场景测量；优先 MI350X，MI300X 独立记录 |
+| R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
+| R2：两机场景 baseline | 准备中 | 使用一份真实矩阵作为主结果、raw→LDS 作控制；replica 4/16/64 独立列为辅助诊断；MI350X 优先，MI300X 单独记录 |
 | R3：瓶颈证据及建议 | 未开始 | 已有 counters 可帮助准备分析，不可直接替代新场景 profiling |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
@@ -35,21 +35,23 @@ shard 的有界 header range；未下载 checkpoint 权重 payload，也未写�
 
 | 候选 | 已核实事实 | 场景适配判断 |
 |---|---|---|
-| 推荐：GLM-5.2-FP8 layer 0 `model.layers.0.mlp.gate_proj.weight` | `zai-org/GLM-5.2-FP8@f33c6dc501ee5a2c7e35155653b1b1abbc320951`；F8_E4M3 `[12288,6144]`，75,497,472 bytes = 72 MiB；伴随 `weight_scale_inv` 为 F32 `[96,48]`（18 KiB）；配置给出 hidden 6144、intermediate 12288、前 3 层 dense、FP8 block 128×128 | batch 1、prompt 4096 的 prefill projection 可表示为 M=4096、K=6144、N=12288。真实 dense MLP 矩阵，规模比现有 8 MiB 输入更适合大层测量。4096-token prefill 取自论文评估范围；模型和权重不同于论文，不构成复现 |
+| 已选：GLM-5.2-FP8 layer 0 `model.layers.0.mlp.gate_proj.weight` | `zai-org/GLM-5.2-FP8@f33c6dc501ee5a2c7e35155653b1b1abbc320951`；F8_E4M3 `[12288,6144]`，75,497,472 bytes = 72 MiB；伴随 `weight_scale_inv` 为 F32 `[96,48]`（18 KiB）；配置给出 hidden 6144、intermediate 12288、前 3 层 dense、FP8 block 128×128 | batch 1、prompt 4096 的 prefill projection 可表示为 M=4096、K=6144、N=12288。真实 dense MLP 矩阵，规模比现有 8 MiB 输入更适合大层测量。4096-token prefill 取自论文评估范围；模型和权重不同于论文，不构成复现 |
 | 替代：DeepSeek-V4-Flash-Base layer 0 expert 10 `layers.0.ffn.experts.10.w1.weight` | 已有 artifact 确认 F8_E4M3 `[2048,4096]`、8 MiB；256 routed experts，每 token top-6 | 与上游和现有工具链最直接对应，但只对应动态路由的一个 expert；是否被实际 token 选中取决于 router |
 
-推荐首轮只取 GLM layer 0 的 `gate_proj`，不代表整个 MLP；scale 18 KiB 随 artifact
-保留。checkpoint 使用 `weight_scale_inv`，现有 DeepSeek 提取脚本假定 companion
-命名为 `.scale`，R1 需按真实布局处理。目标 prefill GEMM 中，完整矩阵作用于
+R1 已提取 GLM layer 0 的 `gate_proj`，不代表整个 MLP；scale 18 KiB 随 artifact
+保留。checkpoint 使用 `weight_scale_inv`，提取器支持显式指定 companion 名称。
+目标 prefill GEMM 中，完整矩阵作用于
 M=4096 个 token；具体融合 kernel 对权重 tile 的复用/重复解码次数尚未确定，不能
 据此声称每个 tile 在真实 GEMM 中只解码一次。独立 LDS 丢弃测量仅回答解码代理阶段。
 
 用户已确认 GLM workload。R1 输入目录为
 `inputs/lds/glm52-layer0-gate-proj/`（本地 ignored 数据）；解码 artifact 计划写入其
-`mi350x/` 子目录。Slurm stdout/stderr 为
-`results/slurm-lds-r1-glm-mi350x-109840.out/.err`，详细 GPU 输出目录为
-`results/profiling/lds-r1-mi350x-109840/`。当前两个 MI350X 节点及 MI300X 节点均有
-GPU 作业占用，109840 状态为 PENDING (Resources)。本轮仍只用原生 FP8，不用 4-bit。
+`mi350x/` 子目录。Slurm job 109840 在 tn1-004-001 完成（0:0，4 秒）；stdout/stderr 为
+`results/slurm-lds-r1-glm-mi350x-109840.out/.err`，完整 GPU 结果位于
+`results/profiling/lds-r1-mi350x-109840/prepare.json`。LDS 校验通过，artifact SHA-256
+为 `4dac4637306d18f6a8fdf0873bd0613819aef39e8ca8231e22165fbd7f42f900`，压缩包
+65,435,856 bytes，ANS metadata 2,433,568 bytes。prepare 阶段的 3 次短计时不是 R2
+正式吞吐结果。本轮仍只用原生 FP8，不用 4-bit。
 
 ## 已有工程诊断：H0–H3
 
@@ -66,7 +68,7 @@ GPU 作业占用，109840 状态为 PENDING (Resources)。本轮仍只用原生 
 ## 作业与已返回结果
 
 2026-10-11 使用 sacct 核实：两个测量作业均 COMPLETED，ExitCode 0:0。
-共享路径可从各节点访问，无需复制。当前为 R1 提交了一个 MI350X 验证作业；R2/R3 尚未提交。
+共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2/R3 作业状态在后续返回时更新。
 
 | 机器 | 作业 | 状态 / 耗时 | 正式结果 / 报告 |
 |---|---|---|---|
