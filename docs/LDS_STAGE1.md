@@ -1,8 +1,8 @@
 # 第一阶段：真实预压缩权重解码到 LDS
 
 这是第一阶段工程验收说明，服务于 [PLAN.md](project/PLAN.md) 的 S0/S1。
-现有 `ans_bench` 仍用于历史全局输出基线；已新增原生 FP8 的未优化 LDS 参考
-kernel 与离线 artifact，接口和已实现边界见 [LDS_CLI.md](LDS_CLI.md)。
+现有 `ans_bench` 仍用于历史全局输出基线；LDS baseline 正在使用当前 hipANS
+原生 encoder/decoder 重做，旧错误 baseline 不再参考。接口见 [LDS_CLI.md](LDS_CLI.md)。
 完整第一阶段的多工作负载、large-working-set profiling 和优化尚未完成。
 
 ## 首个可独立验收的结果
@@ -27,8 +27,8 @@ offset/state、必要的 scale 元数据已离线持久化。GPU 的计时区域
 - 每 tile/substream 的 offset、长度、初始 state、符号数量和真实压缩总字节数。
 - 负责正确性比较的原始 weight bit patterns，存于 local-only input 路径。
 
-现有 hipANS archive 带每 tile 自己的概率表；不能仅将现有输出地址改为 LDS 就宣称
-已经具有 layer codebook 或真实计算 tile 布局。准备工具必须明确这些差异，且基于
+现有 hipANS archive 每个编码 input 一张概率表；当前将一个矩阵的全部 tile
+作为一个 input，因此每矩阵共享表，不宣称整个 transformer 层共享表。准备工具必须明确这些差异，且基于
 decoder 验证实现需要的 state/metadata，不只使用论文 offset-table 的简化大小。
 
 ## Kernel 与验证要求
@@ -37,7 +37,7 @@ decoder 验证实现需要的 state/metadata，不只使用论文 offset-table �
   分别测 resident-table steady state 和包含 codebook staging 的完整 decode kernel。
 - kernel 按工作 tile 从 global memory 读压缩流，在 workgroup 的 LDS 中恢复 tile。
   可修改 `HIPANS_ROOT` 指向的 hipANS helpers/kernel（2026-10-11 用户授权），
-  本仓库的 scalar reference 保留为对照；两仓库分别提交并记录实验 provenance。
+  baseline 则直接复用未优化原实现；两仓库分别提交并记录实验 provenance。
 - timed discard 模式必须保留真实 LDS stores。使用合适的 volatile/可观察消费方式，
   并检查生成 ISA 中的 `ds_write` 以及 profiler 的 LDS 操作数量，防止编译器删掉
   无用解码/输出。sink/checksum 若处于计时区域，必须记录并用对照测量其开销。

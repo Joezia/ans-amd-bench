@@ -30,8 +30,8 @@ dense 矩阵作为后续对照。本轮排除 4-bit。独立交付范围见
 性能限制，并通过实验获得可验证的改进。
 
 S1 baseline 必须使用当前未优化 hipANS 的实际编解码实现，测量充分资源供给下
-的有效 LDS 解码吞吐；本仓库的 scalar reference 仅作参考，不具备替代基线的
-验收资格。重做范围见 [DELIVERY_HIPANS_S1_BASELINE.md](DELIVERY_HIPANS_S1_BASELINE.md)。
+的有效 LDS 解码吞吐；此前错误 baseline 被新结果覆盖，不作为参考。
+重做范围见 [DELIVERY_HIPANS_S1_BASELINE.md](DELIVERY_HIPANS_S1_BASELINE.md)。
 
 成功标准：真实权重可以正确恢复；性能指标覆盖数据供给和解码产出；优化效果
 有重复测量与硬件证据；能够明确指出进入融合阶段时剩余的瓶颈。
@@ -61,7 +61,7 @@ S1 baseline 必须使用当前未优化 hipANS 的实际编解码实现，测量
 ## 战略边界
 
 - 当前允许为上述目标修改并优化 hipANS 的解码及融合计算路径；本仓库负责
-  工作负载、测量、验证、profiling 与实验记录，也可保留独立参考实现。
+  工作负载、测量、验证、profiling 与实验记录。
 - 保留已有标准接口和历史结果作为可复查的工程资产。
 - hipANS 源码可修改，两仓库分别记录改动和提交；构建产物继续放在本仓库。
   entropyflow-lab 及其现有数据/cache 继续只读。

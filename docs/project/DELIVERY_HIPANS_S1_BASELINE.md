@@ -1,7 +1,7 @@
 # 重做 S1 baseline：当前 hipANS 的充分供给吞吐
 
 2026-10-11，取代此前 scalar reference 作为 S1 baseline 的验收资格。
-对应战略 S1。保留真实 FP8 负载与参考结果，但不以另一 codec 替代当前 hipANS。
+对应战略 S1。保留真实 FP8 输入来源；错误 baseline 由新结果覆盖，不保留为对照。
 
 ## 目标与范围
 

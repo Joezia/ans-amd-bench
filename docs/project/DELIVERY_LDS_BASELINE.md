@@ -1,5 +1,9 @@
 # 独立交付：真实权重离线 artifact 与可验证 LDS baseline
 
+本交付的旧 baseline 验收已撤销，错误结果由新 hipANS 结果覆盖，不作为参考。
+下述负载选择仍有效；当前执行节点改为
+[DELIVERY_HIPANS_S1_BASELINE.md](DELIVERY_HIPANS_S1_BASELINE.md) 的 H0–H3。
+
 对应战略 S0 / S1；2026-10-10 启动。本次不涉及 4-bit，也不包含 GEMM 融合
 或 decoder 性能优化。该交付执行时上游两个仓库均未修改，旧 `ans_bench` 接口
 保持不变。2026-10-11 起用户允许后续优化修改 hipANS；entropyflow-lab 仍只读。
