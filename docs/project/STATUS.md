@@ -26,7 +26,7 @@ replica 辅助诊断。没有修改 decoder kernel。
 |---|---|---|
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
 | R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
-| R2：两机场景 baseline | 准备中 | 使用一份真实矩阵作为主结果、raw→LDS 作控制；replica 4/16/64 独立列为辅助诊断；MI350X 优先，MI300X 单独记录 |
+| R2：两机场景 baseline | 两机作业排队 | MI350X job 109847、MI300X job 109848；单矩阵 decode 为主结果、raw→LDS 作控制，replica 4/16/64 单独作为辅助诊断 |
 | R3：瓶颈证据及建议 | 未开始 | 已有 counters 可帮助准备分析，不可直接替代新场景 profiling |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
@@ -68,7 +68,12 @@ M=4096 个 token；具体融合 kernel 对权重 tile 的复用/重复解码次�
 ## 作业与已返回结果
 
 2026-10-11 使用 sacct 核实：两个测量作业均 COMPLETED，ExitCode 0:0。
-共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2/R3 作业状态在后续返回时更新。
+共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2 两机作业
+109847 / 109848 均已提交，目前均因 GPU 资源占用而 PENDING (Resources)。
+R2 stdout/stderr 路径分别为 `results/slurm-lds-r2-glm-mi350x-%j.out/.err` 和
+`results/slurm-lds-r2-glm-mi300x-%j.out/.err`；详细结果将写入
+`results/profiling/lds-r2-glm-mi350x-<jobid>/` 与 `results/profiling/lds-r2-glm-mi300x-<jobid>/`。
+R3 profiler 作业尚未提交。
 
 | 机器 | 作业 | 状态 / 耗时 | 正式结果 / 报告 |
 |---|---|---|---|
