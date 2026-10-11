@@ -4,7 +4,7 @@ This repository contains reproducible MI210 (`gfx90a`) baselines and a
 standardized MI300X (`gfx942`) measurement/profiling workflow for hipANS:
 
 The current objective is AMD optimization for precompressed model-weight
-inference: first decode real weight tiles to LDS and profile/optimize that
+inference on MI300X and MI350X: first decode real weight tiles to LDS and profile/optimize that
 stage, then fuse ANS decoding with pipelined GEMM. The existing `ans_bench`
 measures a historical global-output byte-codec path. A separate, verified
 native-FP8 decode-to-LDS adapter directly reuses the current unoptimized hipANS
@@ -31,6 +31,7 @@ inputs, build products, raw logs, or private reference implementations.
 - [第一阶段 LDS 工程验收](docs/LDS_STAGE1.md)：预压缩输入、正确性、计时和 profiling 要求。
 - [当前独立交付计划](docs/project/DELIVERY_HIPANS_S1_BASELINE.md)：真实 hipANS LDS baseline 的范围。
 - [LDS baseline 使用说明](docs/LDS_CLI.md)：离线包、独立 CLI、验证及 Slurm 返回结果。
+- [MI350X 独立报告](docs/LDS_BASELINE_REPORT_MI350X.md)：单独 gfx950 构建、测量与 profiling，不覆盖 MI300X。
 
 ## Dependencies
 

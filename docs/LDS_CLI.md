@@ -58,3 +58,21 @@ tail -n 30 results/slurm-hipans-lds-JOBID.err
 profiling 入口 `profiling/run_lds_baseline.sh artifact.json output-dir`，
 可用 PROFILE_LDS_REPLICAS/THREADS/GRID_MULT/STREAMS 控制部署。
 完整 counters 失败会记录原因并尝试精简 counters；插桩时间不作正式吞吐。
+
+## MI350X 独立任务
+
+```bash
+sbatch -p mi3501x -N1 -n1 --gpus=1 -c4 -t 00:40:00 \
+  -o results/slurm-hipans-lds-mi350x-%j.out \
+  -e results/slurm-hipans-lds-mi350x-%j.err scripts/job_lds_mi350.sh
+```
+
+该入口在 compute node 构建 gfx950 原生库，使用独立 binary、build 与 ISA；
+artifact 保存于源数据目录的 mi350x 子目录，源权重与 scale 共享只读，不复制。
+结果为 `results/lds_baseline_mi350x.json`，报告为 `docs/LDS_BASELINE_REPORT_MI350X.md`。
+MI300X 默认入口和结果文件保持不变。
+
+通用运行器接受 HIPANS_LDS_BINARY、HIPANS_LDS_ISA、HIPANS_BUILD_DIR、
+LDS_RESULT_FILE、LDS_REPORT_FILE 与 LDS_MACHINE 环境配置；上述 launcher 会设置。
+硬件实测名称/架构写入每条 provenance，编译架构必须匹配当前 GPU。
+不同架构分别选择部署参数、解释 counters；不能使用 MI300X 峰值归一化 MI350X。
