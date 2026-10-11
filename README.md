@@ -29,7 +29,8 @@ inputs, build products, raw logs, or private reference implementations.
 - [原始 Step 0–4 产物索引](docs/project/LEGACY_STEPS.md)：定位已有代码、结果和完成边界。
 - [论文场景与数值格式](docs/PAPER_SCENARIO.md)：本地论文核对结果。
 - [第一阶段 LDS 工程验收](docs/LDS_STAGE1.md)：预压缩输入、正确性、计时和 profiling 要求。
-- [当前独立交付计划](docs/project/DELIVERY_HIPANS_S1_BASELINE.md)：真实 hipANS LDS baseline 的范围。
+- [当前独立交付计划](docs/project/DELIVERY_REAL_SCENARIO_BASELINE.md)：真实权重及推理访问需求下的 LDS baseline。
+- [已有资源供给诊断](docs/project/DELIVERY_HIPANS_S1_BASELINE.md)：实际 hipANS 测量的历史范围，不替代真实场景验收。
 - [LDS baseline 使用说明](docs/LDS_CLI.md)：离线包、独立 CLI、验证及 Slurm 返回结果。
 - [MI350X 独立报告](docs/LDS_BASELINE_REPORT_MI350X.md)：单独 gfx950 构建、测量与 profiling，不覆盖 MI300X。
 

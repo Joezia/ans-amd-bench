@@ -1,8 +1,9 @@
 # 独立交付：真实权重离线 artifact 与可验证 LDS baseline
 
 本交付的旧 baseline 验收已撤销，错误结果由新 hipANS 结果覆盖，不作为参考。
-下述负载选择仍有效；当前执行节点改为
-[DELIVERY_HIPANS_S1_BASELINE.md](DELIVERY_HIPANS_S1_BASELINE.md) 的 H0–H3。
+下述输入仍作为工程验证负载保留；H0–H3 实际 hipANS 诊断已经返回。
+当前交付转为 [真实场景 baseline](DELIVERY_REAL_SCENARIO_BASELINE.md) 的 R0–R3，
+不再把该小矩阵或它的副本集合作为主要场景验收。
 
 对应战略 S0 / S1；2026-10-10 启动。本次不涉及 4-bit，也不包含 GEMM 融合
 或 decoder 性能优化。该交付执行时上游两个仓库均未修改，旧 `ans_bench` 接口
@@ -37,7 +38,8 @@ FP8 保留 checkpoint 编码；本轮没有浮点计算，后续 MI300X GEMM 的
 
 ## 边界与下一交付
 
-8 MiB 单矩阵是缓存内实验。下一交付扩展到大于 256 MiB 的不同真实矩阵集合，
-随后进行 counter-guided A/B 优化；通过后才进入 S2 ANS+GEMM。
+8 MiB 单矩阵是工程验证输入。后续工作集由实际计算需求决定，不强制扩展到
+大于 256 MiB，也不以跨越缓存容量作为贴近真实推理的证明。下一交付先完成
+场景 baseline 与瓶颈归因，再独立规划优化及 S2 ANS+GEMM。
 具体实现、命令、job 状态和验收证据记录在 STATUS 和 LDS 使用说明中；
 本计划只记录任务布局，不记录工程实施步骤。

@@ -3,6 +3,11 @@
 2026-10-11，取代此前 scalar reference 作为 S1 baseline 的验收资格。
 对应战略 S1。保留真实 FP8 输入来源；错误 baseline 由新结果覆盖，不保留为对照。
 
+2026-10-11 场景口径更新：本文件保留为 H0–H3 工程诊断任务记录，不再作为
+当前 S1 的主要场景验收计划。后续按
+[真实场景 baseline 计划](DELIVERY_REAL_SCENARIO_BASELINE.md) 执行。
+replicas 饱和测量不是实际推理负载，也不代表 batch；已有有效测量继续保留。
+
 ## 目标与范围
 
 回答：当前未优化 hipANS 在工作量足够、计算资源充分供给的条件下，解码到 LDS
