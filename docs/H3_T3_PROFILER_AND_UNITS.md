@@ -1,8 +1,8 @@
 # H3 T3 — profiler counters, cache visibility, and bandwidth units
 
-Status: MI350X discovery/profile completed (Slurm 110303); the corrected
-MI350X probe (110307) and MI300X discovery probe (110302) are still pending
-for node resources. Existing R3 counter captures on both GPUs remain usable.
+Status: MI350X discovery/profile completed (Slurm 110303 and corrected 110307);
+the MI300X discovery probe (110302) is still pending for node resources.
+Existing R3 counter captures on both GPUs remain usable.
 This report does not treat instrumented profiler timing as a performance
 result; uninstrumented R2 HIP-event results remain authoritative.
 
@@ -15,7 +15,7 @@ counter attribution only. R2 separately verified output byte-exactly.
 
 | Device | Probe / profile | Tool result | PC sampling | Counter permissions |
 |---|---|---|---|---|
-| MI350X / gfx950 | T3 Slurm job 110303 completed, exit 0; existing R3 job 109853 | ROCm 10.0.0, rocprofiler-SDK 1.3.5, rocprofiler-compute 3.8.0; `rocprofv3 --list-avail` and the L2 counter replay succeeded | Available configurations listed: `host_trap` / time (interval 1–1,048,576) and `stochastic` / cycle (interval 256–1,048,576, power-of-two interval). T3 checked availability; it did not run a PC-sampling capture. | No permission failure in the profile logs. |
+| MI350X / gfx950 | T3 Slurm jobs 110303 and 110307 completed, exit 0; existing R3 job 109853 | ROCm 10.0.0, rocprofiler-SDK 1.3.5, rocprofiler-compute 3.8.0; `rocprofv3 --list-avail`, architecture-specific metric/block listing, L2 counter replay, and selected-dispatch analysis succeeded | Available configurations listed: `host_trap` / time (interval 1–1,048,576) and `stochastic` / cycle (interval 256–1,048,576, power-of-two interval). T3 checked availability; it did not run a PC-sampling capture. | No permission failure in the profile logs. |
 | MI300X / gfx942 | Existing R3 job 109852; T3 discovery job 110302 pending | `rocprofv3` timeline and `rocprof-compute` counter profile succeeded in R3. New architecture-specific `--list-avail` probe is pending. | Not yet independently verified for gfx942 in this T3 run. | Existing R3 profile did not report a permission failure. |
 
 `rocprofv3 --list-avail` on MI350X exposed L2 `TCC_HIT` / `TCC_MISS` and
@@ -32,7 +32,7 @@ counter reference](https://rocm.docs.amd.com/en/docs-10.1.0/reference/gpu-arch/m
 | GPU | L2 hit rate | L2-Fabric read (17.1.3) | Interface read (17.2.0, raw label) | HBM read attribution | Remote read | Direct HBM read requests |
 |---|---:|---:|---:|---:|---:|---:|
 | MI300X | 8.67% | 262.75 GB/s | 262.75 Gbps | 100% | 0% | `TCC_EA0_RDREQ_DRAM_sum` = 524,523; this capture has no width-specific count to independently turn the requests into bytes |
-| MI350X | 5.85% | 444.86 GB/s | 444.86 Gbps | 100.01%* | 0% | Re-run 110303: `TCC_EA0_RDREQ_DRAM_32B_sum` = 2,101,340 for the last decoder dispatch |
+| MI350X | 5.86% | 443.47 GB/s | 443.47 Gbps | 99.99%* | 0.01% | Re-run 110307: `TCC_EA0_RDREQ_DRAM_32B_sum` = 2,101,290 for the last decoder dispatch |
 
 \* A value just above 100% is profiler rounding/aggregation; it is not a
 physical fraction greater than 100%. The profiler's HBM-read attribution is
@@ -51,15 +51,14 @@ the metric documentation describes it as bytes divided by time. [ROCprofiler-
 compute L2 metric definitions](https://rocm.docs.amd.com/projects/rocprofiler-compute/en/docs-10.1.0/conceptual/cdna/l2-cache.html),
 [ROCm changelog](https://rocm.docs.amd.com/en/develop/release/changelog.html)
 
-The MI350X raw-counter cross-check gives the same byte-rate scale without
-relying on the unit label: 2,101,340 32-byte HBM read transactions × 32 bytes
-= 67,242,880 bytes; divided by the selected dispatch's 152,481 ns duration
-gives **440.992 decimal GB/s**. That is within 0.9% of the saved R3
-`17.1.3`/`17.2.0` value of 444.86 (separate profiler replay and counter
-aggregation). Interpreting 444.86 as gigabits/s would imply only about
-55.6 GB/s, inconsistent with the event-level HBM byte count. The defensible
-reporting convention is therefore to preserve the raw 17.2.0 label and value,
-but use bytes/s (decimal GB/s) for cross-tool bandwidth comparisons.
+The latest MI350X raw-counter cross-check gives the same byte-rate scale
+without relying on the unit label: 2,101,290 32-byte HBM read transactions ×
+32 bytes = 67,241,280 bytes; divided by the selected dispatch's 151,641 ns
+duration gives **443.424 decimal GB/s**, within 0.02% of the profiler's
+443.47 `17.1.3`/`17.2.0` value. Interpreting 443.47 as gigabits/s would imply
+about 55.4 GB/s, inconsistent with the event-level HBM byte count. The
+defensible reporting convention is therefore to preserve the raw 17.2.0 label
+and value, but use bytes/s (decimal GB/s) for cross-tool bandwidth comparisons.
 
 For MI300X, retain the raw values and this caveat; the T3 probe has not yet
 captured width-specific HBM requests on gfx942. The saved `17.1.3` and `17.2.0`
@@ -83,7 +82,7 @@ HBM traffic.
   in this run. A future controlled cache-residency experiment or a newer
   supported counter path is needed before claiming MALL hit rate.
 
-Raw captures (git-ignored) are under `results/profiling/h3-t3-mi350x-110303/`
-and the earlier R3 directories documented in
+Raw captures (git-ignored) are under `results/profiling/h3-t3-mi350x-110303/`,
+`results/profiling/h3-t3-mi350x-110307/`, and the earlier R3 directories documented in
 [`GLM_LDS_PROFILING_REPORT.md`](GLM_LDS_PROFILING_REPORT.md). The T3 probe
 launcher is [`job_h3_t3_probe.sh`](../scripts/job_h3_t3_probe.sh).

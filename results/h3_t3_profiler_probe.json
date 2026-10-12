@@ -23,12 +23,13 @@
     "definition": "Bytes read by L2 from Infinity Fabric divided by duration",
     "comparison_convention": "Keep the raw 17.2.0 label in source tables; interpret the value as decimal bytes/s (GB/s), not bits/s, for cross-tool comparisons. Do not divide by 8.",
     "mi350x_crosscheck": {
-      "raw_hbm_read_32b_requests": 2101340,
+      "source_job": "110307",
+      "raw_hbm_read_32b_requests": 2101290,
       "bytes_per_request": 32,
-      "calculated_bytes": 67242880,
-      "selected_dispatch_duration_ns": 152481,
-      "calculated_decimal_GBps": 440.992,
-      "saved_profiler_value": 444.86,
+      "calculated_bytes": 67241280,
+      "selected_dispatch_duration_ns": 151641,
+      "calculated_decimal_GBps": 443.424,
+      "saved_profiler_value": 443.47,
       "saved_profiler_unit_17_1_3": "GB/s",
       "saved_profiler_unit_17_2_0": "Gbps"
     }
@@ -54,16 +55,17 @@
     {
       "gpu": "AMD Instinct MI350X",
       "arch": "gfx950",
-      "source_probe_job": "110303",
+      "source_probe_job": "110307",
+      "prior_probe_job": "110303",
       "source_r3_job": "109853",
-      "l2_hit_rate_percent": 5.85,
-      "l2_fabric_read_bw": 444.86,
+      "l2_hit_rate_percent": 5.86,
+      "l2_fabric_read_bw": 443.47,
       "l2_fabric_read_bw_unit": "GB/s",
-      "interface_read_bw": 444.86,
+      "interface_read_bw": 443.47,
       "interface_read_bw_raw_unit": "Gbps",
-      "hbm_read_traffic_percent": 100.01,
-      "remote_read_traffic_percent": 0.0,
-      "hbm_read_32b_request_count_last_dispatch": 2101340,
+      "hbm_read_traffic_percent": 99.99,
+      "remote_read_traffic_percent": 0.01,
+      "hbm_read_32b_request_count_last_dispatch": 2101290,
       "hbm_write_requests_last_dispatch": 0,
       "mall_l3_hit_counter_found": false,
       "rocprofv3_version": "1.3.5",
@@ -80,12 +82,12 @@
   ],
   "slurm_probes": [
     {"job_id": "110303", "machine": "mi350x", "state": "COMPLETED", "exit_code": "0:0"},
-    {"job_id": "110302", "machine": "mi300x", "state": "PENDING", "reason": "Resources"},
-    {"job_id": "110307", "machine": "mi350x", "state": "PENDING", "reason": "Resources", "purpose": "rerun with architecture-specific metric listing and analysis"}
+    {"job_id": "110307", "machine": "mi350x", "state": "COMPLETED", "exit_code": "0:0"},
+    {"job_id": "110302", "machine": "mi300x", "state": "PENDING", "reason": "Resources", "purpose": "architecture-specific counter and PC-sampling availability probe"}
   ],
   "limitations": [
     "No direct MALL/Infinity Cache/L3 hit counter name was found in the MI350X rocprofv3 list-avail output.",
-    "MI300X T3 PC-sampling and list-avail checks remain pending.",
+    "MI300X T3 PC-sampling and list-avail checks remain pending in Slurm job 110302.",
     "Profiler-instrumented counter timing is diagnostic and is not compared to uninstrumented R2 HIP-event performance."
   ]
 }
