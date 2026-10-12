@@ -1,0 +1,209 @@
+{
+  "interpretation": {
+    "A1_vs_A0": "isolates removal of the per-symbol workgroup barrier; output is still byte-checked when reported",
+    "A2_vs_A2c": "A2 stages compressed words in LDS; A2c has the same additional dynamic LDS allocation but continues global loads",
+    "A3_vs_A0": "combines barrier removal and compressed-input LDS staging; effects are not assumed additive",
+    "throughput": "decoded output bytes written to LDS / median HIP-event ms; decimal GB/s, single tensor, one stream"
+  },
+  "machines": [
+    {
+      "ROCm_version": "10.0.0",
+      "baseline_A0": {
+        "LDS_bytes": 20480,
+        "effective_LDS_GBps": 276.3936333,
+        "median_ms": 0.2731519938,
+        "source": "results/profiling/lds-r2-glm-mi300x-109848/summary.json"
+      },
+      "binary_sha256": "c3806315dfc2f8312ce3710eced3eba10654a59413621df9bf949ba4094bde7b",
+      "build_flags": "-std=c++17 -O3 -DNDEBUG --offload-arch=gfx942",
+      "gpu_arch": "gfx942:sramecc+:xnack-",
+      "gpu_name": "AMD Instinct MI300X",
+      "hipANS_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+      "launch_common": {
+        "grid_multiplier": 4,
+        "streams": 1,
+        "table_prepare_ms_outside_timing": 1.071200013,
+        "threads": 128,
+        "waves_per_workgroup": 2
+      },
+      "machine": "mi300x",
+      "raw_result": "results/profiling/h3-t2-mi300x-110276/benchmark.json",
+      "slurm_job_id": "110276",
+      "variants": [
+        {
+          "decode_ms": {
+            "median": 0.2310289964,
+            "p10": 0.2304239959,
+            "p90": 0.2328759953
+          },
+          "dynamic_LDS_bytes": 20480,
+          "effective_LDS_GBps": 326.7878629,
+          "grid": 3648,
+          "id": "A1",
+          "resident_workgroups_per_CU": 3,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.4233195037,
+            "p10": 0.4227948934,
+            "p90": 0.4238449007
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 178.3463113,
+          "grid": 1216,
+          "id": "A2",
+          "resident_workgroups_per_CU": 1,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.6535669863,
+            "p10": 0.6522971034,
+            "p90": 0.6556541979
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 115.5160429,
+          "grid": 1216,
+          "id": "A2c",
+          "resident_workgroups_per_CU": 1,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.4126434922,
+            "p10": 0.4121828884,
+            "p90": 0.4131159991
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 182.9605299,
+          "grid": 1216,
+          "id": "A3",
+          "resident_workgroups_per_CU": 1,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        }
+      ],
+      "workload": {
+        "artifact_bytes": 65435856,
+        "artifact_metadata_bytes": 2433568,
+        "blocks": 9216,
+        "max_compressed_words_per_block": 4430,
+        "raw_bytes": 75497472,
+        "replicas": 1,
+        "shape": [
+          12288,
+          6144
+        ],
+        "stage_words_stride_per_wave": 4432
+      }
+    },
+    {
+      "ROCm_version": "10.0.0",
+      "baseline_A0": {
+        "LDS_bytes": 20480,
+        "effective_LDS_GBps": 451.8587884,
+        "median_ms": 0.1670820042,
+        "source": "results/profiling/lds-r2-glm-mi350x-109847/summary.json"
+      },
+      "binary_sha256": "d1b3ca8b4aad7c0d0cd2059285e90cade042362d6a5eb27b771444bb2910d86e",
+      "build_flags": "-std=c++17 -O3 -DNDEBUG --offload-arch=gfx950",
+      "gpu_arch": "gfx950:sramecc+:xnack-",
+      "gpu_name": "AMD Instinct MI350X",
+      "hipANS_commit": "8cc8bc263bc943557682a5cc675a045cb9a86412",
+      "launch_common": {
+        "grid_multiplier": 4,
+        "streams": 1,
+        "table_prepare_ms_outside_timing": 0.8310070038,
+        "threads": 128,
+        "waves_per_workgroup": 2
+      },
+      "machine": "mi350x",
+      "raw_result": "results/profiling/h3-t2-mi350x-110277/benchmark.json",
+      "slurm_job_id": "110277",
+      "variants": [
+        {
+          "decode_ms": {
+            "median": 0.1414609998,
+            "p10": 0.1401930019,
+            "p90": 0.1434811056
+          },
+          "dynamic_LDS_bytes": 20480,
+          "effective_LDS_GBps": 533.6981365,
+          "grid": 4608,
+          "id": "A1",
+          "resident_workgroups_per_CU": 8,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.1459610015,
+            "p10": 0.1448729962,
+            "p90": 0.1472458959
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 517.2441352,
+          "grid": 4096,
+          "id": "A2",
+          "resident_workgroups_per_CU": 4,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.245881997,
+            "p10": 0.2446819991,
+            "p90": 0.2476659954
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 307.0475794,
+          "grid": 4096,
+          "id": "A2c",
+          "resident_workgroups_per_CU": 4,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        },
+        {
+          "decode_ms": {
+            "median": 0.1374609992,
+            "p10": 0.1357569933,
+            "p90": 0.1388539016
+          },
+          "dynamic_LDS_bytes": 38208,
+          "effective_LDS_GBps": 549.228308,
+          "grid": 4096,
+          "id": "A3",
+          "resident_workgroups_per_CU": 4,
+          "result_validity": "INVALID: bench-only ablation",
+          "verified_output": true
+        }
+      ],
+      "workload": {
+        "artifact_bytes": 65435856,
+        "artifact_metadata_bytes": 2433568,
+        "blocks": 9216,
+        "max_compressed_words_per_block": 4430,
+        "raw_bytes": 75497472,
+        "replicas": 1,
+        "shape": [
+          12288,
+          6144
+        ],
+        "stage_words_stride_per_wave": 4432
+      }
+    }
+  ],
+  "provenance": {
+    "ablation_source_sha256": "60a801e26e80c137eafdb985e56d7625a2da5c04301f1e9369257fdfa1294dd1",
+    "build_script_sha256": "b12881b2cf069bc34b23ac7825d1ba776a0687ec28cafefc611325b07a481803",
+    "collector_script_sha256": "b0e430028669ceed51ca43b7d2841fdddaee8043d4fbe68794905798fda80f61",
+    "hipANS_dirty": false,
+    "job_script_sha256": "20061e413b1d8d63a9f5592224ff281c8a4b1cdda0bd07326455917b3213164a"
+  },
+  "result_validity": "INVALID: all A1/A2/A2c/A3 measurements are bench-only ablations, not product-code performance",
+  "schema": "h3-ablation-t2-v1"
+}
