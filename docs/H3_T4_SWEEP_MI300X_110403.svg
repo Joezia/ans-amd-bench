@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<rect width="100%" height="100%" fill="white"/>
+<text x="460.0" y="26" text-anchor="middle" font-family="sans-serif" font-size="18">MI300X: single-matrix A4 launch sweep</text>
+<line x1="78.0" y1="48" x2="78.0" y2="464" stroke="#e5e7eb"/>
+<text x="78.0" y="486" text-anchor="middle" font-family="sans-serif" font-size="12">3.0</text>
+<line x1="78" y1="464.0" x2="898" y2="464.0" stroke="#e5e7eb"/>
+<text x="68" y="468.0" text-anchor="end" font-family="sans-serif" font-size="12">153</text>
+<line x1="283.0" y1="48" x2="283.0" y2="464" stroke="#e5e7eb"/>
+<text x="283.0" y="486" text-anchor="middle" font-family="sans-serif" font-size="12">4.2</text>
+<line x1="78" y1="360.0" x2="898" y2="360.0" stroke="#e5e7eb"/>
+<text x="68" y="364.0" text-anchor="end" font-family="sans-serif" font-size="12">186</text>
+<line x1="488.0" y1="48" x2="488.0" y2="464" stroke="#e5e7eb"/>
+<text x="488.0" y="486" text-anchor="middle" font-family="sans-serif" font-size="12">5.5</text>
+<line x1="78" y1="256.0" x2="898" y2="256.0" stroke="#e5e7eb"/>
+<text x="68" y="260.0" text-anchor="end" font-family="sans-serif" font-size="12">219</text>
+<line x1="693.0" y1="48" x2="693.0" y2="464" stroke="#e5e7eb"/>
+<text x="693.0" y="486" text-anchor="middle" font-family="sans-serif" font-size="12">6.8</text>
+<line x1="78" y1="152.0" x2="898" y2="152.0" stroke="#e5e7eb"/>
+<text x="68" y="156.0" text-anchor="end" font-family="sans-serif" font-size="12">252</text>
+<line x1="898.0" y1="48" x2="898.0" y2="464" stroke="#e5e7eb"/>
+<text x="898.0" y="486" text-anchor="middle" font-family="sans-serif" font-size="12">8.0</text>
+<line x1="78" y1="48.0" x2="898" y2="48.0" stroke="#e5e7eb"/>
+<text x="68" y="52.0" text-anchor="end" font-family="sans-serif" font-size="12">285</text>
+<line x1="78" y1="48" x2="78" y2="464" stroke="#111827"/>
+<line x1="78" y1="464" x2="898" y2="464" stroke="#111827"/>
+<text x="488.0" y="522" text-anchor="middle" font-family="sans-serif" font-size="14">Theoretical resident waves per CU (occupancy API)</text>
+<text x="20" y="270.0" transform="rotate(-90 20 270.0)" text-anchor="middle" font-family="sans-serif" font-size="14">Effective LDS output (decimal GB/s)</text>
+<circle cx="406.0" cy="119.8" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=64, grid=1, streams=1, 261.78 GB/s</title></circle>
+<circle cx="406.0" cy="145.3" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=64, grid=1, streams=2, 253.71 GB/s</title></circle>
+<circle cx="406.0" cy="171.8" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=64, grid=1, streams=4, 245.34 GB/s</title></circle>
+<circle cx="406.0" cy="233.7" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=64, grid=1, streams=8, 225.74 GB/s</title></circle>
+<circle cx="406.0" cy="140.8" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=64, grid=2, streams=1, 255.16 GB/s</title></circle>
+<circle cx="406.0" cy="119.8" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=64, grid=2, streams=2, 261.80 GB/s</title></circle>
+<circle cx="406.0" cy="167.7" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=64, grid=2, streams=4, 246.63 GB/s</title></circle>
+<circle cx="406.0" cy="228.8" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=64, grid=2, streams=8, 227.28 GB/s</title></circle>
+<circle cx="406.0" cy="109.1" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=64, grid=4, streams=1, 265.19 GB/s</title></circle>
+<circle cx="406.0" cy="127.2" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=64, grid=4, streams=2, 259.46 GB/s</title></circle>
+<circle cx="406.0" cy="169.5" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=64, grid=4, streams=4, 246.06 GB/s</title></circle>
+<circle cx="406.0" cy="230.9" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=64, grid=4, streams=8, 226.62 GB/s</title></circle>
+<circle cx="406.0" cy="116.6" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=64, grid=8, streams=1, 262.81 GB/s</title></circle>
+<circle cx="406.0" cy="127.2" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=64, grid=8, streams=2, 259.44 GB/s</title></circle>
+<circle cx="406.0" cy="166.3" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=64, grid=8, streams=4, 247.06 GB/s</title></circle>
+<circle cx="406.0" cy="225.0" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=64, grid=8, streams=8, 228.48 GB/s</title></circle>
+<circle cx="570.0" cy="90.4" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=128, grid=1, streams=1, 271.11 GB/s</title></circle>
+<circle cx="570.0" cy="91.7" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=128, grid=1, streams=2, 270.70 GB/s</title></circle>
+<circle cx="570.0" cy="144.2" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=128, grid=1, streams=4, 254.06 GB/s</title></circle>
+<circle cx="570.0" cy="214.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=128, grid=1, streams=8, 231.85 GB/s</title></circle>
+<circle cx="570.0" cy="76.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=128, grid=2, streams=1, 275.44 GB/s</title></circle>
+<circle cx="570.0" cy="92.4" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=128, grid=2, streams=2, 270.46 GB/s</title></circle>
+<circle cx="570.0" cy="139.4" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=128, grid=2, streams=4, 255.59 GB/s</title></circle>
+<circle cx="570.0" cy="214.1" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=128, grid=2, streams=8, 231.95 GB/s</title></circle>
+<circle cx="570.0" cy="81.9" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=128, grid=4, streams=1, 273.78 GB/s</title></circle>
+<circle cx="570.0" cy="94.5" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=128, grid=4, streams=2, 269.80 GB/s</title></circle>
+<circle cx="570.0" cy="142.8" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=128, grid=4, streams=4, 254.50 GB/s</title></circle>
+<circle cx="570.0" cy="216.5" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=128, grid=4, streams=8, 231.19 GB/s</title></circle>
+<circle cx="570.0" cy="81.2" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=128, grid=8, streams=1, 274.02 GB/s</title></circle>
+<circle cx="570.0" cy="93.1" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=128, grid=8, streams=2, 270.25 GB/s</title></circle>
+<circle cx="570.0" cy="128.9" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=128, grid=8, streams=4, 258.93 GB/s</title></circle>
+<circle cx="570.0" cy="214.1" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=128, grid=8, streams=8, 231.95 GB/s</title></circle>
+<circle cx="570.0" cy="159.0" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=192, grid=1, streams=1, 249.38 GB/s</title></circle>
+<circle cx="570.0" cy="158.1" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=192, grid=1, streams=2, 249.68 GB/s</title></circle>
+<circle cx="570.0" cy="192.2" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=192, grid=1, streams=4, 238.87 GB/s</title></circle>
+<circle cx="570.0" cy="248.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=192, grid=1, streams=8, 221.08 GB/s</title></circle>
+<circle cx="570.0" cy="136.2" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=192, grid=2, streams=1, 256.62 GB/s</title></circle>
+<circle cx="570.0" cy="155.6" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=192, grid=2, streams=2, 250.46 GB/s</title></circle>
+<circle cx="570.0" cy="189.2" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=192, grid=2, streams=4, 239.83 GB/s</title></circle>
+<circle cx="570.0" cy="254.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=192, grid=2, streams=8, 219.18 GB/s</title></circle>
+<circle cx="570.0" cy="145.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=192, grid=4, streams=1, 253.61 GB/s</title></circle>
+<circle cx="570.0" cy="153.5" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=192, grid=4, streams=2, 251.13 GB/s</title></circle>
+<circle cx="570.0" cy="188.7" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=192, grid=4, streams=4, 239.98 GB/s</title></circle>
+<circle cx="570.0" cy="256.8" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=192, grid=4, streams=8, 218.44 GB/s</title></circle>
+<circle cx="570.0" cy="139.3" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=192, grid=8, streams=1, 255.62 GB/s</title></circle>
+<circle cx="570.0" cy="152.8" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=192, grid=8, streams=2, 251.36 GB/s</title></circle>
+<circle cx="570.0" cy="191.2" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=192, grid=8, streams=4, 239.19 GB/s</title></circle>
+<circle cx="570.0" cy="246.5" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=192, grid=8, streams=8, 221.69 GB/s</title></circle>
+<circle cx="242.0" cy="368.1" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=256, grid=1, streams=1, 183.19 GB/s</title></circle>
+<circle cx="242.0" cy="369.5" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=256, grid=1, streams=2, 182.74 GB/s</title></circle>
+<circle cx="242.0" cy="435.3" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=256, grid=1, streams=4, 161.91 GB/s</title></circle>
+<circle cx="242.0" cy="431.5" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=256, grid=1, streams=8, 163.13 GB/s</title></circle>
+<circle cx="242.0" cy="364.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=256, grid=2, streams=1, 184.28 GB/s</title></circle>
+<circle cx="242.0" cy="374.0" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=256, grid=2, streams=2, 181.33 GB/s</title></circle>
+<circle cx="242.0" cy="396.3" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=256, grid=2, streams=4, 174.25 GB/s</title></circle>
+<circle cx="242.0" cy="431.3" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=256, grid=2, streams=8, 163.17 GB/s</title></circle>
+<circle cx="242.0" cy="365.0" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=256, grid=4, streams=1, 184.17 GB/s</title></circle>
+<circle cx="242.0" cy="372.8" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=256, grid=4, streams=2, 181.71 GB/s</title></circle>
+<circle cx="242.0" cy="397.6" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=256, grid=4, streams=4, 173.85 GB/s</title></circle>
+<circle cx="242.0" cy="431.3" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=256, grid=4, streams=8, 163.17 GB/s</title></circle>
+<circle cx="242.0" cy="368.9" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=256, grid=8, streams=1, 182.95 GB/s</title></circle>
+<circle cx="242.0" cy="373.6" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=256, grid=8, streams=2, 181.45 GB/s</title></circle>
+<circle cx="242.0" cy="397.4" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=256, grid=8, streams=4, 173.93 GB/s</title></circle>
+<circle cx="242.0" cy="430.2" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=256, grid=8, streams=8, 163.53 GB/s</title></circle>
+<circle cx="406.0" cy="309.1" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=320, grid=1, streams=1, 201.86 GB/s</title></circle>
+<circle cx="406.0" cy="318.2" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=320, grid=1, streams=2, 198.98 GB/s</title></circle>
+<circle cx="406.0" cy="335.4" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=320, grid=1, streams=4, 193.53 GB/s</title></circle>
+<circle cx="406.0" cy="381.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=320, grid=1, streams=8, 178.97 GB/s</title></circle>
+<circle cx="406.0" cy="312.6" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=320, grid=2, streams=1, 200.74 GB/s</title></circle>
+<circle cx="406.0" cy="310.7" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=320, grid=2, streams=2, 201.38 GB/s</title></circle>
+<circle cx="406.0" cy="338.3" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=320, grid=2, streams=4, 192.61 GB/s</title></circle>
+<circle cx="406.0" cy="379.6" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=320, grid=2, streams=8, 179.54 GB/s</title></circle>
+<circle cx="406.0" cy="302.8" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=320, grid=4, streams=1, 203.85 GB/s</title></circle>
+<circle cx="406.0" cy="311.3" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=320, grid=4, streams=2, 201.16 GB/s</title></circle>
+<circle cx="406.0" cy="335.4" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=320, grid=4, streams=4, 193.55 GB/s</title></circle>
+<circle cx="406.0" cy="381.8" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=320, grid=4, streams=8, 178.86 GB/s</title></circle>
+<circle cx="406.0" cy="303.6" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=320, grid=8, streams=1, 203.61 GB/s</title></circle>
+<circle cx="406.0" cy="311.6" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=320, grid=8, streams=2, 201.09 GB/s</title></circle>
+<circle cx="406.0" cy="333.9" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=320, grid=8, streams=4, 194.02 GB/s</title></circle>
+<circle cx="406.0" cy="379.3" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=320, grid=8, streams=8, 179.66 GB/s</title></circle>
+<circle cx="570.0" cy="226.5" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=384, grid=1, streams=1, 228.02 GB/s</title></circle>
+<circle cx="570.0" cy="230.0" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=384, grid=1, streams=2, 226.92 GB/s</title></circle>
+<circle cx="570.0" cy="262.7" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=384, grid=1, streams=4, 216.57 GB/s</title></circle>
+<circle cx="570.0" cy="311.6" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=384, grid=1, streams=8, 201.08 GB/s</title></circle>
+<circle cx="570.0" cy="218.4" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=384, grid=2, streams=1, 230.59 GB/s</title></circle>
+<circle cx="570.0" cy="227.7" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=384, grid=2, streams=2, 227.63 GB/s</title></circle>
+<circle cx="570.0" cy="261.4" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=384, grid=2, streams=4, 216.98 GB/s</title></circle>
+<circle cx="570.0" cy="315.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=384, grid=2, streams=8, 199.87 GB/s</title></circle>
+<circle cx="570.0" cy="223.3" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=384, grid=4, streams=1, 229.02 GB/s</title></circle>
+<circle cx="570.0" cy="227.4" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=384, grid=4, streams=2, 227.74 GB/s</title></circle>
+<circle cx="570.0" cy="263.5" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=384, grid=4, streams=4, 216.31 GB/s</title></circle>
+<circle cx="570.0" cy="316.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=384, grid=4, streams=8, 199.54 GB/s</title></circle>
+<circle cx="570.0" cy="222.0" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=384, grid=8, streams=1, 229.44 GB/s</title></circle>
+<circle cx="570.0" cy="228.6" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=384, grid=8, streams=2, 227.35 GB/s</title></circle>
+<circle cx="570.0" cy="261.8" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=384, grid=8, streams=4, 216.84 GB/s</title></circle>
+<circle cx="570.0" cy="315.1" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=384, grid=8, streams=8, 199.96 GB/s</title></circle>
+<circle cx="734.0" cy="118.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=448, grid=1, streams=1, 262.15 GB/s</title></circle>
+<circle cx="734.0" cy="123.9" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=448, grid=1, streams=2, 260.50 GB/s</title></circle>
+<circle cx="734.0" cy="164.5" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=448, grid=1, streams=4, 247.63 GB/s</title></circle>
+<circle cx="734.0" cy="236.5" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=448, grid=1, streams=8, 224.86 GB/s</title></circle>
+<circle cx="734.0" cy="119.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=448, grid=2, streams=1, 261.82 GB/s</title></circle>
+<circle cx="734.0" cy="121.5" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=448, grid=2, streams=2, 261.26 GB/s</title></circle>
+<circle cx="734.0" cy="163.7" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=448, grid=2, streams=4, 247.91 GB/s</title></circle>
+<circle cx="734.0" cy="236.0" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=448, grid=2, streams=8, 225.01 GB/s</title></circle>
+<circle cx="734.0" cy="111.7" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=448, grid=4, streams=1, 264.35 GB/s</title></circle>
+<circle cx="734.0" cy="119.4" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=448, grid=4, streams=2, 261.91 GB/s</title></circle>
+<circle cx="734.0" cy="166.3" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=448, grid=4, streams=4, 247.06 GB/s</title></circle>
+<circle cx="734.0" cy="241.4" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=448, grid=4, streams=8, 223.31 GB/s</title></circle>
+<circle cx="734.0" cy="113.9" r="4" fill="#2563eb" fill-opacity="0.65"><title>threads=448, grid=8, streams=1, 263.65 GB/s</title></circle>
+<circle cx="734.0" cy="121.8" r="4" fill="#16a34a" fill-opacity="0.65"><title>threads=448, grid=8, streams=2, 261.17 GB/s</title></circle>
+<circle cx="734.0" cy="157.0" r="4" fill="#d97706" fill-opacity="0.65"><title>threads=448, grid=8, streams=4, 250.03 GB/s</title></circle>
+<circle cx="734.0" cy="237.8" r="4" fill="#dc2626" fill-opacity="0.65"><title>threads=448, grid=8, streams=8, 224.44 GB/s</title></circle>
+<circle cx="88" cy="36" r="5" fill="#2563eb"/><text x="98" y="40" font-family="sans-serif" font-size="12">1 stream(s)</text>
+<circle cx="193" cy="36" r="5" fill="#16a34a"/><text x="203" y="40" font-family="sans-serif" font-size="12">2 stream(s)</text>
+<circle cx="298" cy="36" r="5" fill="#d97706"/><text x="308" y="40" font-family="sans-serif" font-size="12">4 stream(s)</text>
+<circle cx="403" cy="36" r="5" fill="#dc2626"/><text x="413" y="40" font-family="sans-serif" font-size="12">8 stream(s)</text>
+</svg>
