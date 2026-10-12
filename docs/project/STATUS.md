@@ -1,6 +1,6 @@
 # 项目执行状态
 
-最后更新：2026-10-11。战略编号与 [PLAN.md](PLAN.md) 对齐。
+最后更新：2026-10-12。战略编号与 [PLAN.md](PLAN.md) 对齐。
 
 ## 当前摘要
 
@@ -8,13 +8,14 @@
 实际未优化 hipANS 的已有工程测量在两台机器均已返回，但此前 replicas 饱和
 实验不作为主要场景验收。错误 scalar baseline 已撤销，不作为对照。
 S1 的 R0–R3 已并入战略计划。用户已选定 GLM-5.2-FP8 dense projection；R1 的
-MI350X artifact 与 LDS 逐位验证完成。R2 的 MI300X 单矩阵主测量及辅助 replica
-诊断已完成；MI350X 作业仍在队列。尚未修改 decoder kernel。
+MI350X artifact 与 LDS 逐位验证完成。R2 两机单矩阵主测量和辅助 replica 诊断均已
+完成；R3 两机 counters/timeline 与 dispatch 分析均已返回。关键证据及限制见
+[GLM LDS profiling report](../GLM_LDS_PROFILING_REPORT.md)。尚未修改 decoder kernel。
 
 | 阶段 | 状态 | 实际进展 | 下一验收点 |
 |---|---|---|---|
-| S0：真实负载 | 首个场景已选 | GLM-5.2-FP8 layer 0 dense MLP gate projection，native F8_E4M3 | 在 R2 测量确认场景解码表现 |
-| S1：片上解码 | R1 完成；R2 部分完成 | GLM artifact 已在 MI350X 完成逐位 LDS 验证；MI300X 场景测量已返回，MI350X 在队列中 | 完成 MI350X 对照，随后完成两机 R3 profiling 归因 |
+| S0：真实负载 | 首个场景已选 | GLM-5.2-FP8 layer 0 dense MLP gate projection，native F8_E4M3 | 后续扩展其他真实层/格式前，先基于 S1 证据确定优化切口 |
+| S1：片上解码 baseline | R0–R3 完成 | R1 正确性、R2 两机真实权重吞吐、R3 counters/timeline 均已返回；没有改 kernel | 形成受证据约束的优化假设，再进入优化迭代 |
 | S2：解码+GEMM | 未开始 | 尚无 GEMM 消费者和融合流水线 | 依据 S1 场景证据另行规划 |
 | S3：部署验证 | 未开始 | 格式及模型扩展另行规划 | 完整推理价值验证 |
 
@@ -26,8 +27,8 @@ MI350X artifact 与 LDS 逐位验证完成。R2 的 MI300X 单矩阵主测量及
 |---|---|---|
 | R0：确认权重与计算场景 | 完成 | 用户已选 GLM-5.2-FP8 layer 0 dense MLP `gate_proj`；候选依据见下表 |
 | R1：场景 artifact 与正确性 | 完成 | GLM 72 MiB F8_E4M3 权重和 18 KiB scale；MI350X job 109840 实际 LDS 逐位验证通过 |
-| R2：两机场景 baseline | MI300X 完成；MI350X 排队 | job 109848 已完成：单矩阵 decode→LDS 276.39 GB/s，raw→LDS 507.63 GB/s；replica 4/16/64 单独记录为辅助诊断；MI350X job 109847 仍排队 |
-| R3：瓶颈证据及建议 | 两机作业已提交 | MI300X job 109852 排队；MI350X job 109853 依赖 R2 job 109847 成功完成后运行；follow-up job 109854 等待三项作业结束后记录状态并执行可用的 counter dispatch 分析 |
+| R2：两机场景 baseline | 完成 | MI300X / MI350X 单矩阵 ANS→LDS 分别为 276.39 / 451.86 GB/s；raw 控制及 auxiliary replicas 单独记录，见 GLM 报告 |
+| R3：瓶颈证据及建议 | 初步报告完成 | 两机 rocprofv3 timeline 与 rocprof-compute dispatch 分析成功；MALL、可信 achieved-HBM/roofline 和 barrier-only 成本未能量化，限制已记录 |
 
 R0 只读取 entropyflow-lab 固定 revision 的配置/index，以及 GLM 对应 safetensors
 shard 的有界 header range；未下载 checkpoint 权重 payload，也未写入 entropyflow-lab
@@ -67,37 +68,28 @@ M=4096 个 token；具体融合 kernel 对权重 tile 的复用/重复解码次�
 
 ## 作业与已返回结果
 
-2026-10-11 使用 sacct 核实：两个历史测量作业均 COMPLETED，ExitCode 0:0。
-共享路径可从各节点访问，无需复制。R1 的 MI350X 验证作业 109840 已完成；R2 的
-MI300X job 109848 已完成，MI350X job 109847 仍因 GPU 资源占用而 PENDING (Resources)。
-R2 stdout/stderr 路径分别为 `results/slurm-lds-r2-glm-mi350x-%j.out/.err` 和
-`results/slurm-lds-r2-glm-mi300x-%j.out/.err`；结果位于
-`results/profiling/lds-r2-glm-mi300x-109848/summary.json`，MI350X 结果待作业返回。
-R3 MI300X profiling job 109852 已提交，目前 PENDING (Resources)，计划输出至
-`results/profiling/lds-r3-glm-mi300x-109852/`。MI350X profiling job 109853 已提交，
-依赖 R2 job 109847 成功完成后运行，计划输出至
-`results/profiling/lds-r3-glm-mi350x-109853/`。两者插桩计时只用于诊断；R3 不把
-replicas 当作主要场景。
-低资源后续 job 109854（devel，1 CPU、无 GPU）依赖 R2/R3 三项作业全部终止后启动，
-写出 `results/profiling/lds-s1-followup-109854/handoff.tsv`，并在 counter 数据和
-rocprof-compute 可用时调用现有 `scripts/analyze_lds_profile.sh`。此处使用 Slurm 依赖
-作事件触发，不在登录节点运行周期轮询。
+2026-10-12 使用 sacct 核实：S1 作业 109847–109854 均 COMPLETED，ExitCode 0:0。
+共享路径可从各节点访问，无需复制。R1 MI350X 验证作业 109840 也已完成。
+R2 主结果 JSON 分别位于 `results/profiling/lds-r2-glm-mi300x-109848/summary.json` 和
+`results/profiling/lds-r2-glm-mi350x-109847/summary.json`。R3 原始 counters、timeline、
+分析文本位于各自 `results/profiling/lds-r3-glm-<machine>-<jobid>/rocprof/`；自动
+follow-up handoff 位于 `results/profiling/lds-s1-followup-109854/handoff.tsv`。
+`results/profiling/` 被 git-ignore；为保留可追踪证据，所选结果和限制同步写入
+[GLM LDS profiling report](../GLM_LDS_PROFILING_REPORT.md)。
 
-MI300X R2 的主要配置为一个 72 MiB 权重（replicas=1）、128 threads、grid
-multiplier 4、一个 stream、10 warmup / 50 timed iterations；median kernel 时间为
-0.273152 ms，按解码后 75,497,472 bytes 计算有效 LDS 写入速率为 276.394 GB/s。
-匹配的 raw→LDS 控制为 0.148724 ms / 507.635 GB/s。两者都只计 decoder 或 raw
-写入 LDS 的 kernel，不包含 GEMM、H2D、ANS 查表准备；scale 未被消费，LDS 内容在
-测量后丢弃。replica 结果仅作为辅助供给/缓存诊断：4、16、64 份分别为 303.605、
-258.781、259.847 GB/s；它们不是实际模型参数数或 batch。详见上述 `summary.json`。
+R2 主配置为一个 72 MiB 权重（replicas=1）、128 threads、grid multiplier 4、一个
+stream、10 warmup / 50 timed iterations。有效 LDS 吞吐按 75,497,472 decoded bytes /
+median kernel time 计算；raw→LDS 是控制，不是纯 ANS 算术成本。两条路径均不包含
+GEMM、H2D、ANS 查表准备；scale 未被消费，LDS 内容在测量后丢弃。replica 结果只作
+辅助供给/缓存诊断，不代表真实模型参数数或 batch。
 
 | 机器 | 作业 | 状态 / 耗时 | 正式结果 / 报告 |
 |---|---|---|---|
-| MI300X / gfx942 | 109848 | COMPLETED (0:0)，14 秒，tn1-003-002 | `results/profiling/lds-r2-glm-mi300x-109848/summary.json`；主测量 decode→LDS 276.394 GB/s，raw→LDS 507.635 GB/s |
-| MI350X / gfx950 | 109847 | PENDING (Resources) | 排队中；stdout/stderr 为 `results/slurm-lds-r2-glm-mi350x-109847.out/.err` |
-| MI300X / gfx942 | 109852 | PENDING (Resources) | R3 counters / timeline；stdout/stderr 为 `results/slurm-lds-r3-glm-mi300x-109852.out/.err` |
-| MI350X / gfx950 | 109853 | PENDING (Dependency) | R3 counters / timeline，afterok:109847；stdout/stderr 为 `results/slurm-lds-r3-glm-mi350x-109853.out/.err` |
-| CPU follow-up / devel | 109854 | PENDING (Dependency) | afterany:109847:109852:109853；记录三项作业状态并尝试生成 counter dispatch analysis |
+| MI300X / gfx942 | 109848 | COMPLETED (0:0)，14 秒，tn1-003-002 | R2 主测量 276.394 GB/s，raw→LDS 507.635 GB/s |
+| MI350X / gfx950 | 109847 | COMPLETED (0:0)，9 秒，tn1-004-002 | R2 主测量 451.859 GB/s，raw→LDS 729.155 GB/s |
+| MI300X / gfx942 | 109852 | COMPLETED (0:0)，1 分 4 秒，tn1-003-001 | R3 counters / rocprofv3 timeline；`rocprof-compute` dispatch analysis available |
+| MI350X / gfx950 | 109853 | COMPLETED (0:0)，51 秒，tn1-004-002 | R3 counters / rocprofv3 timeline；`rocprof-compute` dispatch analysis available |
+| CPU follow-up / devel | 109854 | COMPLETED (0:0)，8 秒，tn1-004-004 | 记录三项状态并对两台机器执行 dispatch analysis |
 | MI300X / gfx942 | 109618 | COMPLETED (0:0)，3 分 20 秒，tn1-003-002 | results/lds_baseline.json；docs/LDS_BASELINE_REPORT.md |
 | MI350X / gfx950 | 109666 | COMPLETED (0:0)，3 分 5 秒，tn1-004-001 | results/lds_baseline_mi350x.json；docs/LDS_BASELINE_REPORT_MI350X.md |
 
