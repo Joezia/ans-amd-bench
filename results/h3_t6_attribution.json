@@ -1,0 +1,59 @@
+{
+  "schema": "h3-t6-attribution-v1",
+  "status": "complete",
+  "scope": "current hipANS decode-to-LDS; no GEMM fusion",
+  "conclusion": "Evidence favors serial memory-dependency and synchronization behavior plus architecture-specific resource scheduling over a proven fundamental ANS limit; causal proof remains incomplete.",
+  "metric_definition": "effective_LDS_GBps = unique decoded output bytes written to LDS / median HIP-event kernel time; decimal GB/s; not physical HBM bandwidth",
+  "a0_baseline_gbps": {"mi300x": 276.3936, "mi350x": 451.8588},
+  "a1_iteration_barrier_removed_gbps_invalid": {
+    "mi300x": {"gbps": 326.7879, "change_vs_a0_percent": 18.24},
+    "mi350x": {"gbps": 533.6981, "change_vs_a0_percent": 18.11}
+  },
+  "a2_stage_compressed_words_gbps_invalid": {
+    "mi300x": {"gbps": 178.3463, "resident_wg_per_cu": 1},
+    "mi350x": {"gbps": 517.2441, "resident_wg_per_cu": 4}
+  },
+  "a2c_same_lds_global_refills_gbps_invalid": {
+    "mi300x": {"gbps": 115.5160, "resident_wg_per_cu": 1},
+    "mi350x": {"gbps": 307.0476, "resident_wg_per_cu": 4}
+  },
+  "a2_vs_a2c_relative_gain_percent_invalid": {"mi300x": 54.39, "mi350x": 68.46},
+  "a3_barrier_plus_staging_gbps_invalid": {
+    "mi300x": {"gbps": 182.9605, "change_vs_a0_percent": -33.81},
+    "mi350x": {"gbps": 549.2283, "change_vs_a0_percent": 21.55}
+  },
+  "a4_best_single_matrix": {
+    "mi300x": {"gbps": 275.2830, "threads": 128, "grid_multiplier": 2, "streams": 1, "change_vs_matched_default_percent": 0.55, "tested_configs": 112},
+    "mi350x": {"gbps": 540.0353, "threads": 384, "grid_multiplier": 1, "streams": 1, "change_vs_matched_default_percent": 19.60, "tested_configs": 112}
+  },
+  "a5_raw_to_lds_control_gbps": {"mi300x": 507.635, "mi350x": 729.155},
+  "t5_distinct_glm_matrix_working_set": {
+    "member_matrices": 9,
+    "unique_decoded_bytes": 679477248,
+    "compressed_archive_bytes": 588470288,
+    "compressed_bytes_over_nominal_256_mib_mall": 2.1922,
+    "mi300x": {"job": "110412", "gbps": 263.1512, "median_ms": 2.58208},
+    "mi350x": {"job": "110411", "gbps": 486.3104, "median_ms": 1.397209},
+    "verified_actual_lds": true,
+    "mall_hit_rate_directly_measured": false
+  },
+  "r3_counters": {
+    "mi300x": {"valu_util_percent": 13.84, "vmem_util_percent": 0.72, "wavefront_occupancy_percent": 15.42, "l2_hit_percent": 8.67, "l2_fabric_read_gbps": 262.75, "remote_read_percent": 0, "dependency_wait_share_of_wave_cycles_percent": 78.3},
+    "mi350x": {"valu_util_percent": 26.60, "vmem_util_percent": 1.39, "wavefront_occupancy_percent": 35.03, "l2_hit_percent": 5.86, "l2_fabric_read_gbps": 443.47, "remote_read_percent": 0.01}
+  },
+  "limits": [
+    "A1/A2/A2c/A3 are INVALID bench-only ablations, not product-code performance.",
+    "A2-A2c and A1 effects are not additive and include architecture-dependent occupancy effects.",
+    "No direct MALL/Infinity Cache hit counter was found.",
+    "MI350X BabelStream Triad was not measured.",
+    "T4 theoretical resident waves/CU and rocprof-compute Wavefront Occupancy are different metrics.",
+    "T5 is decode-only and does not run GEMM or model inference."
+  ],
+  "next_month": [
+    "Validate per-iteration barrier removal in the real hipANS decoder with full correctness coverage.",
+    "Prototype bounded refill prefetch with an LDS-footprint control to avoid the MI300X occupancy collapse seen in A2.",
+    "Keep per-architecture launch configurations; retest on the large T5 working set.",
+    "Measure MI350X BabelStream Triad and investigate a direct MALL metric if the hardware/toolchain exposes one.",
+    "Build an ANS-to-LDS-to-MFMA consumer pipeline and measure complete inference-stage timing."
+  ]
+}
