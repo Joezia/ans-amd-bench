@@ -1,0 +1,252 @@
+{
+  "schema": "h3-t5-multimatrix-artifact-v1",
+  "status": "prepared-and-verified",
+  "slurm_job": "110410",
+  "model": "zai-org/GLM-5.2-FP8",
+  "revision": "f33c6dc501ee5a2c7e35155653b1b1abbc320951",
+  "members": [
+    {
+      "layer": 0,
+      "projection": "gate_proj",
+      "tensor_name": "model.layers.0.mlp.gate_proj.weight",
+      "scale_tensor_name": "model.layers.0.mlp.gate_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "833dc663522cb561e82ef03dc87e51e874ebdc7025a915e50bd7c187d19fe76a",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "08aa8122aaa005b0ff6a9e5f39788609a6266f843304413599d7bfeb5212a58c",
+      "source_manifest_sha256": "1702655a42998fa63288ae7a0c7fcab2efbbac2201e7f7ebee9375f4d1e9e9b2",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-layer0-gate-proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-layer0-gate-proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 0,
+      "projection": "up_proj",
+      "tensor_name": "model.layers.0.mlp.up_proj.weight",
+      "scale_tensor_name": "model.layers.0.mlp.up_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "e19178b7100699f5cb207a1ee7cc6a9e165e871fd4034bd476d3e98b349fe7ce",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "f9b614e52ef8f2c6c6554f76bdae7a2396ad392bfa61005264bab95faf9575ef",
+      "source_manifest_sha256": "dfcc3b879916f63a4442113c7821f5132df151078ed319738c4f0f48bf2288d1",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer0-up_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer0-up_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 0,
+      "projection": "down_proj",
+      "tensor_name": "model.layers.0.mlp.down_proj.weight",
+      "scale_tensor_name": "model.layers.0.mlp.down_proj.weight_scale_inv",
+      "logical_shape": [
+        6144,
+        12288
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "b7d2a7bdfd8536bcebccd12562c50107e6208d93023289d5bb8d0ff69047f649",
+      "scale_shape": [
+        48,
+        96
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "8b9fba5912a687b2e5d1e0f7f64275357fecb457ab73741215968ceedad75c39",
+      "source_manifest_sha256": "66a7fc34374f1846a1dc6824199daef09400022d48d1c5968789a225e15054af",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer0-down_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer0-down_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 1,
+      "projection": "gate_proj",
+      "tensor_name": "model.layers.1.mlp.gate_proj.weight",
+      "scale_tensor_name": "model.layers.1.mlp.gate_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "7c3e769da74de5eb39697406b25c26f5f84bf96620a7f28f3186c9c23a59210b",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "bf53ee897d43549620add659defa1143d3ea5641208b0b0bc7b34516161062fc",
+      "source_manifest_sha256": "e73719beed3b18fb2fc3da3ea225a971dcee59d112a139285c5f6a24d3bc3aa6",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-gate_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-gate_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 1,
+      "projection": "up_proj",
+      "tensor_name": "model.layers.1.mlp.up_proj.weight",
+      "scale_tensor_name": "model.layers.1.mlp.up_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "37c30e1d66d8ebd42bd8cbb500d340afc57a240e8295f071868d16fec85df445",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "9f0d578b99bc683e92f70bc82b368fe66a446a4a8d7c277d70f17cb508e17ccd",
+      "source_manifest_sha256": "681c8b7e458c6e9e195b4e4e0361d9b3bbfdfea5fdf4219e64ae7578b4d25509",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-up_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-up_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 1,
+      "projection": "down_proj",
+      "tensor_name": "model.layers.1.mlp.down_proj.weight",
+      "scale_tensor_name": "model.layers.1.mlp.down_proj.weight_scale_inv",
+      "logical_shape": [
+        6144,
+        12288
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00001-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "70ec1e1b1c5ed182db1c293ed41b611ff95677c2e21c0e04ed0113df285aa41c",
+      "scale_shape": [
+        48,
+        96
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "5f69c9b0f09fb1934ca9d816cc158d840e714512e35853881eba4aba38f33df3",
+      "source_manifest_sha256": "c8b7e7777de2db13d0e5be790f444970dc7c8c2609820813f25d7d8345701a2e",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-down_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer1-down_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 2,
+      "projection": "gate_proj",
+      "tensor_name": "model.layers.2.mlp.gate_proj.weight",
+      "scale_tensor_name": "model.layers.2.mlp.gate_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00020-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "8dfc75cce045c53af133caeb1f66ac9210d5604185187a1a3e254325271c63d4",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "43d4d9be306cbfa4c99f467a3ada87dad5bac4c468017f57cce57c754dbf35c6",
+      "source_manifest_sha256": "5fe9a26fb9ab530443413bf46fa803067fc07df6d808b968fe4135a20313200f",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-gate_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-gate_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 2,
+      "projection": "up_proj",
+      "tensor_name": "model.layers.2.mlp.up_proj.weight",
+      "scale_tensor_name": "model.layers.2.mlp.up_proj.weight_scale_inv",
+      "logical_shape": [
+        12288,
+        6144
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00020-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "649debd557c5e2399bd466801717118b09ee523c3ab267427973f90e48dfed84",
+      "scale_shape": [
+        96,
+        48
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "8a8b60f61b01d35c9f184b0295e3bfb7dc418814c8241ae8f63eeb5930ea4e31",
+      "source_manifest_sha256": "138bd1fcdfec8c3466b785496e983b6e23b0f86bb4fc47c6595500bfb4b53c4f",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-up_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-up_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    },
+    {
+      "layer": 2,
+      "projection": "down_proj",
+      "tensor_name": "model.layers.2.mlp.down_proj.weight",
+      "scale_tensor_name": "model.layers.2.mlp.down_proj.weight_scale_inv",
+      "logical_shape": [
+        6144,
+        12288
+      ],
+      "dtype": "F8_E4M3",
+      "source_shard": "model-00020-of-00141.safetensors",
+      "weight_bytes": 75497472,
+      "weight_sha256": "2159301e0d66ed0ea747e0c0d0ca3e96766555456bc49a141a5e08289b129cba",
+      "scale_shape": [
+        48,
+        96
+      ],
+      "scale_bytes": 18432,
+      "scale_sha256": "c1a76154dda1695987bb923f76b9f38fa2f4e6da378ce0f1ed6dca909fb5588d",
+      "source_manifest_sha256": "235211da57a021ed923827e1ae470babc80c7355380ae23b5eca3b44b0f7c01a",
+      "source_manifest_path": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-down_proj/source.json",
+      "source_directory": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/members/layer2-down_proj",
+      "weight_file": "weights.bin",
+      "scale_file": "scales.bin"
+    }
+  ],
+  "member_count": 9,
+  "unique_weight_bytes": 679477248,
+  "scale_bytes": 165888,
+  "composite_shape_bytes_only": [
+    110592,
+    6144
+  ],
+  "composition": "nine distinct layer-0..2 gate/up/down matrices concatenated in projection-major order within each layer; each 72 MiB boundary is exactly tile-aligned; viewed as bytes with pseudo-shape [110592,6144] for LDS throughput only",
+  "encoding": "native F8_E4M3 bytes; no conversion",
+  "artifact_bytes": 588470288,
+  "artifact_metadata_bytes": 21897760,
+  "ratio_codes": 1.154650051,
+  "ratio_total_with_scales": 1.1546064678158687,
+  "artifact_sha256": "2ac416ab458d9b3f69c5a69d2799dc80c2359cd8ed6f242a1637a0e6a23a3f1a",
+  "source_manifest_sha256": "4a270f3a2af2ec4463c85a6eb9840246c95667dcddbd633c06fb26e2cc62c59a",
+  "artifact_manifest": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/artifact/artifact.json",
+  "raw_weights": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410/source/weights.bin",
+  "raw_output_dir": "/work1/bingshenghe/xbr/ziang/compression/ans-amd-bench/inputs/lds/glm52-first3-dense-stack/job-110410"
+}
