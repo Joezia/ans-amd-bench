@@ -39,10 +39,6 @@ export HIPANS_ROOT="${HIPANS_ROOT:-${bench_dir}/../hipANS}"
 manifest="${artifact_dir}/artifact.json"
 
 echo "H3 T3 profiler probe: job=${SLURM_JOB_ID} machine=${machine} partition=${partition} node=$(hostname) start=$(date -Iseconds)"
-if [[ ! -r "${manifest}" ]]; then
-  echo "Missing R2 manifest: ${manifest}" >&2
-  exit 2
-fi
 
 {
   echo "machine=${machine}"
@@ -75,7 +71,7 @@ probe rocprof-compute-list-blocks rocprof-compute --list-blocks "${GPU_ARCH}"
 # Re-run the known one-matrix R3 case with the existing counter blocks. These
 # counters are diagnostic only; uninstrumented R2 HIP-event measurements remain
 # the performance authority. R3 artifacts and R2 inputs are left untouched.
-if [[ -x "${HIPANS_LDS_BINARY}" && -x "${bench_dir}/.venv/bin/python" ]]; then
+if [[ -r "${manifest}" && -x "${HIPANS_LDS_BINARY}" && -x "${bench_dir}/.venv/bin/python" ]]; then
   export PROFILE_LDS_REPLICAS=1 PROFILE_LDS_THREADS=128 PROFILE_LDS_GRID_MULT=4
   export PROFILE_LDS_STREAMS=1 PROFILE_LDS_WARMUP=2 PROFILE_LDS_ITERS=1
   if bash profiling/run_lds_baseline.sh "${manifest}" "${output}/r3" \
@@ -97,8 +93,16 @@ if [[ -x "${HIPANS_LDS_BINARY}" && -x "${bench_dir}/.venv/bin/python" ]]; then
       >>"${output}/tool-availability.tsv"
   fi
 else
-  printf 'r3-counter-replay\t0\tmissing existing LDS binary or local venv\n' \
-    >>"${output}/tool-availability.tsv"
+  if [[ ! -r "${manifest}" ]]; then
+    printf 'r3-counter-replay\t0\tskipped: missing R2 manifest %s; use existing R3 capture\n' \
+      "${manifest}" >>"${output}/tool-availability.tsv"
+  elif [[ ! -x "${HIPANS_LDS_BINARY}" ]]; then
+    printf 'r3-counter-replay\t0\tmissing existing LDS binary %s\n' \
+      "${HIPANS_LDS_BINARY}" >>"${output}/tool-availability.tsv"
+  else
+    printf 'r3-counter-replay\t0\tmissing local venv Python %s\n' \
+      "${bench_dir}/.venv/bin/python" >>"${output}/tool-availability.tsv"
+  fi
 fi
 
 echo "H3 T3 profiler probe complete: ${output}"
